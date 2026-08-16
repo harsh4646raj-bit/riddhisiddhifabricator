@@ -1,7 +1,13 @@
 {
   "version": 2,
-  "cleanUrls": false,
+  "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/quote", "destination": "/quote.html" },
+    { "source": "/projects", "destination": "/projects.html" },
+    { "source": "/project", "destination": "/project.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
