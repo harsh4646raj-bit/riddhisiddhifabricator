@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riddhi Siddhi Fabricator — Premium Aluminium, uPVC & Steel Fabrication</title>
+<meta name="description" content="Riddhi Siddhi Fabricator — Precision fabrication of aluminium, uPVC and steel windows, doors, gates and railings for modern homes and spaces. Muzaffarpur, Bihar.">
+<link rel="icon" type="image/jpeg" href="Logo.jpeg">
+<!-- Open Graph / Social Sharing -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Riddhi Siddhi Fabricator — Precision Architectural Fabrication">
+<meta property="og:description" content="Precision fabrication of aluminium, uPVC and steel windows, doors, gates, railings, partitions and facades. Muzaffarpur, Bihar.">
+<meta property="og:image" content="Logo.jpeg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Riddhi Siddhi Fabricator">
+<meta name="twitter:description" content="Precision fabrication of aluminium, uPVC and steel architectural solutions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ═══════════════════════════════════════════════════
+     DESIGN SYSTEM
+     ═══════════════════════════════════════════════════ */
+  :root {
+    --bg:           #0E0709;
+    --plum:         #53313B;
+    --plum-light:   #6B4350;
+    --plum-glow:    #7A4F5E;
+    --taupe:        #B9A8AC;
+    --blush:        #FCEEEF;
+    --text:         #F5F0E8;
+    --text-dim:     rgba(245, 240, 232, 0.55);
+    --text-muted:   rgba(245, 240, 232, 0.3);
+    --glass-bg:     rgba(14, 7, 9, 0.55);
+    --glass-border: rgba(185, 168, 172, 0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     LAYER 0 + 1: FIXED 3D WINDOW BACKGROUND
+     The canvas stays fixed behind EVERYTHING.
+     ═══════════════════════════════════════════════════ */
+  #film {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 1;
+    display: block;
+    pointer-events: none;
+  }
+
+  /* LAYER 2: Vignette / readability overlay */
+  #vignette {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 75% 80% at 50% 50%, transparent 35%, rgba(14, 7, 9, 0.7) 90%),
+      linear-gradient(to bottom, rgba(14, 7, 9, 0.25) 0%, transparent 12%, transparent 88%, rgba(14, 7, 9, 0.4) 100%);
+  }
+
+  /* ═══════════════════════════════════════════════════
+     LAYER 10+: ALL SCROLLABLE CONTENT
+     Everything here scrolls above the fixed canvas.
+     ═══════════════════════════════════════════════════ */
+  #content {
+    position: relative;
+    z-index: 10;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     LOADER
+     ═══════════════════════════════════════════════════ */
+  #loader {
+    position: fixed; inset: 0; z-index: 200;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 28px;
+    transition: opacity 1s ease;
+  }
+  #loader.done { opacity: 0; pointer-events: none; }
+  #loader .logo-img {
+    width: 72px; height: 72px;
+    object-fit: contain; filter: brightness(1.2);
+  }
+  #loader .mark {
+    font-size: 12px; letter-spacing: 0.5em; text-indent: 0.5em;
+    color: var(--taupe); text-transform: uppercase; font-weight: 500;
+  }
+  #loader .bar {
+    width: 180px; height: 1px;
+    background: rgba(185, 168, 172, 0.12);
+    overflow: hidden; position: relative;
+  }
+  #loader .bar i {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 0%;
+    background: linear-gradient(90deg, var(--plum), var(--taupe));
+    display: block; transition: width 0.2s ease;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     NAVIGATION (z-index 20)
+     ═══════════════════════════════════════════════════ */
+  #mainnav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 20;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 5vw;
+    background: rgba(14, 7, 9, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(185, 168, 172, 0.06);
+    transition: background 0.4s ease;
+  }
+  #mainnav.scrolled {
+    background: rgba(14, 7, 9, 0.85);
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none;
+  }
+  .nav-logo img {
+    height: 34px; width: auto; filter: brightness(1.3);
+  }
+  .nav-logo span {
+    font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--taupe); font-weight: 500;
+  }
+  .nav-links {
+    display: flex; align-items: center; gap: 2.2vw;
+  }
+  .nav-links a {
+    color: var(--text-dim); text-decoration: none;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    font-weight: 400;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-right {
+    display: flex; align-items: center; gap: 16px;
+  }
+  .nav-phone {
+    color: var(--taupe); text-decoration: none;
+    font-size: 12px; font-weight: 500;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .nav-cta-btn {
+    padding: 9px 22px; border-radius: 100px;
+    background: var(--plum); color: var(--blush);
+    text-decoration: none; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    border: none; transition: all 0.3s;
+  }
+  .nav-cta-btn:hover {
+    background: var(--plum-light);
+    box-shadow: 0 8px 28px rgba(83, 49, 59, 0.35);
+  }
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .nav-phone span { display: none; }
+  }
+
+  /* ═══════════════════════════════════════════════════
+     SHARED SECTION STYLES
+     All sections are transparent — the 3D window
+     remains visible through every one.
+     ═══════════════════════════════════════════════════ */
+  .section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12vh 6vw;
+    position: relative;
+  }
+
+  /* Glass panel — the floating content container */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    border-radius: 28px;
+    padding: clamp(36px, 5vw, 60px);
+    max-width: 580px;
+    width: 100%;
+  }
+  .glass-wide {
+    max-width: 900px;
+  }
+  .glass-narrow {
+    max-width: 480px;
+  }
+
+  /* Reveal animation */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 1s cubic-bezier(.2,.6,.2,1),
+                transform 1s cubic-bezier(.2,.6,.2,1);
+  }
+  [data-reveal].in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     TYPOGRAPHY
+     ═══════════════════════════════════════════════════ */
+  .kicker {
+    font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--taupe); margin-bottom: 16px; font-weight: 500;
+  }
+  .section h1 {
+    font-size: clamp(36px, 6.5vw, 82px);
+    font-weight: 700; letter-spacing: -0.03em; line-height: 1.0;
+  }
+  .section h2 {
+    font-size: clamp(32px, 5vw, 68px);
+    font-weight: 650; letter-spacing: -0.025em; line-height: 1.05;
+  }
+  .section h3 {
+    font-size: clamp(18px, 2vw, 26px);
+    font-weight: 600; letter-spacing: -0.01em; line-height: 1.2;
+  }
+  .section p.lead {
+    margin-top: 16px;
+    font-size: clamp(14px, 1.3vw, 18px);
+    color: var(--text-dim); font-weight: 400;
+    line-height: 1.7; max-width: 42ch;
+  }
+  .accent { color: var(--taupe); }
+  .materials {
+    margin-top: 14px;
+    font-size: clamp(12px, 1vw, 15px);
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--text-muted); font-weight: 400;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     BUTTONS (z-index 30)
+     ═══════════════════════════════════════════════════ */
+  .cta-row {
+    margin-top: 28px;
+    display: flex; gap: 14px; flex-wrap: wrap;
+    position: relative; z-index: 30;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 32px; border: none; border-radius: 100px;
+    background: var(--plum); color: var(--blush);
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    text-decoration: none; cursor: pointer;
+    transition: all 0.35s cubic-bezier(.25,.8,.25,1);
+  }
+  .btn-primary:hover {
+    background: var(--plum-light);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 44px rgba(83, 49, 59, 0.45);
+  }
+  .btn-primary svg { width: 16px; height: 16px; }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 32px;
+    border: 1px solid rgba(185, 168, 172, 0.2); border-radius: 100px;
+    background: rgba(14, 7, 9, 0.4); color: var(--taupe);
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    text-decoration: none; cursor: pointer;
+    transition: all 0.35s cubic-bezier(.25,.8,.25,1);
+  }
+  .btn-secondary:hover {
+    background: rgba(185, 168, 172, 0.1);
+    border-color: var(--taupe);
+    transform: translateY(-2px);
+  }
+
+  /* ═══════════════════════════════════════════════════
+     HERO
+     ═══════════════════════════════════════════════════ */
+  .hero {
+    min-height: 100vh;
+    padding-top: 14vh;
+    text-align: center;
+  }
+  .hero .glass {
+    margin: 0 auto;
+    text-align: center;
+    max-width: 640px;
+  }
+  .hero .cta-row { justify-content: center; }
+
+  .scroll-hint {
+    position: absolute; bottom: 4vh; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: var(--text-muted); font-size: 10px;
+    letter-spacing: 0.35em; text-transform: uppercase;
+  }
+  .scroll-hint::after {
+    content: ""; width: 1px; height: 36px;
+    background: linear-gradient(to bottom, var(--taupe), transparent);
+    animation: scroll-pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes scroll-pulse {
+    0%, 100% { transform: translateY(0); opacity: 0.8; }
+    50% { transform: translateY(10px); opacity: 0.2; }
+  }
+
+  /* ═══════════════════════════════════════════════════
+     MATERIAL SECTIONS (Aluminium, uPVC, Steel)
+     Positioned left or right to let the window show
+     ═══════════════════════════════════════════════════ */
+  .section-left {
+    justify-content: flex-start;
+  }
+  .section-right {
+    justify-content: flex-end;
+  }
+  .section-center {
+    justify-content: center;
+  }
+
+  /* Material tag */
+  .material-num {
+    display: inline-block;
+    font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--taupe);
+    padding: 6px 16px;
+    border: 1px solid rgba(185, 168, 172, 0.15);
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     OUR WORK — services grid, still transparent
+     ═══════════════════════════════════════════════════ */
+  .work-section {
+    min-height: 100vh;
+    padding: 14vh 6vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .work-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1000px;
+    width: 100%;
+  }
+  .service-card {
+    background: rgba(14, 7, 9, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 32px 28px;
+    transition: all 0.4s cubic-bezier(.25,.8,.25,1);
+  }
+  .service-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(185, 168, 172, 0.2);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+    background: rgba(14, 7, 9, 0.65);
+  }
+  .service-icon {
+    width: 42px; height: 42px; margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(83, 49, 59, 0.25);
+    border-radius: 12px;
+    color: var(--taupe);
+  }
+  .service-card h3 {
+    font-size: 18px; font-weight: 600; margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .service-card p {
+    font-size: 13px; color: var(--text-dim); line-height: 1.6;
+  }
+  @media (max-width: 900px) {
+    .services-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 600px) {
+    .services-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ═══════════════════════════════════════════════════
+     STATS — floating numbers, transparent bg
+     ═══════════════════════════════════════════════════ */
+  .stats-row {
+    display: flex; flex-wrap: wrap;
+    justify-content: center; gap: 5vw;
+    text-align: center;
+    padding: 8vh 6vw;
+  }
+  .stat-item { min-width: 120px; }
+  .stat-num {
+    font-weight: 700; letter-spacing: -0.02em;
+    font-size: clamp(36px, 5vw, 68px);
+    background: linear-gradient(135deg, var(--plum-glow), var(--taupe));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .stat-label {
+    margin-top: 6px; font-size: 11px;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* ═══════════════════════════════════════════════════
+     ABOUT — centered glass card
+     ═══════════════════════════════════════════════════ */
+  .about-section {
+    text-align: center;
+  }
+  .about-section .glass {
+    margin: 0 auto;
+    text-align: center;
+    max-width: 720px;
+  }
+  .about-section p.lead {
+    margin-left: auto; margin-right: auto;
+    text-align: center;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     CONTACT — cards + CTAs
+     ═══════════════════════════════════════════════════ */
+  .contact-section {
+    flex-direction: column;
+    text-align: center;
+    gap: 40px;
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 800px;
+    width: 100%;
+  }
+  .contact-card {
+    background: rgba(14, 7, 9, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .contact-icon {
+    width: 48px; height: 48px;
+    margin: 0 auto 14px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(83, 49, 59, 0.25);
+    border-radius: 50%;
+    color: var(--taupe);
+  }
+  .contact-card h4 {
+    font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 8px;
+  }
+  .contact-card a {
+    color: var(--text); text-decoration: none;
+    font-size: 15px; font-weight: 500;
+    transition: color 0.3s;
+  }
+  .contact-card a:hover { color: var(--taupe); }
+  .contact-card p {
+    color: var(--text-dim); font-size: 14px; line-height: 1.5;
+  }
+  @media (max-width: 700px) {
+    .contact-grid { grid-template-columns: 1fr; max-width: 340px; }
+  }
+
+  /* ═══════════════════════════════════════════════════
+     FOOTER — still above the 3D canvas
+     ═══════════════════════════════════════════════════ */
+  .site-footer {
+    position: relative; z-index: 10;
+    border-top: 1px solid rgba(245, 240, 232, 0.05);
+    padding: 8vh 6vw 5vh;
+    background: rgba(14, 7, 9, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+  .footer-cols {
+    display: grid;
+    grid-template-columns: 2fr repeat(3, 1fr);
+    gap: 4vw;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .footer-brand {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 12px;
+  }
+  .footer-brand img { height: 36px; filter: brightness(1.2); }
+  .footer-brand span {
+    font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--taupe);
+  }
+  .site-footer h4 {
+    font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 14px;
+  }
+  .site-footer a {
+    display: block; color: var(--text-dim); text-decoration: none;
+    font-size: 13px; margin-bottom: 9px; transition: color 0.3s;
+  }
+  .site-footer a:hover { color: var(--text); }
+  .footer-fine {
+    margin-top: 6vh; text-align: center;
+    font-size: 10px; letter-spacing: 0.15em;
+    color: rgba(245, 240, 232, 0.18); text-transform: uppercase;
+  }
+  @media (max-width: 800px) {
+    .footer-cols { grid-template-columns: 1fr 1fr; gap: 3vw 5vw; }
+  }
+
+  /* ═══════════════════════════════════════════════════
+     MOBILE
+     ═══════════════════════════════════════════════════ */
+  @media (max-width: 768px) {
+    .section { padding: 10vh 5vw; }
+    .glass {
+      padding: clamp(28px, 5vw, 44px);
+      border-radius: 22px;
+    }
+    .section-left, .section-right {
+      justify-content: center;
+    }
+    .hero h1 { font-size: clamp(28px, 8vw, 48px); }
+    .cta-row { flex-direction: column; align-items: stretch; }
+    .btn-primary, .btn-secondary { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═════════════════════════════════════════════
+     LAYER 0+1: FIXED 3D WINDOW BACKGROUND
+     This canvas never moves. It is the environment.
+     ═════════════════════════════════════════════ -->
+<canvas id="film"></canvas>
+<div id="vignette"></div>
+
+<!-- ═════════════════════════════════════════════
+     LOADER (z-index 200)
+     ═════════════════════════════════════════════ -->
+<div id="loader">
+  <img class="logo-img" src="Logo.jpeg" alt="Riddhi Siddhi Fabricator">
+  <div class="mark">Riddhi Siddhi</div>
+  <div class="bar"><i id="loadbar"></i></div>
+</div>
+
+<!-- ═════════════════════════════════════════════
+     NAVIGATION (z-index 20, fixed)
+     ═════════════════════════════════════════════ -->
+<nav id="mainnav">
+  <a class="nav-logo" href="#">
+    <img src="Logo.jpeg" alt="Riddhi Siddhi">
+    <span>Riddhi Siddhi</span>
+  </a>
+  <div class="nav-links">
+    <a href="#hero">Home</a>
+    <a href="#aluminium">Products</a>
+    <a href="#work">Our Work</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-right">
+    <a class="nav-phone" href="tel:9771086644">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <span>9771086644</span>
+    </a>
+    <a class="nav-cta-btn" href="quote.html">Get Quote</a>
+  </div>
+</nav>
+
+<!-- ═════════════════════════════════════════════
+     SCROLLABLE CONTENT (z-index 10)
+     Everything below scrolls above the fixed 3D canvas.
+     ═════════════════════════════════════════════ -->
+<div id="content">
+
+  <!-- ─── HERO ─── -->
+  <section class="section hero" id="hero">
+    <div class="glass" data-reveal>
+      <p class="kicker">Riddhi Siddhi Fabricator</p>
+      <h1>Crafted For <span class="accent">Your Space.</span></h1>
+      <p class="materials">Aluminium &nbsp;&bull;&nbsp; uPVC &nbsp;&bull;&nbsp; Steel</p>
+      <p class="lead">Precision fabrication for modern homes and spaces.</p>
+      <div class="cta-row">
+        <a class="btn-primary" href="quote.html">
+          Get a Quote
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a class="btn-secondary" href="#work">Explore Our Work</a>
+      </div>
+    </div>
+    <div class="scroll-hint">Scroll</div>
+  </section>
+
+  <!-- ─── ALUMINIUM ─── -->
+  <section class="section section-left" id="aluminium">
+    <div class="glass" data-reveal>
+      <span class="material-num">01 &mdash; Material</span>
+      <h2>Aluminium</h2>
+      <p class="lead">Precision aluminium fabrication for modern spaces. Lightweight, corrosion-resistant frames designed to last decades.</p>
+      <div class="cta-row">
+        <a class="btn-secondary" href="projects.html?category=aluminium">View Projects</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── uPVC ─── -->
+  <section class="section section-right" id="upvc">
+    <div class="glass" data-reveal>
+      <span class="material-num">02 &mdash; Material</span>
+      <h2>uPVC</h2>
+      <p class="lead">Modern windows and doors built for comfort and durability. Superior thermal insulation, noise reduction, and weather resistance.</p>
+      <div class="cta-row">
+        <a class="btn-secondary" href="projects.html?category=upvc">View Projects</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── STEEL ─── -->
+  <section class="section section-left" id="steel">
+    <div class="glass" data-reveal>
+      <span class="material-num">03 &mdash; Material</span>
+      <h2>Steel</h2>
+      <p class="lead">Strong architectural fabrication with precision. Gates, railings, and structural elements that define and protect your spaces.</p>
+      <div class="cta-row">
+        <a class="btn-secondary" href="projects.html?category=steel">View Projects</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── OUR WORK ─── -->
+  <section class="section work-section" id="work">
+    <div class="work-header" data-reveal>
+      <p class="kicker">Our Work</p>
+      <h2>What We Build</h2>
+      <p class="lead" style="margin: 12px auto 0; text-align: center;">Every project is a testament to precision and craftsmanship.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card" data-reveal>
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+        </div>
+        <h3>Windows</h3>
+        <p>Aluminium, uPVC and steel windows for natural light and modern aesthetics.</p>
+      </div>
+      <div class="service-card" data-reveal>
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="2" x2="12" y2="22"/><circle cx="9" cy="12" r="1"/></svg>
+        </div>
+        <h3>Doors</h3>
+        <p>Premium entrance doors and sliding systems combining security with design.</p>
+      </div>
+      <div class="service-card" data-reveal>
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21V8l9-6 9 6v13"/><line x1="3" y1="21" x2="21" y2="21"/><rect x="7" y="12" width="4" height="9"/><rect x="13" y="12" width="4" height="9"/></svg>
+        </div>
+        <h3>Gates</h3>
+        <p>Custom fabricated gates that make a bold first impression with full security.</p>
+      </div>
+      <div class="service-card" data-reveal>
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="4" x2="2" y2="20"/><line x1="6" y1="4" x2="6" y2="20"/><line x1="2" y1="4" x2="6" y2="4"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="2" y1="20" x2="6" y2="20"/><path d="M10 8h12M10 12h12M10 16h12"/></svg>
+        </div>
+        <h3>Railings</h3>
+        <p>Balcony and staircase railings — where safety meets architectural beauty.</p>
+      </div>
+      <div class="service-card" data-reveal>
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 8h20"/><path d="M8 4v16"/></svg>
+        </div>
+        <h3>Partitions</h3>
+        <p>Glass and aluminium partition systems for offices and modern interiors.</p>
+      </div>
+      <div class="service-card" data-reveal>
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 3v18"/><path d="M15 3v18"/><path d="M3 15h18"/></svg>
+        </div>
+        <h3>Facades</h3>
+        <p>Structural glazing and curtain walls for commercial and residential buildings.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── STATS ─── -->
+  <section class="section" style="min-height: auto; padding: 6vh 6vw;">
+    <div class="stats-row">
+      <div class="stat-item" data-reveal>
+        <div class="stat-num">500+</div>
+        <div class="stat-label">Projects</div>
+      </div>
+      <div class="stat-item" data-reveal>
+        <div class="stat-num">10+</div>
+        <div class="stat-label">Years</div>
+      </div>
+      <div class="stat-item" data-reveal>
+        <div class="stat-num">3</div>
+        <div class="stat-label">Materials</div>
+      </div>
+      <div class="stat-item" data-reveal>
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Satisfaction</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── ABOUT ─── -->
+  <section class="section about-section" id="about">
+    <div class="glass glass-wide" data-reveal>
+      <p class="kicker">About Us</p>
+      <h2>Built on Trust</h2>
+      <p class="lead">Riddhi Siddhi Fabricator is a Muzaffarpur-based fabrication company specializing in aluminium, uPVC and steel solutions. With over a decade of experience, we bring precision engineering and modern design to every project — from residential windows to commercial facades. Our commitment is simple: craft products that elevate your space.</p>
+    </div>
+  </section>
+
+  <!-- ─── CONTACT ─── -->
+  <section class="section contact-section" id="contact">
+    <div data-reveal style="text-align: center;">
+      <p class="kicker">Get In Touch</p>
+      <h2>Let's Build Something<br>For <span class="accent">Your Space.</span></h2>
+    </div>
+    <div class="contact-grid" data-reveal>
+      <div class="contact-card">
+        <div class="contact-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <h4>Phone</h4>
+        <a href="tel:9771086644">9771086644</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        </div>
+        <h4>WhatsApp</h4>
+        <a href="https://wa.me/919771086644" target="_blank" rel="noopener">9771086644</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <h4>Location</h4>
+        <p>New Police Line,<br>Muzaffarpur, Bihar</p>
+      </div>
+    </div>
+    <div class="cta-row" data-reveal style="justify-content: center;">
+      <a class="btn-primary" href="https://wa.me/919771086644" target="_blank" rel="noopener">
+        WhatsApp Us
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <a class="btn-secondary" href="tel:9771086644">Call Now</a>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="site-footer">
+    <div class="footer-cols">
+      <div>
+        <div class="footer-brand">
+          <img src="Logo.jpeg" alt="Riddhi Siddhi">
+          <span>Riddhi Siddhi</span>
+        </div>
+        <p style="font-size: 13px; color: var(--text-dim); line-height: 1.6;">
+          Premium aluminium, uPVC & steel fabrication for modern homes and spaces.
+        </p>
+      </div>
+      <div>
+        <h4>Products</h4>
+        <a href="#aluminium">Aluminium</a>
+        <a href="#upvc">uPVC</a>
+        <a href="#steel">Steel</a>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <a href="#work">Windows</a>
+        <a href="#work">Doors</a>
+        <a href="#work">Gates & Railings</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="https://wa.me/919771086644" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+    <p class="footer-fine">&copy; 2026 Riddhi Siddhi Fabricator. All rights reserved. Muzaffarpur, Bihar.</p>
+  </footer>
+
+</div><!-- end #content -->
+
+<!-- ═════════════════════════════════════════════
+     SCRIPTS
+     ═════════════════════════════════════════════ -->
+<script src="main.js"></script>
+<script>
+  /* ── Reveal on scroll ── */
+  const io = new IntersectionObserver(
+    (entries) => entries.forEach((e) => {
+      if (e.isIntersecting) e.target.classList.add("in");
+    }),
+    { threshold: 0.12 }
+  );
+  document.querySelectorAll("[data-reveal]").forEach((el) => io.observe(el));
+
+  const revealCheck = () => {
+    document.querySelectorAll("[data-reveal]:not(.in)").forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < innerHeight * 0.9 && r.bottom > 0) el.classList.add("in");
+    });
+  };
+  addEventListener("scroll", revealCheck, { passive: true });
+  revealCheck();
+
+  /* ── Nav scroll state ── */
+  const nav = document.getElementById("mainnav");
+  addEventListener("scroll", () => {
+    nav.classList.toggle("scrolled", scrollY > 60);
+  }, { passive: true });
+</script>
+
+</body>
+</html>

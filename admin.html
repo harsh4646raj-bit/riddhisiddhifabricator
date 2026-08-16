@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Portal — Riddhi Siddhi Fabricator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:           #0E0709;
+    --card-bg:      #160D10;
+    --card-hover:   #1F1317;
+    --border:       rgba(185, 168, 172, 0.12);
+    --plum:         #53313B;
+    --plum-light:   #6B4350;
+    --plum-glow:    #7A4F5E;
+    --taupe:        #B9A8AC;
+    --blush:        #FCEEEF;
+    --text:         #F5F0E8;
+    --text-dim:     rgba(245, 240, 232, 0.6);
+    --text-muted:   rgba(245, 240, 232, 0.35);
+    --success:      #2E7D32;
+    --danger:       #C62828;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Admin Header */
+  header {
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 5vw;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px; text-decoration: none;
+  }
+  .brand img { height: 30px; }
+  .brand span {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--taupe); font-weight: 600;
+  }
+  .brand .tag {
+    font-size: 9px; background: var(--plum); color: var(--blush); padding: 3px 8px; border-radius: 4px; letter-spacing: 0.1em;
+  }
+  .mode-badge {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600;
+    padding: 4px 10px; border-radius: 100px;
+  }
+  .mode-production { background: rgba(76, 175, 80, 0.15); color: #81C784; border: 1px solid rgba(76, 175, 80, 0.3); }
+  .mode-demo { background: rgba(255, 152, 0, 0.15); color: #FFB74D; border: 1px solid rgba(255, 152, 0, 0.3); }
+
+  .header-actions {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .user-email-display {
+    font-size: 12px; color: var(--text-dim);
+  }
+  .btn-outline {
+    padding: 8px 16px; border-radius: 8px;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--taupe); font-size: 12px; font-weight: 500;
+    cursor: pointer; text-decoration: none; transition: all 0.2s;
+  }
+  .btn-outline:hover {
+    background: rgba(185,168,172,0.1); color: var(--text);
+  }
+  .btn-primary {
+    padding: 8px 18px; border-radius: 8px;
+    background: var(--plum); border: none;
+    color: var(--blush); font-size: 12px; font-weight: 600;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    transition: all 0.2s; text-decoration: none;
+  }
+  .btn-primary:hover {
+    background: var(--plum-light);
+  }
+
+  /* Main Admin Layout */
+  main {
+    flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: 32px 5vw 60px;
+  }
+
+  /* Section Tabs */
+  .section-nav {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 28px;
+    border-bottom: 1px solid var(--border); padding-bottom: 14px;
+  }
+  .nav-tab-btn {
+    padding: 9px 20px; border-radius: 10px;
+    background: transparent; border: 1px solid transparent;
+    color: var(--taupe); font-size: 13px; font-weight: 600; letter-spacing: 0.05em;
+    cursor: pointer; transition: all 0.2s; font-family: inherit;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .nav-tab-btn:hover {
+    background: rgba(185,168,172,0.08); color: var(--text);
+  }
+  .nav-tab-btn.active {
+    background: var(--card-bg); border-color: var(--border);
+    color: var(--blush); box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+  .tab-count {
+    padding: 2px 7px; border-radius: 100px; font-size: 11px;
+    background: rgba(83, 49, 59, 0.4); color: var(--blush);
+  }
+
+  /* Login Card */
+  #login-view {
+    max-width: 440px; margin: 80px auto 0;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px 32px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  #login-view h2 { font-size: 22px; margin-bottom: 8px; }
+  #login-view p { font-size: 13px; color: var(--text-dim); margin-bottom: 24px; }
+  .login-input {
+    width: 100%; padding: 13px 16px; border-radius: 10px;
+    background: #0E0709; border: 1px solid var(--border);
+    color: var(--text); font-size: 14px;
+    margin-bottom: 14px; outline: none; text-align: left;
+  }
+  .login-input:focus { border-color: var(--plum-glow); }
+
+  /* Dashboard View */
+  #dashboard-view { display: none; }
+  .toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px; margin-bottom: 24px;
+  }
+  .toolbar-left {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .search-box {
+    padding: 9px 14px; border-radius: 8px;
+    background: var(--card-bg); border: 1px solid var(--border);
+    color: var(--text); font-size: 13px; outline: none; width: 240px;
+  }
+  .filter-select {
+    padding: 9px 14px; border-radius: 8px;
+    background: var(--card-bg); border: 1px solid var(--border);
+    color: var(--text); font-size: 13px; outline: none; cursor: pointer;
+  }
+
+  /* Table Wrapper */
+  .table-wrap {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  }
+  table {
+    width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;
+  }
+  th {
+    padding: 14px 18px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--taupe); border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2);
+  }
+  td {
+    padding: 16px 18px; border-bottom: 1px solid rgba(185,168,172,0.06);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.015); }
+
+  .thumb-cell {
+    width: 68px; height: 48px; border-radius: 8px; overflow: hidden; background: #0E0709;
+  }
+  .thumb-cell img { width: 100%; height: 100%; object-fit: cover; }
+  .badge-cat {
+    padding: 3px 10px; border-radius: 100px; font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .cat-aluminium { background: rgba(144, 202, 249, 0.15); color: #90CAF9; }
+  .cat-upvc { background: rgba(255, 204, 128, 0.15); color: #FFCC80; }
+  .cat-steel { background: rgba(207, 216, 220, 0.15); color: #ECEFF1; }
+  .cat-notsure { background: rgba(185, 168, 172, 0.15); color: var(--taupe); }
+
+  /* Lead Status Badges & Selectors */
+  .lead-status-select {
+    padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.05em; border: 1px solid transparent; outline: none; cursor: pointer;
+  }
+  .status-new { background: rgba(33, 150, 243, 0.18); color: #64B5F6; border-color: rgba(33, 150, 243, 0.3); }
+  .status-contacted { background: rgba(255, 152, 0, 0.18); color: #FFB74D; border-color: rgba(255, 152, 0, 0.3); }
+  .status-quotation_sent { background: rgba(156, 39, 176, 0.18); color: #BA68C8; border-color: rgba(156, 39, 176, 0.3); }
+  .status-won { background: rgba(76, 175, 80, 0.18); color: #81C784; border-color: rgba(76, 175, 80, 0.3); }
+  .status-lost { background: rgba(244, 67, 54, 0.18); color: #E57373; border-color: rgba(244, 67, 54, 0.3); }
+
+  .quick-contact {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 4px;
+  }
+  .icon-link {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; border-radius: 6px;
+    background: rgba(185,168,172,0.1); color: var(--taupe); text-decoration: none;
+    transition: all 0.2s;
+  }
+  .icon-link:hover { background: var(--plum); color: var(--blush); }
+  .icon-link.wa:hover { background: #25D366; color: #FFF; }
+
+  .status-toggle {
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+    font-size: 12px; font-weight: 500;
+  }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .status-published { background: #4CAF50; box-shadow: 0 0 8px #4CAF50; }
+  .status-draft { background: #757575; }
+
+  .row-actions {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .action-icon-btn {
+    width: 32px; height: 32px; border-radius: 6px;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--taupe); display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s; text-decoration: none;
+  }
+  .action-icon-btn:hover { background: rgba(185,168,172,0.15); color: var(--text); }
+  .action-icon-btn.delete:hover { background: rgba(198,40,40,0.2); color: #EF5350; border-color: #EF5350; }
+
+  /* Modals */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(10, 5, 7, 0.85); backdrop-filter: blur(12px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .modal-overlay.active { opacity: 1; pointer-events: all; }
+  .modal-box {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 20px; width: 100%; max-width: 720px; max-height: 90vh;
+    overflow-y: auto; padding: 32px; box-shadow: 0 20px 80px rgba(0,0,0,0.7);
+  }
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+  }
+  .modal-header h3 { font-size: 18px; }
+  .close-btn {
+    background: transparent; border: none; color: var(--taupe); cursor: pointer;
+  }
+
+  .form-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: span 2; }
+  label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--taupe); font-weight: 500; }
+  .input, select, textarea {
+    width: 100%; padding: 11px 14px; border-radius: 8px;
+    background: #0E0709; border: 1px solid var(--border);
+    color: var(--text); font-size: 13px; font-family: inherit; outline: none;
+  }
+  .input:focus, select:focus, textarea:focus { border-color: var(--plum-glow); }
+  textarea { resize: vertical; min-height: 90px; }
+
+  /* Dropzones */
+  .dropzone {
+    border: 1.5px dashed var(--border); border-radius: 12px;
+    padding: 24px; text-align: center; cursor: pointer;
+    background: rgba(0,0,0,0.2); transition: all 0.2s;
+  }
+  .dropzone:hover { border-color: var(--plum-glow); background: rgba(83,49,59,0.1); }
+  .dropzone p { font-size: 12px; color: var(--text-dim); margin-top: 6px; }
+  .preview-strip { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+  .preview-item {
+    width: 80px; height: 60px; border-radius: 8px; overflow: hidden;
+    position: relative; border: 1px solid var(--border); background: #0E0709;
+  }
+  .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+  .preview-del {
+    position: absolute; top: 2px; right: 2px;
+    background: rgba(0,0,0,0.7); color: #FFF; border: none; border-radius: 50%;
+    width: 18px; height: 18px; font-size: 10px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .checkbox-row {
+    display: flex; align-items: center; gap: 20px; margin: 16px 0 24px;
+  }
+  .checkbox-label {
+    display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; text-transform: none; color: var(--text);
+  }
+
+  /* Lead Detail Box */
+  .lead-detail-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;
+  }
+  .detail-block {
+    background: #0E0709; border: 1px solid var(--border); border-radius: 12px; padding: 16px;
+  }
+  .detail-block h4 {
+    font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--taupe); margin-bottom: 8px;
+  }
+  .detail-val {
+    font-size: 14px; color: var(--text); line-height: 1.5;
+  }
+
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.full { grid-column: span 1; }
+    .lead-detail-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="index.html">
+    <img src="Logo.jpeg" alt="Riddhi Siddhi">
+    <span>Riddhi Siddhi</span>
+    <span class="tag">Admin</span>
+  </a>
+  <div class="header-actions" id="header-actions" style="display: none;">
+    <span id="mode-badge" class="mode-badge"></span>
+    <span id="user-display" class="user-email-display"></span>
+    <button class="btn-outline" onclick="logoutAdmin()">Logout</button>
+  </div>
+</header>
+
+<main>
+  <!-- ── 1. LOGIN VIEW ── -->
+  <div id="login-view">
+    <img src="Logo.jpeg" alt="Logo" style="height: 48px; margin-bottom: 16px;">
+    <h2>Admin Portal</h2>
+    <p id="login-subtitle">Sign in to manage projects, enquiries &amp; photographs.</p>
+
+    <form onsubmit="handleLogin(event)">
+      <div style="text-align: left; margin-bottom: 4px; font-size: 11px; color: var(--taupe); text-transform: uppercase; letter-spacing: 0.1em;">Admin Email</div>
+      <input type="email" id="admin-email" class="login-input" placeholder="admin@riddhisiddhi.com" required autofocus>
+      
+      <div style="text-align: left; margin-bottom: 4px; font-size: 11px; color: var(--taupe); text-transform: uppercase; letter-spacing: 0.1em;">Password</div>
+      <input type="password" id="admin-password" class="login-input" placeholder="Enter password" required>
+      
+      <button type="submit" class="btn-primary" id="login-btn" style="width: 100%; justify-content: center; padding: 13px; margin-top: 8px; font-size: 13px;">
+        Sign In
+      </button>
+    </form>
+
+    <div id="login-mode-hint" style="margin-top: 20px; font-size: 11px; color: var(--text-muted);"></div>
+  </div>
+
+  <!-- ── 2. DASHBOARD VIEW ── -->
+  <div id="dashboard-view">
+    <!-- Section Navigation Tabs -->
+    <div class="section-nav">
+      <button class="nav-tab-btn active" id="tab-btn-leads" onclick="switchAdminTab('leads')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <span>Leads &amp; Enquiries</span>
+        <span class="tab-count" id="leads-count-badge">0</span>
+      </button>
+      <button class="nav-tab-btn" id="tab-btn-projects" onclick="switchAdminTab('projects')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>Projects Portfolio</span>
+        <span class="tab-count" id="projects-count-badge">0</span>
+      </button>
+    </div>
+
+    <!-- ── TAB 1: LEADS VIEW ── -->
+    <div id="leads-tab-view">
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <input type="text" id="search-leads-input" class="search-box" placeholder="Search customer, phone, city..." oninput="renderLeadsTable()">
+          <select id="status-leads-filter" class="filter-select" onchange="renderLeadsTable()">
+            <option value="all">All Statuses</option>
+            <option value="new">New</option>
+            <option value="contacted">Contacted</option>
+            <option value="quotation_sent">Quotation Sent</option>
+            <option value="won">Won</option>
+            <option value="lost">Lost</option>
+          </select>
+        </div>
+        <button class="btn-outline" onclick="renderLeadsTable()" style="display: inline-flex; align-items: center; gap: 6px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          Refresh Leads
+        </button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Contact / Phone</th>
+              <th>Requirement</th>
+              <th>Location</th>
+              <th>Status</th>
+              <th>Received</th>
+              <th style="text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="leads-tbody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── TAB 2: PROJECTS VIEW ── -->
+    <div id="projects-tab-view" style="display: none;">
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <input type="text" id="search-input" class="search-box" placeholder="Search projects..." oninput="renderProjectsTable()">
+          <select id="category-filter" class="filter-select" onchange="renderProjectsTable()">
+            <option value="all">All Categories</option>
+            <option value="aluminium">Aluminium</option>
+            <option value="upvc">uPVC</option>
+            <option value="steel">Steel</option>
+          </select>
+        </div>
+        <button class="btn-primary" onclick="openProjectModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Project
+        </button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 80px;">Cover</th>
+              <th>Project Details</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Featured</th>
+              <th style="text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="projects-tbody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ── LEAD DETAIL MODAL ── -->
+<div class="modal-overlay" id="lead-modal">
+  <div class="modal-box" style="max-width: 680px;">
+    <div class="modal-header">
+      <h3 id="lead-modal-title">Lead Enquiry Details</h3>
+      <button class="close-btn" onclick="closeLeadModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div id="lead-detail-content">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ── ADD / EDIT PROJECT MODAL ── -->
+<div class="modal-overlay" id="project-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modal-title">Add New Project</h3>
+      <button class="close-btn" onclick="closeProjectModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <form id="project-form" onsubmit="handleSaveProject(event)">
+      <input type="hidden" id="proj-id">
+
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Project Name *</label>
+          <input type="text" id="proj-name" class="input" placeholder="e.g. Modern Aluminium Residence" required oninput="updateSlugPreview()">
+        </div>
+
+        <div class="form-group">
+          <label>Category *</label>
+          <select id="proj-category" required>
+            <option value="aluminium">Aluminium</option>
+            <option value="upvc">uPVC</option>
+            <option value="steel">Steel</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>URL Slug (Auto-generated)</label>
+          <input type="text" id="proj-slug" class="input" placeholder="modern-aluminium-residence">
+        </div>
+
+        <div class="form-group">
+          <label>Location</label>
+          <input type="text" id="proj-location" class="input" placeholder="Muzaffarpur, Bihar">
+        </div>
+
+        <div class="form-group">
+          <label>Year</label>
+          <input type="text" id="proj-year" class="input" placeholder="2026">
+        </div>
+
+        <div class="form-group full">
+          <label>Work / Services / Products Used</label>
+          <input type="text" id="proj-services" class="input" placeholder="e.g. Sliding Windows, Structural Glazing, Aluminium Doors">
+        </div>
+
+        <div class="form-group full">
+          <label>Short Description (Card Summary)</label>
+          <input type="text" id="proj-short-desc" class="input" placeholder="Brief summary displayed on project cards">
+        </div>
+
+        <div class="form-group full">
+          <label>Full Project Description</label>
+          <textarea id="proj-desc" placeholder="Detailed architectural description, client requirements, specifications..."></textarea>
+        </div>
+
+        <!-- Cover Image Upload -->
+        <div class="form-group full">
+          <label>Cover Image (Main Photograph) *</label>
+          <div class="dropzone" onclick="document.getElementById('cover-file-input').click()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <p>Click to select Cover Photograph (JPEG/PNG/WebP)</p>
+            <input type="file" id="cover-file-input" accept="image/*" style="display: none;" onchange="handleCoverSelect(event)">
+          </div>
+          <div id="cover-preview-container" class="preview-strip"></div>
+        </div>
+
+        <!-- Gallery Images Upload -->
+        <div class="form-group full">
+          <label>Additional Gallery Photographs (Multi-image)</label>
+          <div class="dropzone" onclick="document.getElementById('gallery-file-input').click()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <p>Click to upload additional photos for the project gallery</p>
+            <input type="file" id="gallery-file-input" accept="image/*" multiple style="display: none;" onchange="handleGallerySelect(event)">
+          </div>
+          <div id="gallery-preview-container" class="preview-strip"></div>
+        </div>
+      </div>
+
+      <div class="checkbox-row">
+        <label class="checkbox-label">
+          <input type="checkbox" id="proj-published" checked> Published (Visible on website)
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="proj-featured"> Featured Project
+        </label>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border); padding-top: 18px;">
+        <button type="button" class="btn-outline" onclick="closeProjectModal()">Cancel</button>
+        <button type="submit" class="btn-primary" id="save-btn">Save Project</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/backend-config.js?v=2.2"></script>
+<script src="js/db.js?v=2.2"></script>
+<script>
+  let currentCoverData = null;
+  let currentGalleryData = [];
+  let activeAdminTab = "leads";
+
+  function switchAdminTab(tab) {
+    activeAdminTab = tab;
+    document.querySelectorAll(".nav-tab-btn").forEach(btn => btn.classList.remove("active"));
+    document.getElementById(`tab-btn-${tab}`).classList.add("active");
+
+    if (tab === "leads") {
+      document.getElementById("leads-tab-view").style.display = "block";
+      document.getElementById("projects-tab-view").style.display = "none";
+      renderLeadsTable();
+    } else {
+      document.getElementById("leads-tab-view").style.display = "none";
+      document.getElementById("projects-tab-view").style.display = "block";
+      renderProjectsTable();
+    }
+  }
+
+  // Update mode indicators
+  function updateModeUI() {
+    const badge = document.getElementById("mode-badge");
+    const hint = document.getElementById("login-mode-hint");
+    if (RS_DB.isSupabaseMode()) {
+      badge.textContent = "Production (Supabase + Cloudinary)";
+      badge.className = "mode-badge mode-production";
+      hint.innerHTML = "Connected to <strong>Supabase Auth &amp; PostgreSQL</strong> with <strong>Cloudinary CDN</strong>";
+    } else {
+      badge.textContent = "Demo / Local Mode";
+      badge.className = "mode-badge mode-demo";
+      hint.innerHTML = "Running in <strong>Demo / Local Mode</strong>. Supabase credentials configured in <code>js/backend-config.js</code>.";
+    }
+  }
+
+  // Check auth state on load
+  async function checkAuth() {
+    await RS_DB.init();
+    updateModeUI();
+    const user = await RS_Auth.init();
+
+    if (RS_Auth.isAuthenticated()) {
+      document.getElementById("login-view").style.display = "none";
+      document.getElementById("dashboard-view").style.display = "block";
+      document.getElementById("header-actions").style.display = "flex";
+      const roleStr = RS_Auth.isAdmin() ? " (Admin)" : "";
+      document.getElementById("user-display").textContent = (user.email || "Admin") + roleStr;
+      renderLeadsTable();
+      renderProjectsTable();
+    } else {
+      document.getElementById("login-view").style.display = "block";
+      document.getElementById("dashboard-view").style.display = "none";
+      document.getElementById("header-actions").style.display = "none";
+    }
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById("admin-email").value.trim();
+    const pass = document.getElementById("admin-password").value;
+    const btn = document.getElementById("login-btn");
+    btn.disabled = true;
+    btn.textContent = "Signing In...";
+
+    try {
+      await RS_Auth.login(email, pass);
+      await checkAuth();
+    } catch (err) {
+      alert("Login failed: " + (err.message || "Invalid credentials. Please verify your admin email and password."));
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Sign In";
+    }
+  }
+
+  async function logoutAdmin() {
+    await RS_Auth.logout();
+    checkAuth();
+  }
+
+  // ══════════════════════════════════════════════════
+  // LEADS MANAGEMENT
+  // ══════════════════════════════════════════════════
+
+  async function renderLeadsTable() {
+    const tbody = document.getElementById("leads-tbody");
+    const search = document.getElementById("search-leads-input").value.toLowerCase().trim();
+    const statusFilter = document.getElementById("status-leads-filter").value;
+
+    const all = await RS_DB.getAllLeads();
+    document.getElementById("leads-count-badge").textContent = all.length;
+
+    const filtered = all.filter(l => {
+      const matchStatus = statusFilter === "all" || (l.status || "new") === statusFilter;
+      const matchSearch = !search ||
+        (l.name || "").toLowerCase().includes(search) ||
+        (l.phone || "").includes(search) ||
+        (l.city || "").toLowerCase().includes(search) ||
+        (l.category || "").toLowerCase().includes(search);
+      return matchStatus && matchSearch;
+    });
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 48px 20px; color: var(--text-dim);">
+            No customer enquiries found matching your filter.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(l => {
+      const dateStr = l.createdAt ? new Date(l.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+      const cleanPhone = (l.phone || "").replace(/[^\d]/g, "");
+      const waPhone = (l.whatsapp || l.phone || "").replace(/[^\d]/g, "");
+      const workList = Array.isArray(l.workTypes) && l.workTypes.length > 0 ? l.workTypes.join(", ") : "—";
+      const status = l.status || "new";
+
+      return `
+        <tr>
+          <td>
+            <div style="font-weight: 600; font-size: 14px; margin-bottom: 2px;">${escapeHtml(l.name)}</div>
+            ${l.preferredContact ? `<span style="font-size: 10px; color: var(--taupe); background: rgba(185,168,172,0.1); padding: 2px 6px; border-radius: 4px;">Pref: ${escapeHtml(l.preferredContact)}</span>` : ""}
+          </td>
+          <td>
+            <div style="font-size: 13px; font-weight: 500;">${escapeHtml(l.phone)}</div>
+            <div class="quick-contact">
+              <a class="icon-link" href="tel:${cleanPhone}" title="Call ${escapeHtml(l.name)}">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </a>
+              <a class="icon-link wa" href="https://wa.me/91${waPhone}" target="_blank" rel="noopener" title="WhatsApp ${escapeHtml(l.name)}">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+              </a>
+            </div>
+          </td>
+          <td>
+            <div style="font-weight: 600; font-size: 12px; margin-bottom: 2px;">${escapeHtml(l.category)}</div>
+            <div style="font-size: 11px; color: var(--text-muted);">${escapeHtml(workList)}</div>
+          </td>
+          <td>
+            <div style="font-size: 13px;">${escapeHtml(l.city || '—')}</div>
+            <div style="font-size: 11px; color: var(--text-muted);">${escapeHtml(l.locality || '')}</div>
+          </td>
+          <td>
+            <select class="lead-status-select status-${status}" onchange="changeLeadStatus('${l.id}', this.value)">
+              <option value="new" ${status === 'new' ? 'selected' : ''}>NEW</option>
+              <option value="contacted" ${status === 'contacted' ? 'selected' : ''}>CONTACTED</option>
+              <option value="quotation_sent" ${status === 'quotation_sent' ? 'selected' : ''}>QUOTATION SENT</option>
+              <option value="won" ${status === 'won' ? 'selected' : ''}>WON</option>
+              <option value="lost" ${status === 'lost' ? 'selected' : ''}>LOST</option>
+            </select>
+          </td>
+          <td style="font-size: 12px; color: var(--text-muted);">${dateStr}</td>
+          <td style="text-align: right;">
+            <div class="row-actions" style="justify-content: flex-end;">
+              <button class="action-icon-btn" onclick="openLeadModal('${l.id}')" title="View Full Details">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+              <button class="action-icon-btn delete" onclick="deleteLeadPrompt('${l.id}', '${escapeHtml(l.name)}')" title="Delete Lead">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  async function changeLeadStatus(id, newStatus) {
+    await RS_DB.updateLeadStatus(id, newStatus);
+    renderLeadsTable();
+  }
+
+  async function openLeadModal(id) {
+    const leads = await RS_DB.getAllLeads();
+    const l = leads.find(item => item.id === id);
+    if (!l) return;
+
+    const cleanPhone = (l.phone || "").replace(/[^\d]/g, "");
+    const waPhone = (l.whatsapp || l.phone || "").replace(/[^\d]/g, "");
+    const workList = Array.isArray(l.workTypes) && l.workTypes.length > 0 ? l.workTypes.join(", ") : "Not specified";
+    const dateStr = l.createdAt ? new Date(l.createdAt).toLocaleString('en-IN') : '—';
+
+    const imagesHtml = Array.isArray(l.referenceImages) && l.referenceImages.length > 0 ? `
+      <div style="margin-top: 18px;">
+        <h4 style="font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--taupe); margin-bottom: 10px;">Reference Photos (${l.referenceImages.length})</h4>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          ${l.referenceImages.map(img => {
+            const url = img.url || img.thumbnail || img;
+            return `
+              <a href="${url}" target="_blank" style="width: 100px; height: 75px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); display: block;">
+                <img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">
+              </a>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    ` : "";
+
+    document.getElementById("lead-modal-title").textContent = `Enquiry from ${l.name}`;
+    document.getElementById("lead-detail-content").innerHTML = `
+      <div class="lead-detail-grid">
+        <div class="detail-block">
+          <h4>Customer Details</h4>
+          <div class="detail-val"><strong>${escapeHtml(l.name)}</strong></div>
+          <div class="detail-val" style="margin-top: 4px;">Phone: <a href="tel:${cleanPhone}" style="color:var(--blush);">${escapeHtml(l.phone)}</a></div>
+          ${l.whatsapp ? `<div class="detail-val">WhatsApp: <a href="https://wa.me/91${waPhone}" target="_blank" style="color:#25D366;">${escapeHtml(l.whatsapp)}</a></div>` : ""}
+          <div class="detail-val" style="color:var(--taupe); font-size:12px; margin-top:4px;">Preferred: ${escapeHtml(l.preferredContact || 'Either')}</div>
+        </div>
+
+        <div class="detail-block">
+          <h4>Project Scope</h4>
+          <div class="detail-val"><strong>${escapeHtml(l.category)}</strong></div>
+          <div class="detail-val" style="margin-top: 4px;">Work: ${escapeHtml(workList)}</div>
+          <div class="detail-val">Location: ${escapeHtml(l.city || 'Muzaffarpur')}${l.locality ? ', ' + escapeHtml(l.locality) : ''}</div>
+          ${l.referenceProject ? `<div class="detail-val" style="color:var(--plum-glow); font-size:12px; margin-top:4px;">Ref: ${escapeHtml(l.referenceProject)}</div>` : ""}
+        </div>
+      </div>
+
+      ${l.message ? `
+        <div class="detail-block" style="margin-bottom: 20px;">
+          <h4>Customer Message / Requirements</h4>
+          <div class="detail-val" style="white-space: pre-line;">${escapeHtml(l.message)}</div>
+        </div>
+      ` : ""}
+
+      ${imagesHtml}
+
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border);">
+        <div style="display: flex; gap: 10px;">
+          <a class="btn-primary" href="tel:${cleanPhone}" style="background: var(--plum);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Call Customer
+          </a>
+          <a class="btn-primary" href="https://wa.me/91${waPhone}" target="_blank" rel="noopener" style="background: #25D366;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted);">Received: ${dateStr}</div>
+      </div>
+    `;
+
+    document.getElementById("lead-modal").classList.add("active");
+  }
+
+  function closeLeadModal() {
+    document.getElementById("lead-modal").classList.remove("active");
+  }
+
+  async function deleteLeadPrompt(id, name) {
+    if (confirm(`Are you sure you want to delete the enquiry from "${name}"?`)) {
+      await RS_DB.deleteLead(id);
+      renderLeadsTable();
+      closeLeadModal();
+    }
+  }
+
+  // ══════════════════════════════════════════════════
+  // PROJECTS MANAGEMENT
+  // ══════════════════════════════════════════════════
+
+  async function renderProjectsTable() {
+    const tbody = document.getElementById("projects-tbody");
+    const search = document.getElementById("search-input").value.toLowerCase().trim();
+    const category = document.getElementById("category-filter").value;
+
+    const all = await RS_DB.getAllProjects();
+    document.getElementById("projects-count-badge").textContent = all.length;
+
+    const filtered = all.filter(p => {
+      const matchCat = category === "all" || (p.category || "").toLowerCase() === category.toLowerCase();
+      const matchSearch = !search || (p.name || "").toLowerCase().includes(search) || (p.location || "").toLowerCase().includes(search);
+      return matchCat && matchSearch;
+    });
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 48px 20px; color: var(--text-dim);">
+            No projects found. Click <strong>"+ Add Project"</strong> above to upload your first project.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(p => {
+      const coverUrl = p.coverImage?.thumbnail || p.coverImage?.url || p.coverImage || "";
+      const catClass = `cat-${p.category}`;
+      return `
+        <tr>
+          <td>
+            <div class="thumb-cell">
+              ${coverUrl ? `<img src="${coverUrl}" alt="Thumb">` : `<div style="width:100%;height:100%;background:#221318;"></div>`}
+            </div>
+          </td>
+          <td>
+            <div style="font-weight: 600; font-size: 14px; margin-bottom: 3px;">${escapeHtml(p.name)}</div>
+            <div style="font-size: 11px; color: var(--text-muted);">
+              ${p.location ? escapeHtml(p.location) + ' &bull; ' : ''}Slug: ${escapeHtml(p.slug)}
+            </div>
+          </td>
+          <td>
+            <span class="badge-cat ${catClass}">${escapeHtml(p.category)}</span>
+          </td>
+          <td>
+            <div class="status-toggle" onclick="toggleProjectStatus('${p.id}')">
+              <span class="status-dot ${p.published ? 'status-published' : 'status-draft'}"></span>
+              <span>${p.published ? 'Published' : 'Draft'}</span>
+            </div>
+          </td>
+          <td>
+            <span style="font-size: 12px; color: ${p.featured ? 'var(--taupe)' : 'var(--text-muted)'};">
+              ${p.featured ? '★ Yes' : '—'}
+            </span>
+          </td>
+          <td style="text-align: right;">
+            <div class="row-actions" style="justify-content: flex-end;">
+              <a class="action-icon-btn" href="project.html?category=${encodeURIComponent(p.category)}&slug=${encodeURIComponent(p.slug)}" target="_blank" title="Live Preview">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+              <button class="action-icon-btn" onclick="editProject('${p.id}')" title="Edit Project">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <button class="action-icon-btn delete" onclick="deleteProjectPrompt('${p.id}', '${escapeHtml(p.name)}')" title="Delete Project">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  async function toggleProjectStatus(id) {
+    await RS_DB.togglePublish(id);
+    renderProjectsTable();
+  }
+
+  function openProjectModal(editMode = false) {
+    document.getElementById("modal-title").textContent = editMode ? "Edit Project" : "Add New Project";
+    document.getElementById("project-modal").classList.add("active");
+    if (!editMode) {
+      document.getElementById("project-form").reset();
+      document.getElementById("proj-id").value = "";
+      currentCoverData = null;
+      currentGalleryData = [];
+      renderCoverPreview();
+      renderGalleryPreviews();
+    }
+  }
+
+  function closeProjectModal() {
+    document.getElementById("project-modal").classList.remove("active");
+  }
+
+  function updateSlugPreview() {
+    const name = document.getElementById("proj-name").value;
+    const slugInput = document.getElementById("proj-slug");
+    slugInput.value = RS_DB.generateSlug(name);
+  }
+
+  async function handleCoverSelect(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const uploadRes = await RS_DB.uploadImage(file, "projects/covers");
+    currentCoverData = uploadRes;
+    renderCoverPreview();
+  }
+
+  function renderCoverPreview() {
+    const container = document.getElementById("cover-preview-container");
+    if (!currentCoverData) {
+      container.innerHTML = "";
+      return;
+    }
+    const url = currentCoverData.thumbnail || currentCoverData.url || currentCoverData;
+    container.innerHTML = `
+      <div class="preview-item">
+        <img src="${url}">
+        <button type="button" class="preview-del" onclick="removeCover()">&times;</button>
+      </div>
+    `;
+  }
+
+  function removeCover() {
+    currentCoverData = null;
+    renderCoverPreview();
+  }
+
+  async function handleGallerySelect(e) {
+    const files = Array.from(e.target.files);
+    for (const f of files) {
+      const uploadRes = await RS_DB.uploadImage(f, "projects/gallery");
+      currentGalleryData.push(uploadRes);
+    }
+    renderGalleryPreviews();
+  }
+
+  function renderGalleryPreviews() {
+    const container = document.getElementById("gallery-preview-container");
+    container.innerHTML = currentGalleryData.map((img, idx) => {
+      const url = img.thumbnail || img.url || img;
+      return `
+        <div class="preview-item">
+          <img src="${url}">
+          <button type="button" class="preview-del" onclick="removeGalleryImg(${idx})">&times;</button>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function removeGalleryImg(index) {
+    currentGalleryData.splice(index, 1);
+    renderGalleryPreviews();
+  }
+
+  async function handleSaveProject(e) {
+    e.preventDefault();
+    const btn = document.getElementById("save-btn");
+    btn.disabled = true;
+    btn.textContent = "Saving...";
+
+    const id = document.getElementById("proj-id").value;
+    const name = document.getElementById("proj-name").value;
+    const category = document.getElementById("proj-category").value;
+    const slug = document.getElementById("proj-slug").value || RS_DB.generateSlug(name);
+    const location = document.getElementById("proj-location").value;
+    const year = document.getElementById("proj-year").value;
+    const services = document.getElementById("proj-services").value;
+    const shortDescription = document.getElementById("proj-short-desc").value;
+    const description = document.getElementById("proj-desc").value;
+    const published = document.getElementById("proj-published").checked;
+    const featured = document.getElementById("proj-featured").checked;
+
+    if (!currentCoverData && currentGalleryData.length > 0) {
+      currentCoverData = currentGalleryData[0];
+    }
+
+    const projectData = {
+      id: id || undefined,
+      name,
+      slug,
+      category,
+      coverImage: currentCoverData,
+      galleryImages: currentGalleryData,
+      shortDescription,
+      description,
+      location,
+      year,
+      services,
+      published,
+      featured
+    };
+
+    await RS_DB.saveProject(projectData);
+
+    btn.disabled = false;
+    btn.textContent = "Save Project";
+    closeProjectModal();
+    renderProjectsTable();
+  }
+
+  async function editProject(id) {
+    const p = await RS_DB.getProjectById(id);
+    if (!p) return;
+
+    document.getElementById("proj-id").value = p.id;
+    document.getElementById("proj-name").value = p.name;
+    document.getElementById("proj-category").value = p.category;
+    document.getElementById("proj-slug").value = p.slug;
+    document.getElementById("proj-location").value = p.location || "";
+    document.getElementById("proj-year").value = p.year || "";
+    document.getElementById("proj-services").value = p.services || "";
+    document.getElementById("proj-short-desc").value = p.shortDescription || "";
+    document.getElementById("proj-desc").value = p.description || "";
+    document.getElementById("proj-published").checked = p.published === true;
+    document.getElementById("proj-featured").checked = p.featured === true;
+
+    currentCoverData = p.coverImage || null;
+    currentGalleryData = Array.isArray(p.galleryImages) ? [...p.galleryImages] : [];
+
+    renderCoverPreview();
+    renderGalleryPreviews();
+    openProjectModal(true);
+  }
+
+  async function deleteProjectPrompt(id, name) {
+    if (confirm(`Are you sure you want to permanently delete project: "${name}"?`)) {
+      await RS_DB.deleteProject(id);
+      renderProjectsTable();
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  checkAuth();
+</script>
+
+</body>
+</html>

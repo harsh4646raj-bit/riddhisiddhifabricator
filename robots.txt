@@ -1,0 +1,12 @@
+# Robots.txt for Riddhi Siddhi Fabricator
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /projects.html
+Allow: /project.html
+Allow: /quote.html
+Disallow: /admin.html
+Disallow: /admin
+
+# Sitemap
+Sitemap: https://riddhisiddhifabricator.com/sitemap.xml

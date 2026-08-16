@@ -1,0 +1,22 @@
+# Cloudflare Pages Headers Configuration
+# Security, Cache Control, and Performance
+
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Cache static assets (images, webp sequences, videos)
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/frames/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Ensure dynamic pages are always fresh
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/js/backend-config.js
+  Cache-Control: no-cache, no-store, must-revalidate

@@ -1,0 +1,9 @@
+# Sensitive credentials and environment files
+serviceAccountKey.json
+*.serviceAccount.json
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+tools/
