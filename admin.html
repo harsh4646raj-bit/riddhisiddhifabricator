@@ -385,10 +385,16 @@
             <option value="lost">Lost</option>
           </select>
         </div>
-        <button class="btn-outline" onclick="renderLeadsTable()" style="display: inline-flex; align-items: center; gap: 6px;">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-          Refresh Leads
-        </button>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn-outline" onclick="triggerTestTelegram(this)" style="display: inline-flex; align-items: center; gap: 6px;" title="Send a test message to your Telegram channel">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            Test Telegram
+          </button>
+          <button class="btn-outline" onclick="renderLeadsTable()" style="display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            Refresh Leads
+          </button>
+        </div>
       </div>
 
       <div class="table-wrap">
@@ -649,6 +655,27 @@
   // ══════════════════════════════════════════════════
   // LEADS MANAGEMENT
   // ══════════════════════════════════════════════════
+
+  async function triggerTestTelegram(btn) {
+    const origText = btn.innerHTML;
+    btn.disabled = true;
+    btn.textContent = "Testing...";
+    try {
+      const res = await RS_Auth.testTelegramAlert();
+      if (res && res.success) {
+        alert("✅ Telegram Test Succeeded!\nA verification alert was sent to your Telegram channel.");
+      } else if (res && res.configured === false) {
+        alert("⚠️ Telegram Bot not configured yet in Supabase Secrets.\nPlease set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in your Supabase Edge Function Secrets.");
+      } else {
+        alert("⚠️ Telegram Alert returned: " + ((res && res.error) || "Please check function logs."));
+      }
+    } catch (err) {
+      alert("⚠️ Telegram test: " + (err.message || "Failed to contact Telegram function."));
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = origText;
+    }
+  }
 
   async function renderLeadsTable() {
     const tbody = document.getElementById("leads-tbody");

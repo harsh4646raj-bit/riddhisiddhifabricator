@@ -109,9 +109,17 @@ CREATE TABLE IF NOT EXISTS public.leads (
   preferred_contact TEXT NOT NULL DEFAULT 'Either' CHECK (preferred_contact IN ('Phone Call', 'WhatsApp', 'Either')),
   status TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'contacted', 'quotation_sent', 'won', 'lost')),
   source TEXT NOT NULL DEFAULT 'website',
+  telegram_notification_sent BOOLEAN DEFAULT FALSE,
+  telegram_notification_sent_at TIMESTAMPTZ,
+  telegram_notification_error TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Ensure columns exist if table was already created
+ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS telegram_notification_sent BOOLEAN DEFAULT FALSE;
+ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS telegram_notification_sent_at TIMESTAMPTZ;
+ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS telegram_notification_error TEXT;
 
 -- 7. Automatic updated_at Trigger Function
 CREATE OR REPLACE FUNCTION public.set_updated_at()

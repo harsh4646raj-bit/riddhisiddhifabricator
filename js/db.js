@@ -402,8 +402,31 @@ const DB = {
 
     if (this.isSupabaseMode()) {
       try {
-        // Call secure PostgreSQL stored procedure submit_lead
-        const { data, error } = await this._supabase.rpc("submit_lead", {
+        // 1. Try Supabase Edge Function (handles DB insert + instant Telegram notification)
+        const { data, error } = await this._supabase.functions.invoke("submit-quote", {
+          body: {
+            name: (leadData.name || "").trim(),
+            phone: (leadData.phone || "").trim(),
+            whatsapp: (leadData.whatsapp || leadData.phone || "").trim(),
+            category: (leadData.category || "Not sure").trim(),
+            workTypes: Array.isArray(leadData.workTypes) ? leadData.workTypes : [],
+            city: (leadData.city || "Muzaffarpur").trim(),
+            locality: (leadData.locality || "").trim(),
+            message: (leadData.message || "").trim(),
+            referenceProject: (leadData.referenceProject || "").trim(),
+            referenceImages: Array.isArray(leadData.referenceImages) ? leadData.referenceImages : [],
+            preferredContact: leadData.preferredContact || "Either"
+          }
+        });
+
+        if (!error && data && data.success) {
+          console.log("Lead created via Supabase Edge Function (Telegram notified):", data);
+          return { success: true, ...data };
+        }
+
+        // 2. Fallback to PostgreSQL stored procedure if Edge Function is unconfigured
+        console.warn("Edge Function notice, falling back to direct RPC:", error?.message);
+        const { data: rpcData, error: rpcError } = await this._supabase.rpc("submit_lead", {
           p_name: (leadData.name || "").trim(),
           p_phone: (leadData.phone || "").trim(),
           p_whatsapp: (leadData.whatsapp || leadData.phone || "").trim(),
@@ -417,9 +440,9 @@ const DB = {
           p_preferred_contact: leadData.preferredContact || "Either"
         });
 
-        if (error) throw error;
-        console.log("Lead created via Supabase RPC:", data);
-        return { success: true, ...data };
+        if (rpcError) throw rpcError;
+        console.log("Lead created via Supabase RPC fallback:", rpcData);
+        return { success: true, ...rpcData };
       } catch (err) {
         console.error("Supabase error creating lead:", err);
       }
@@ -819,6 +842,18 @@ const AdminAuth = {
     sessionStorage.removeItem(LOCAL_STORAGE_SESSION_KEY);
     this.currentUser = null;
     this.userProfile = null;
+  },
+
+  async testTelegramAlert() {
+    await DB.init();
+    if (DB.isSupabaseMode() && DB._supabase) {
+      const { data, error } = await DB._supabase.functions.invoke("submit-quote", {
+        body: { action: "test_telegram" }
+      });
+      if (error) throw error;
+      return data;
+    }
+    throw new Error("Demo mode: Telegram test requires Supabase connection.");
   }
 };
 
