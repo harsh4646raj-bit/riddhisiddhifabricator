@@ -1008,7 +1008,7 @@
   }
 
   async function handleGallerySelect(e) {
-    const files = Array.from(e.target.files);
+    const files = Array.from(e.target.files || []);
     if (!files.length) return;
     const textEl = document.getElementById("gallery-dropzone-text");
     const origText = "Click to upload additional photos for the project gallery";
@@ -1016,13 +1016,13 @@
 
     isUploadingImages = true;
     if (saveBtn) saveBtn.disabled = true;
-    textEl.textContent = `Uploading ${files.length} images to Cloudinary...`;
+    textEl.textContent = `Uploading ${files.length} images to Cloudinary in parallel...`;
 
     try {
-      for (const f of files) {
-        const uploadRes = await RS_DB.uploadImage(f, "riddhi-siddhi/projects/gallery");
-        currentGalleryData.push(uploadRes);
-      }
+      // Upload images concurrently in parallel batches
+      const uploads = files.map(f => RS_DB.uploadImage(f, "riddhi-siddhi/projects/gallery"));
+      const results = await Promise.all(uploads);
+      results.forEach(res => currentGalleryData.push(res));
       renderGalleryPreviews();
     } catch (err) {
       console.error("Gallery upload failed:", err);
@@ -1031,6 +1031,7 @@
       textEl.textContent = origText;
       isUploadingImages = false;
       if (saveBtn) saveBtn.disabled = false;
+      e.target.value = "";
     }
   }
 

@@ -86,6 +86,52 @@ const DB = {
     return `https://res.cloudinary.com/${cloudName}/image/upload/${transform}/${urlOrPublicId}`;
   },
 
+  // Client-side quick compression to reduce multi-megabyte photos to fast web-ready sizes before network upload
+  async compressImage(file, maxDimension = 1920, quality = 0.85) {
+    if (!file || !file.type.startsWith("image/") || file.type === "image/svg+xml") {
+      return file;
+    }
+    return new Promise((resolve) => {
+      const img = new Image();
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > maxDimension || height > maxDimension) {
+            if (width > height) {
+              height = Math.round((height * maxDimension) / width);
+              width = maxDimension;
+            } else {
+              width = Math.round((width * maxDimension) / height);
+              height = maxDimension;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob(
+            (blob) => {
+              if (blob && blob.size < file.size) {
+                resolve(new File([blob], file.name.replace(/\.[^/.]+$/, ".webp"), { type: "image/webp" }));
+              } else {
+                resolve(file);
+              }
+            },
+            "image/webp",
+            quality
+          );
+        };
+        img.onerror = () => resolve(file);
+        img.src = e.target.result;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    });
+  },
+
   // Upload image to Cloudinary (or IndexedDB in demo mode)
   async uploadImage(file, folder = "riddhi-siddhi/projects") {
     await this.init();
@@ -94,8 +140,11 @@ const DB = {
 
     if (this.isSupabaseMode() && cloudName) {
       try {
+        // Fast client-side compression before sending over network
+        const optimizedFile = await this.compressImage(file);
+
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("file", optimizedFile);
         formData.append("folder", folder);
 
         let isSigned = false;
