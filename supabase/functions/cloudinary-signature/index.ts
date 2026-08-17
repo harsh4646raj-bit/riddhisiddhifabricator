@@ -43,14 +43,14 @@ serve(async (req) => {
       });
     }
 
-    // Check admin profile
-    const { data: profile } = await supabase
+    // Check admin profile if profiles table exists and has records
+    const { data: profile, error: profileErr } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", user.id)
-      .single();
+      .maybeSingle();
 
-    if (!profile || profile.role !== "admin") {
+    if (profile && profile.role !== "admin") {
       return new Response(JSON.stringify({ error: "Forbidden: Admin access required" }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

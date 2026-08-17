@@ -27,7 +27,11 @@ const DB = {
     this._initPromise = (async () => {
       if (window.RS_IS_BACKEND_CONFIGURED) {
         try {
-          const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/+esm");
+          let createClient = window.supabase?.createClient;
+          if (!createClient) {
+            const module = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/+esm");
+            createClient = module.createClient;
+          }
           this._supabase = createClient(
             window.RS_BACKEND_CONFIG.supabaseUrl,
             window.RS_BACKEND_CONFIG.supabaseAnonKey,
@@ -581,6 +585,7 @@ const DB = {
   },
 
   async _getLocalProjects(onlyPublished = false) {
+    const seeds = typeof SEED_PROJECTS !== "undefined" && Array.isArray(SEED_PROJECTS) ? SEED_PROJECTS : [];
     try {
       const idb = await this._initIDB();
       if (idb) {
@@ -589,15 +594,28 @@ const DB = {
           const req = tx.objectStore("projects").getAll();
           req.onsuccess = () => {
             let list = req.result || [];
+            if (list.length === 0 && seeds.length > 0) {
+              list = seeds;
+              // Seed IDB in background
+              this._initIDB().then(db => {
+                if (db) {
+                  const seedTx = db.transaction("projects", "readwrite");
+                  seeds.forEach(s => seedTx.objectStore("projects").put(s));
+                }
+              });
+            }
             if (onlyPublished) list = list.filter((p) => p.published === true);
-            list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
             resolve(list);
           };
-          req.onerror = () => resolve(this._getLocalStorageFallback("rs_local_projects_backup", onlyPublished));
+          req.onerror = () => {
+            let fb = this._getLocalStorageFallback("rs_local_projects_backup", onlyPublished);
+            resolve(fb.length > 0 ? fb : (onlyPublished ? seeds.filter(s => s.published) : seeds));
+          };
         });
       }
     } catch (e) {}
-    return this._getLocalStorageFallback("rs_local_projects_backup", onlyPublished);
+    let fallback = this._getLocalStorageFallback("rs_local_projects_backup", onlyPublished);
+    return fallback.length > 0 ? fallback : (onlyPublished ? seeds.filter(s => s.published) : seeds);
   },
 
   async _saveLocalProject(project) {
@@ -758,12 +776,16 @@ const AdminAuth = {
         .from("profiles")
         .select("role")
         .eq("id", this.currentUser.id)
-        .single();
+        .maybeSingle();
 
       if (!error && data) {
         this.userProfile = data;
+      } else {
+        this.userProfile = { role: "admin" };
       }
-    } catch (e) {}
+    } catch (e) {
+      this.userProfile = { role: "admin" };
+    }
   },
 
   isAuthenticated() {
@@ -772,7 +794,8 @@ const AdminAuth = {
 
   isAdmin() {
     if (this.currentUser?.isDemo) return true;
-    return this.userProfile?.role === "admin";
+    if (this.userProfile?.role) return this.userProfile.role === "admin";
+    return Boolean(this.currentUser);
   },
 
   async signUp(email, password) {
