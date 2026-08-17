@@ -102,18 +102,18 @@ const DB = {
 
         // Try getting signature from Supabase Edge Function if user is logged in
         if (AdminAuth.isAuthenticated()) {
-          try {
-            const { data: signData, error: signErr } = await this._supabase.functions.invoke("cloudinary-signature", {
-              body: { folder }
-            });
-            if (!signErr && signData && signData.signature) {
-              formData.append("api_key", signData.apiKey);
-              formData.append("timestamp", signData.timestamp);
-              formData.append("signature", signData.signature);
-              isSigned = true;
-            }
-          } catch (e) {
-            console.log("Using standard upload preset for media upload");
+          const { data: signData, error: signErr } = await this._supabase.functions.invoke("cloudinary-signature", {
+            body: { folder }
+          });
+          if (signErr) {
+            console.error("Supabase signature error:", signErr);
+            throw new Error("Could not get Cloudinary upload signature from server: " + (signErr.message || "Unknown error"));
+          }
+          if (signData && signData.signature) {
+            formData.append("api_key", signData.apiKey);
+            formData.append("timestamp", signData.timestamp);
+            formData.append("signature", signData.signature);
+            isSigned = true;
           }
         }
 
@@ -128,7 +128,7 @@ const DB = {
 
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.error?.message || "Cloudinary upload failed");
+          throw new Error(errData.error?.message || `Cloudinary upload failed with status ${res.status}`);
         }
 
         const data = await res.json();
@@ -146,7 +146,8 @@ const DB = {
           name: file.name
         };
       } catch (err) {
-        console.warn("Cloudinary upload failed, using local blob fallback:", err);
+        console.error("Cloudinary upload failed:", err);
+        throw err;
       }
     }
 
