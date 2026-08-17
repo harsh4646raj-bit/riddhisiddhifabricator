@@ -107,7 +107,14 @@ const DB = {
           });
           if (signErr) {
             console.error("Supabase signature error:", signErr);
-            throw new Error("Could not get Cloudinary upload signature from server: " + (signErr.message || "Unknown error"));
+            let detail = signErr.message;
+            if (signErr.context && typeof signErr.context.json === "function") {
+              try {
+                const body = await signErr.context.json();
+                if (body && body.error) detail = body.error;
+              } catch (e) {}
+            }
+            throw new Error("Cloudinary Signature Error: " + detail);
           }
           if (signData && signData.signature) {
             formData.append("api_key", signData.apiKey);

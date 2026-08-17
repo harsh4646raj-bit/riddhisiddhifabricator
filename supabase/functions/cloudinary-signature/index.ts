@@ -18,9 +18,16 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
-    const cloudinaryCloudName = Deno.env.get("CLOUDINARY_CLOUD_NAME") ?? "";
-    const cloudinaryApiKey = Deno.env.get("CLOUDINARY_API_KEY") ?? "";
+    const cloudinaryCloudName = Deno.env.get("CLOUDINARY_CLOUD_NAME") || "ealgnhba";
+    const cloudinaryApiKey = Deno.env.get("CLOUDINARY_API_KEY") || "745176677867224";
     const cloudinaryApiSecret = Deno.env.get("CLOUDINARY_API_SECRET") ?? "";
+
+    if (!cloudinaryApiSecret) {
+      return new Response(JSON.stringify({ error: "Missing CLOUDINARY_API_SECRET secret in Supabase Edge Function environment" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // 1. Verify User Authentication & Admin Role
     const authHeader = req.headers.get("Authorization");
