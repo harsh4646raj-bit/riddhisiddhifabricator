@@ -312,12 +312,13 @@ const DB = {
         const cover = projectData.coverImage;
 
         const allImagesToInsert = [];
-        if (cover && cover.secure_url) {
+        const coverUrl = cover?.secure_url || cover?.url || (typeof cover === 'string' ? cover : null);
+        if (coverUrl) {
           allImagesToInsert.push({
             project_id: projectId,
-            public_id: cover.public_id || "cover_" + Date.now(),
-            secure_url: cover.secure_url || cover.url || cover,
-            thumbnail_url: cover.thumbnail_url || cover.thumbnail || cover.url || cover,
+            public_id: cover?.public_id || "cover_" + Date.now(),
+            secure_url: coverUrl,
+            thumbnail_url: cover?.thumbnail_url || cover?.thumbnail || coverUrl,
             alt_text: projectData.name + " Cover",
             sort_order: 0,
             is_cover: true
