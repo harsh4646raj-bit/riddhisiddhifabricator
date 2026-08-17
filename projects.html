@@ -13,6 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/dist/umd/supabase.min.js"></script>
 <style>
   :root {
     --bg:           #0E0709;
@@ -425,9 +426,9 @@
   </div>
 </footer>
 
-<script src="js/seed-projects.js"></script>
-<script src="js/backend-config.js"></script>
-<script src="js/db.js"></script>
+<script src="js/seed-projects.js?v=2.7"></script>
+<script src="js/backend-config.js?v=2.7"></script>
+<script src="js/db.js?v=2.7"></script>
 <script>
   // Parse active category from URL
   const urlParams = new URLSearchParams(window.location.search);
@@ -485,7 +486,7 @@
       const gridHtml = `
         <div class="projects-grid">
           ${projects.map(p => {
-            const coverSrc = p.coverImage?.thumbnail || p.coverImage?.url || p.coverImage || "";
+            const coverSrc = p.coverImage?.thumbnail_url || p.coverImage?.secure_url || p.coverImage?.thumbnail || p.coverImage?.url || p.coverImage || "";
             return `
               <a class="project-card" href="project.html?category=${encodeURIComponent(p.category)}&slug=${encodeURIComponent(p.slug)}">
                 <div class="card-image-wrap">

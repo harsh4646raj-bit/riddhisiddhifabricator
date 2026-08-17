@@ -219,8 +219,31 @@ const DB = {
 
         // Normalize response format
         return (data || []).map((p) => {
-          const images = (p.project_images || []).sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
-          const cover = images.find((img) => img.is_cover) || images[0] || p.cover_image;
+          const rawImages = (p.project_images || []).sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+          const images = rawImages.map(img => ({
+            id: img.id,
+            public_id: img.public_id,
+            url: img.secure_url || img.thumbnail_url || img.url || "",
+            secure_url: img.secure_url || img.thumbnail_url || img.url || "",
+            thumbnail: img.thumbnail_url || img.secure_url || img.thumbnail || "",
+            thumbnail_url: img.thumbnail_url || img.secure_url || img.thumbnail || "",
+            alt_text: img.alt_text || p.name,
+            sort_order: img.sort_order,
+            is_cover: img.is_cover
+          }));
+
+          const rawCover = images.find((img) => img.is_cover) || images[0] || p.cover_image || {};
+          const coverUrl = rawCover.secure_url || rawCover.url || (typeof rawCover === "string" ? rawCover : "");
+          const coverThumb = rawCover.thumbnail_url || rawCover.thumbnail || coverUrl;
+
+          const cover = {
+            public_id: rawCover.public_id || "",
+            url: coverUrl,
+            secure_url: coverUrl,
+            thumbnail: coverThumb,
+            thumbnail_url: coverThumb
+          };
+
           return {
             id: p.id,
             name: p.name,

@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/dist/umd/supabase.min.js"></script>
 <style>
   :root {
     --bg:           #0E0709;
@@ -466,9 +467,9 @@
   </div>
 </footer>
 
-<script src="js/seed-projects.js"></script>
-<script src="js/backend-config.js"></script>
-<script src="js/db.js"></script>
+<script src="js/seed-projects.js?v=2.7"></script>
+<script src="js/backend-config.js?v=2.7"></script>
+<script src="js/db.js?v=2.7"></script>
 <script>
   let allGalleryImages = [];
   let currentImageIndex = 0;
@@ -506,15 +507,15 @@
 
     // Collect all images (Cover + Gallery)
     allGalleryImages = [];
-    const coverUrl = project.coverImage?.url || project.coverImage || "";
+    const coverUrl = project.coverImage?.secure_url || project.coverImage?.url || project.coverImage?.thumbnail_url || (typeof project.coverImage === "string" ? project.coverImage : "");
     if (coverUrl) {
       allGalleryImages.push({ url: coverUrl, caption: project.name + " Cover" });
     }
     if (Array.isArray(project.galleryImages)) {
       project.galleryImages.forEach((img, idx) => {
-        const url = img?.url || img || "";
+        const url = img?.secure_url || img?.url || img?.thumbnail_url || (typeof img === "string" ? img : "");
         if (url && url !== coverUrl) {
-          allGalleryImages.push({ url, caption: img?.caption || `${project.name} Photo ${idx + 1}` });
+          allGalleryImages.push({ url, caption: img?.caption || img?.alt_text || `${project.name} Photo ${idx + 1}` });
         }
       });
     }
