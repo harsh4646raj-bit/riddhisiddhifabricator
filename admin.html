@@ -960,20 +960,30 @@
     slugInput.value = RS_DB.generateSlug(name);
   }
 
+  let isUploadingImages = false;
+
   async function handleCoverSelect(e) {
     const file = e.target.files[0];
     if (!file) return;
     const textEl = document.getElementById("cover-dropzone-text");
-    const origText = textEl.textContent;
-    textEl.textContent = `Uploading ${file.name}...`;
+    const origText = "Click to select Cover Photograph (JPEG/PNG/WebP)";
+    const saveBtn = document.getElementById("save-btn");
+    
+    isUploadingImages = true;
+    if (saveBtn) saveBtn.disabled = true;
+    textEl.textContent = `Uploading ${file.name} to Cloudinary...`;
+
     try {
       const uploadRes = await RS_DB.uploadImage(file, "riddhi-siddhi/projects/covers");
       currentCoverData = uploadRes;
       renderCoverPreview();
     } catch (err) {
+      console.error("Cover image upload failed:", err);
       alert("Image upload failed: " + (err.message || "Unknown error"));
     } finally {
       textEl.textContent = origText;
+      isUploadingImages = false;
+      if (saveBtn) saveBtn.disabled = false;
     }
   }
 
@@ -983,7 +993,7 @@
       container.innerHTML = "";
       return;
     }
-    const url = currentCoverData.thumbnail || currentCoverData.url || currentCoverData;
+    const url = currentCoverData.thumbnail_url || currentCoverData.thumbnail || currentCoverData.secure_url || currentCoverData.url || currentCoverData;
     container.innerHTML = `
       <div class="preview-item">
         <img src="${url}">
@@ -1001,8 +1011,13 @@
     const files = Array.from(e.target.files);
     if (!files.length) return;
     const textEl = document.getElementById("gallery-dropzone-text");
-    const origText = textEl.textContent;
-    textEl.textContent = `Uploading ${files.length} images...`;
+    const origText = "Click to upload additional photos for the project gallery";
+    const saveBtn = document.getElementById("save-btn");
+
+    isUploadingImages = true;
+    if (saveBtn) saveBtn.disabled = true;
+    textEl.textContent = `Uploading ${files.length} images to Cloudinary...`;
+
     try {
       for (const f of files) {
         const uploadRes = await RS_DB.uploadImage(f, "riddhi-siddhi/projects/gallery");
@@ -1010,16 +1025,19 @@
       }
       renderGalleryPreviews();
     } catch (err) {
+      console.error("Gallery upload failed:", err);
       alert("Gallery upload failed: " + (err.message || "Unknown error"));
     } finally {
       textEl.textContent = origText;
+      isUploadingImages = false;
+      if (saveBtn) saveBtn.disabled = false;
     }
   }
 
   function renderGalleryPreviews() {
     const container = document.getElementById("gallery-preview-container");
     container.innerHTML = currentGalleryData.map((img, idx) => {
-      const url = img.thumbnail || img.url || img;
+      const url = img.thumbnail_url || img.thumbnail || img.secure_url || img.url || img;
       return `
         <div class="preview-item">
           <img src="${url}">
@@ -1036,48 +1054,59 @@
 
   async function handleSaveProject(e) {
     e.preventDefault();
+
+    if (isUploadingImages) {
+      alert("Please wait until all images finish uploading to Cloudinary before saving.");
+      return;
+    }
+
     const btn = document.getElementById("save-btn");
     btn.disabled = true;
     btn.textContent = "Saving...";
 
-    const id = document.getElementById("proj-id").value;
-    const name = document.getElementById("proj-name").value;
-    const category = document.getElementById("proj-category").value;
-    const slug = document.getElementById("proj-slug").value || RS_DB.generateSlug(name);
-    const location = document.getElementById("proj-location").value;
-    const year = document.getElementById("proj-year").value;
-    const services = document.getElementById("proj-services").value;
-    const shortDescription = document.getElementById("proj-short-desc").value;
-    const description = document.getElementById("proj-desc").value;
-    const published = document.getElementById("proj-published").checked;
-    const featured = document.getElementById("proj-featured").checked;
+    try {
+      const id = document.getElementById("proj-id").value;
+      const name = document.getElementById("proj-name").value;
+      const category = document.getElementById("proj-category").value;
+      const slug = document.getElementById("proj-slug").value || RS_DB.generateSlug(name);
+      const location = document.getElementById("proj-location").value;
+      const year = document.getElementById("proj-year").value;
+      const services = document.getElementById("proj-services").value;
+      const shortDescription = document.getElementById("proj-short-desc").value;
+      const description = document.getElementById("proj-desc").value;
+      const published = document.getElementById("proj-published").checked;
+      const featured = document.getElementById("proj-featured").checked;
 
-    if (!currentCoverData && currentGalleryData.length > 0) {
-      currentCoverData = currentGalleryData[0];
+      if (!currentCoverData && currentGalleryData.length > 0) {
+        currentCoverData = currentGalleryData[0];
+      }
+
+      const projectData = {
+        id: id || undefined,
+        name,
+        slug,
+        category,
+        coverImage: currentCoverData,
+        galleryImages: currentGalleryData,
+        shortDescription,
+        description,
+        location,
+        year,
+        services,
+        published,
+        featured
+      };
+
+      await RS_DB.saveProject(projectData);
+      closeProjectModal();
+      renderProjectsTable();
+    } catch (err) {
+      console.error("Save project error:", err);
+      alert("Failed to save project: " + (err.message || "Unknown error"));
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Save Project";
     }
-
-    const projectData = {
-      id: id || undefined,
-      name,
-      slug,
-      category,
-      coverImage: currentCoverData,
-      galleryImages: currentGalleryData,
-      shortDescription,
-      description,
-      location,
-      year,
-      services,
-      published,
-      featured
-    };
-
-    await RS_DB.saveProject(projectData);
-
-    btn.disabled = false;
-    btn.textContent = "Save Project";
-    closeProjectModal();
-    renderProjectsTable();
   }
 
   async function editProject(id) {
