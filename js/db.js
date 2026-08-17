@@ -346,7 +346,9 @@ const DB = {
 
         return this.getProjectById(projectId);
       } catch (err) {
-        console.error("Supabase error saving project, falling back to local store:", err);
+        console.error("Supabase error saving project:", err);
+        alert("Project save error: " + (err.message || "Failed to write to database"));
+        throw err;
       }
     }
 
