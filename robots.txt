@@ -1,12 +1,11 @@
 # Robots.txt for Riddhi Siddhi Fabricator
 User-agent: *
 Allow: /
-Allow: /index.html
-Allow: /projects.html
-Allow: /project.html
-Allow: /quote.html
+Allow: /assets/
+Allow: /frames/
+Allow: /js/
 Disallow: /admin.html
 Disallow: /admin
 
 # Sitemap
-Sitemap: https://riddhisiddhifabricator.com/sitemap.xml
+Sitemap: https://riddhisiddhifabricator.vercel.app/sitemap.xml

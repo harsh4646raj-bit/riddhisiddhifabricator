@@ -1,9 +1,20 @@
-# Sensitive credentials and environment files
-serviceAccountKey.json
-*.serviceAccount.json
+# Sensitive credentials & environment keys
 .env
-.env.local
-.env.*.local
+.env.*
 *.key
 *.pem
+serviceAccountKey.json
+*.serviceAccount.json
+
+# Heavy external archives & raw media (outside web root)
+_raw_media/
+_archive/
+
+# Local Python test suites
 tools/
+
+# OS / Editor temporary files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

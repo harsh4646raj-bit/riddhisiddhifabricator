@@ -3,8 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Project Details — Riddhi Siddhi Fabricator</title>
-<meta name="description" content="Explore this custom architectural fabrication project by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar.">
+<title>Project Details — Riddhi Siddhi Fabricator, Muzaffarpur</title>
+<meta name="description" content="Explore custom architectural fabrication projects in aluminium, uPVC, and steel by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar.">
+<link rel="icon" type="image/jpeg" href="Logo.jpeg">
+<link id="canonical-url" rel="canonical" href="https://riddhisiddhifabricator.vercel.app/project">
+
+<!-- Geo / Location Metadata -->
+<meta name="geo.region" content="IN-BR">
+<meta name="geo.placename" content="Muzaffarpur">
+<meta name="geo.position" content="26.1530398;85.3694903">
+<meta name="ICBM" content="26.1530398, 85.3694903">
+
+<!-- Open Graph / Social Sharing -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Riddhi Siddhi Fabricator">
+<meta id="og-url" property="og:url" content="https://riddhisiddhifabricator.vercel.app/project">
+<meta id="og-title" property="og:title" content="Project Details — Riddhi Siddhi Fabricator, Muzaffarpur">
+<meta id="og-desc" property="og:description" content="Explore custom architectural fabrication projects in aluminium, uPVC, and steel by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar.">
+<meta id="og-img" property="og:image" content="https://riddhisiddhifabricator.vercel.app/Logo.jpeg">
+<meta property="og:image:alt" content="Riddhi Siddhi Fabricator Project Showcase">
+
+<!-- Twitter / X Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta id="tw-title" name="twitter:title" content="Project Details — Riddhi Siddhi Fabricator, Muzaffarpur">
+<meta id="tw-desc" name="twitter:description" content="Explore custom architectural fabrication projects in aluminium, uPVC, and steel by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar.">
+<meta id="tw-img" name="twitter:image" content="https://riddhisiddhifabricator.vercel.app/Logo.jpeg">
+<meta name="twitter:image:alt" content="Riddhi Siddhi Fabricator Project Showcase">
+
+<!-- Structured Data (JSON-LD) -->
+<script id="project-schema" type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://riddhisiddhifabricator.vercel.app/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Projects",
+          "item": "https://riddhisiddhifabricator.vercel.app/projects"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Project Details",
+          "item": "https://riddhisiddhifabricator.vercel.app/project"
+        }
+      ]
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -394,6 +450,15 @@
     .nav-links { display: none; }
     .nav-phone span { display: none; }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -411,7 +476,7 @@
 <!-- Navigation -->
 <nav id="mainnav">
   <a class="nav-logo" href="index.html">
-    <img src="Logo.jpeg" alt="Riddhi Siddhi">
+    <img src="Logo.jpeg" alt="Riddhi Siddhi Fabricator Logo">
     <span>Riddhi Siddhi</span>
   </a>
   <div class="nav-links">
@@ -458,7 +523,7 @@
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-brand">
-      <img src="Logo.jpeg" alt="Riddhi Siddhi">
+      <img src="Logo.jpeg" alt="Riddhi Siddhi Fabricator Logo">
       <span>Riddhi Siddhi Fabricator</span>
     </div>
     <div class="footer-copy">
@@ -502,13 +567,81 @@
       return;
     }
 
-    // Document Title
-    document.title = `${project.name} (${project.category.toUpperCase()}) — Riddhi Siddhi Fabricator`;
+    // Document Title & Dynamic SEO Metadata
+    const projectTitle = `${project.name} (${project.category.toUpperCase()}) — Riddhi Siddhi Fabricator`;
+    const projectDesc = project.shortDescription || `Explore ${project.name}, a custom architectural fabrication project by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar.`;
+    const canonicalHref = `https://riddhisiddhifabricator.vercel.app/project?category=${encodeURIComponent(project.category)}&slug=${encodeURIComponent(project.slug)}`;
+
+    document.title = projectTitle;
+    document.getElementById("canonical-url")?.setAttribute("href", canonicalHref);
+    document.getElementById("og-url")?.setAttribute("content", canonicalHref);
+    document.getElementById("og-title")?.setAttribute("content", projectTitle);
+    document.getElementById("og-desc")?.setAttribute("content", projectDesc);
+    document.getElementById("tw-title")?.setAttribute("content", projectTitle);
+    document.getElementById("tw-desc")?.setAttribute("content", projectDesc);
+
+    // Update Dynamic Schema (CreativeWork & BreadcrumbList)
+    const schemaEl = document.getElementById("project-schema");
+    if (schemaEl) {
+      const dynamicSchema = {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "BreadcrumbList",
+            "@id": `${canonicalHref}#breadcrumb`,
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://riddhisiddhifabricator.vercel.app/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": `${project.category.toUpperCase()} Projects`,
+                "item": `https://riddhisiddhifabricator.vercel.app/projects?category=${encodeURIComponent(project.category)}`
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": project.name,
+                "item": canonicalHref
+              }
+            ]
+          },
+          {
+            "@type": "CreativeWork",
+            "@id": `${canonicalHref}#work`,
+            "name": project.name,
+            "headline": project.name,
+            "description": projectDesc,
+            "url": canonicalHref,
+            "image": coverUrl ? (coverUrl.startsWith("http") ? coverUrl : `https://riddhisiddhifabricator.vercel.app/${coverUrl}`) : undefined,
+            "creator": {
+              "@type": ["LocalBusiness", "HomeAndConstructionBusiness"],
+              "@id": "https://riddhisiddhifabricator.vercel.app/#organization",
+              "name": "Riddhi Siddhi Fabricator",
+              "url": "https://riddhisiddhifabricator.vercel.app/"
+            },
+            "locationCreated": {
+              "@type": "Place",
+              "name": project.location || "Muzaffarpur, Bihar"
+            },
+            "material": project.material || project.category
+          }
+        ]
+      };
+      schemaEl.textContent = JSON.stringify(dynamicSchema, null, 2);
+    }
 
     // Collect all images (Cover + Gallery)
     allGalleryImages = [];
     const coverUrl = project.coverImage?.secure_url || project.coverImage?.url || project.coverImage?.thumbnail_url || (typeof project.coverImage === "string" ? project.coverImage : "");
     if (coverUrl) {
+      const absCover = coverUrl.startsWith("http") ? coverUrl : `https://riddhisiddhifabricator.vercel.app/${coverUrl}`;
+      document.getElementById("og-img")?.setAttribute("content", absCover);
+      document.getElementById("tw-img")?.setAttribute("content", absCover);
       allGalleryImages.push({ url: coverUrl, caption: project.name + " Cover" });
     }
     if (Array.isArray(project.galleryImages)) {

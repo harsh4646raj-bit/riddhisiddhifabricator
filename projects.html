@@ -3,13 +3,75 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Projects Portfolio — Riddhi Siddhi Fabricator</title>
-<meta name="description" content="Explore our fabrication projects in Aluminium, uPVC, and Steel. Precision engineering for modern homes and commercial spaces in Muzaffarpur, Bihar.">
+<title>Fabrication Projects Portfolio — Riddhi Siddhi Fabricator, Muzaffarpur</title>
+<meta name="description" content="Browse completed aluminium, uPVC, and steel fabrication projects in Muzaffarpur, Bihar. View photos and technical specifications for custom windows, doors, and gates.">
 <link rel="icon" type="image/jpeg" href="Logo.jpeg">
+<link rel="canonical" href="https://riddhisiddhifabricator.vercel.app/projects">
+
+<!-- Geo / Location Metadata -->
+<meta name="geo.region" content="IN-BR">
+<meta name="geo.placename" content="Muzaffarpur">
+<meta name="geo.position" content="26.1530398;85.3694903">
+<meta name="ICBM" content="26.1530398, 85.3694903">
+
+<!-- Open Graph / Social Sharing -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Fabrication Projects Portfolio — Riddhi Siddhi Fabricator">
-<meta property="og:description" content="Explore our completed projects across Aluminium, uPVC, and Steel fabrication.">
-<meta property="og:image" content="Logo.jpeg">
+<meta property="og:site_name" content="Riddhi Siddhi Fabricator">
+<meta property="og:url" content="https://riddhisiddhifabricator.vercel.app/projects">
+<meta property="og:title" content="Fabrication Projects Portfolio — Riddhi Siddhi Fabricator, Muzaffarpur">
+<meta property="og:description" content="Browse completed aluminium, uPVC, and steel fabrication projects in Muzaffarpur, Bihar. View photos and technical specifications for custom windows, doors, and gates.">
+<meta property="og:image" content="https://riddhisiddhifabricator.vercel.app/Logo.jpeg">
+<meta property="og:image:alt" content="Riddhi Siddhi Fabricator Official Logo">
+
+<!-- Twitter / X Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Fabrication Projects Portfolio — Riddhi Siddhi Fabricator">
+<meta name="twitter:description" content="Explore our fabrication projects in Aluminium, uPVC, and Steel. Precision engineering for modern homes and commercial spaces in Muzaffarpur, Bihar.">
+<meta name="twitter:image" content="https://riddhisiddhifabricator.vercel.app/Logo.jpeg">
+<meta name="twitter:image:alt" content="Riddhi Siddhi Fabricator Official Logo">
+
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://riddhisiddhifabricator.vercel.app/projects#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://riddhisiddhifabricator.vercel.app/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Projects",
+          "item": "https://riddhisiddhifabricator.vercel.app/projects"
+        }
+      ]
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": "https://riddhisiddhifabricator.vercel.app/projects#webpage",
+      "url": "https://riddhisiddhifabricator.vercel.app/projects",
+      "name": "Fabrication Projects Portfolio — Riddhi Siddhi Fabricator, Muzaffarpur",
+      "description": "Browse completed aluminium, uPVC, and steel fabrication projects in Muzaffarpur, Bihar. View photos and technical specifications for custom windows, doors, and gates.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://riddhisiddhifabricator.vercel.app/#website",
+        "url": "https://riddhisiddhifabricator.vercel.app/",
+        "name": "Riddhi Siddhi Fabricator"
+      },
+      "breadcrumb": {
+        "@id": "https://riddhisiddhifabricator.vercel.app/projects#breadcrumb"
+      }
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -351,6 +413,15 @@
     .nav-links { display: none; }
     .nav-phone span { display: none; }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -417,7 +488,7 @@
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-brand">
-      <img src="Logo.jpeg" alt="Riddhi Siddhi">
+      <img src="Logo.jpeg" alt="Riddhi Siddhi Fabricator Logo">
       <span>Riddhi Siddhi Fabricator</span>
     </div>
     <div class="footer-copy">
@@ -444,12 +515,12 @@
     steel: "Steel"
   };
   const categoryDescriptions = {
-    aluminium: "Explore our aluminium fabrication projects — lightweight, corrosion-resistant frames engineered to last.",
-    upvc: "Modern uPVC windows and doors built for superior thermal insulation, sound dampening, and comfort.",
-    steel: "Strong architectural steel fabrication — custom gates, structural railings, and protective elements."
+    aluminium: "Explore custom aluminium fabrication projects in Muzaffarpur — including 3-track sliding windows with mosquito mesh, casement doors, office glass partitions, and durable anodized structural frames.",
+    upvc: "Browse energy-efficient uPVC window and door installations in Bihar — featuring acoustic soundproofing, thermal insulation, multi-chamber profiles, and waterproof bathroom doors.",
+    steel: "View architectural stainless steel fabrication projects in Muzaffarpur — heavy-duty Jindal 304 SS main gates, CNC laser-cut entrance doors, staircase handrails, and glass balcony railings."
   };
 
-  document.title = `${categoryTitles[activeCategory]} Projects — Riddhi Siddhi Fabricator`;
+  document.title = `${categoryTitles[activeCategory]} Fabrication Projects — Riddhi Siddhi Fabricator, Muzaffarpur`;
   document.getElementById("category-title").textContent = categoryTitles[activeCategory] + " Projects";
   document.getElementById("category-desc").textContent = categoryDescriptions[activeCategory];
 
