@@ -468,10 +468,10 @@
 
   <!-- Category Switcher -->
   <div class="category-tabs">
+    <a class="cat-tab" id="tab-featured" href="projects.html?category=featured">Featured</a>
     <a class="cat-tab" id="tab-aluminium" href="projects.html?category=aluminium">Aluminium</a>
     <a class="cat-tab" id="tab-upvc" href="projects.html?category=upvc">uPVC</a>
     <a class="cat-tab" id="tab-steel" href="projects.html?category=steel">Steel</a>
-    <a class="cat-tab" id="tab-featured" href="projects.html?category=featured">Featured</a>
   </div>
 
   <!-- Grid or Empty State Container -->
@@ -504,24 +504,24 @@
 <script>
   // Parse active category from URL
   const urlParams = new URLSearchParams(window.location.search);
-  const validCategories = ["aluminium", "upvc", "steel", "featured"];
-  let activeCategory = (urlParams.get("category") || "aluminium").toLowerCase().trim();
+  const validCategories = ["featured", "aluminium", "upvc", "steel"];
+  let activeCategory = (urlParams.get("category") || "featured").toLowerCase().trim();
   if (!validCategories.includes(activeCategory)) {
-    activeCategory = "aluminium";
+    activeCategory = "featured";
   }
 
   // Update Category Header & Title
   const categoryTitles = {
+    featured: "Featured",
     aluminium: "Aluminium",
     upvc: "uPVC",
-    steel: "Steel",
-    featured: "Featured"
+    steel: "Steel"
   };
   const categoryDescriptions = {
+    featured: "Explore our curated showcase of master craftsmanship across aluminium, uPVC, and stainless steel architectural installations in Bihar.",
     aluminium: "Explore custom aluminium fabrication projects in Muzaffarpur — including 3-track sliding windows with mosquito mesh, casement doors, office glass partitions, and durable anodized structural frames.",
     upvc: "Browse energy-efficient uPVC window and door installations in Bihar — featuring acoustic soundproofing, thermal insulation, multi-chamber profiles, and waterproof bathroom doors.",
-    steel: "View architectural stainless steel fabrication projects in Muzaffarpur — heavy-duty Jindal 304 SS main gates, CNC laser-cut entrance doors, staircase handrails, and glass balcony railings.",
-    featured: "Explore our curated showcase of master craftsmanship across aluminium, uPVC, and stainless steel architectural installations in Bihar."
+    steel: "View architectural stainless steel fabrication projects in Muzaffarpur — heavy-duty Jindal 304 SS main gates, CNC laser-cut entrance doors, staircase handrails, and glass balcony railings."
   };
 
   document.title = `${categoryTitles[activeCategory]} Fabrication Projects — Riddhi Siddhi Fabricator, Muzaffarpur`;
