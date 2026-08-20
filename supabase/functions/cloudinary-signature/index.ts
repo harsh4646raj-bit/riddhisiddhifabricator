@@ -49,22 +49,27 @@ serve(async (req) => {
       });
     }
 
-    // Check admin profile if profiles table exists and has records
+    // Check admin profile
     const { data: profile, error: profileErr } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", user.id)
       .maybeSingle();
 
-    if (profile && profile.role !== "admin") {
-      return new Response(JSON.stringify({ error: "Forbidden: Admin access required" }), {
+    if (profileErr || !profile || profile.role !== "admin") {
+      return new Response(JSON.stringify({ error: "Forbidden: Verified admin role required" }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // 2. Generate Cloudinary Signature
-    const { folder } = await req.json().catch(() => ({ folder: "riddhi-siddhi/projects" }));
+    // 2. Generate Cloudinary Signature with Whitelisted Folder Path
+    const body = await req.json().catch(() => ({ folder: "riddhi-siddhi/projects" }));
+    const rawFolder = typeof body?.folder === "string" ? body.folder.trim() : "riddhi-siddhi/projects";
+    
+    // Strict whitelist: Only allow approved project & lead image upload destinations
+    const ALLOWED_FOLDER_PATTERN = /^riddhi-siddhi\/(projects(\/(covers|gallery))?|leads|uploads)$/;
+    const folder = ALLOWED_FOLDER_PATTERN.test(rawFolder) ? rawFolder : "riddhi-siddhi/projects";
     const timestamp = Math.round(new Date().getTime() / 1000);
 
     // Cloudinary signature is SHA-1 of sorted query string parameters + api_secret
@@ -88,8 +93,9 @@ serve(async (req) => {
         status: 200,
       }
     );
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+  } catch (error: any) {
+    console.error("cloudinary-signature error:", error?.message || error);
+    return new Response(JSON.stringify({ error: "Failed to generate upload signature. Please try again." }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });

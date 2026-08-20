@@ -490,7 +490,7 @@
       <div class="form-grid">
         <div class="form-group full">
           <label>Project Name *</label>
-          <input type="text" id="proj-name" class="input" placeholder="e.g. Modern Aluminium Residence" required oninput="updateSlugPreview()">
+          <input type="text" id="proj-name" class="input" placeholder="e.g. Modern Aluminium Residence" maxlength="200" required oninput="updateSlugPreview()">
         </div>
 
         <div class="form-group">
@@ -504,32 +504,32 @@
 
         <div class="form-group">
           <label>URL Slug (Auto-generated)</label>
-          <input type="text" id="proj-slug" class="input" placeholder="modern-aluminium-residence">
+          <input type="text" id="proj-slug" class="input" placeholder="modern-aluminium-residence" maxlength="100">
         </div>
 
         <div class="form-group">
           <label>Location</label>
-          <input type="text" id="proj-location" class="input" placeholder="Muzaffarpur, Bihar">
+          <input type="text" id="proj-location" class="input" placeholder="Muzaffarpur, Bihar" maxlength="100">
         </div>
 
         <div class="form-group">
           <label>Year</label>
-          <input type="text" id="proj-year" class="input" placeholder="2026">
+          <input type="text" id="proj-year" class="input" placeholder="2026" maxlength="10">
         </div>
 
         <div class="form-group full">
           <label>Work / Services / Products Used</label>
-          <input type="text" id="proj-services" class="input" placeholder="e.g. Sliding Windows, Structural Glazing, Aluminium Doors">
+          <input type="text" id="proj-services" class="input" placeholder="e.g. Sliding Windows, Structural Glazing, Aluminium Doors" maxlength="200">
         </div>
 
         <div class="form-group full">
           <label>Short Description (Card Summary)</label>
-          <input type="text" id="proj-short-desc" class="input" placeholder="Brief summary displayed on project cards">
+          <input type="text" id="proj-short-desc" class="input" placeholder="Brief summary displayed on project cards" maxlength="500">
         </div>
 
         <div class="form-group full">
           <label>Full Project Description</label>
-          <textarea id="proj-desc" placeholder="Detailed architectural description, client requirements, specifications..."></textarea>
+          <textarea id="proj-desc" placeholder="Detailed architectural description, client requirements, specifications..." maxlength="5000"></textarea>
         </div>
 
         <!-- Cover Image Upload -->
@@ -538,7 +538,7 @@
           <div class="dropzone" id="cover-dropzone" onclick="document.getElementById('cover-file-input').click()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
             <p id="cover-dropzone-text">Click to select Cover Photograph (JPEG/PNG/WebP)</p>
-            <input type="file" id="cover-file-input" accept="image/*" style="position: absolute; opacity: 0; width: 1px; height: 1px;" onchange="handleCoverSelect(event)">
+            <input type="file" id="cover-file-input" accept="image/jpeg,image/png,image/webp,image/avif" style="position: absolute; opacity: 0; width: 1px; height: 1px;" onchange="handleCoverSelect(event)">
           </div>
           <div id="cover-preview-container" class="preview-strip"></div>
         </div>
@@ -549,7 +549,7 @@
           <div class="dropzone" id="gallery-dropzone" onclick="document.getElementById('gallery-file-input').click()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             <p id="gallery-dropzone-text">Click to upload additional photos for the project gallery</p>
-            <input type="file" id="gallery-file-input" accept="image/*" multiple style="position: absolute; opacity: 0; width: 1px; height: 1px;" onchange="handleGallerySelect(event)">
+            <input type="file" id="gallery-file-input" accept="image/jpeg,image/png,image/webp,image/avif" multiple style="position: absolute; opacity: 0; width: 1px; height: 1px;" onchange="handleGallerySelect(event)">
           </div>
           <div id="gallery-preview-container" class="preview-strip"></div>
         </div>
@@ -632,19 +632,45 @@
     }
   }
 
+  // ── Brute Force Rate Limiter for Admin Login ──
+  let loginAttempts = 0;
+  let lockoutUntil = 0;
+
   async function handleLogin(e) {
     e.preventDefault();
+    const now = Date.now();
+    if (lockoutUntil > now) {
+      const remainingSec = Math.ceil((lockoutUntil - now) / 1000);
+      alert(`Too many failed login attempts. Please wait ${remainingSec} seconds before trying again.`);
+      return;
+    }
+
     const email = document.getElementById("admin-email").value.trim();
     const pass = document.getElementById("admin-password").value;
+
+    if (!email || !pass) {
+      alert("Please enter both email and password.");
+      return;
+    }
+
     const btn = document.getElementById("login-btn");
     btn.disabled = true;
     btn.textContent = "Signing In...";
 
     try {
       await RS_Auth.login(email, pass);
+      loginAttempts = 0;
+      lockoutUntil = 0;
       await checkAuth();
     } catch (err) {
-      alert("Login failed: " + (err.message || "Invalid credentials. Please verify your admin email and password."));
+      loginAttempts += 1;
+      if (loginAttempts >= 5) {
+        lockoutUntil = Date.now() + 60 * 1000; // 60-second temporary lockout
+        loginAttempts = 0;
+        alert("Too many failed login attempts. Portal login temporarily locked for 60 seconds.");
+      } else {
+        alert("Login failed: " + (err.message || "Invalid credentials. Please verify your admin email and password."));
+      }
     } finally {
       btn.disabled = false;
       btn.textContent = "Sign In";

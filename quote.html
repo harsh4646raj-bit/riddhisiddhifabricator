@@ -484,7 +484,7 @@
       <div class="form-grid">
         <div class="form-group full" id="group-name">
           <label>Full Name <span class="req">*</span></label>
-          <input type="text" id="cust-name" class="input" placeholder="e.g. Rahul Kumar" required>
+          <input type="text" id="cust-name" class="input" placeholder="e.g. Rahul Kumar" maxlength="100" required>
           <span class="field-error">Please enter your full name.</span>
         </div>
 
@@ -532,13 +532,13 @@
 
         <div class="form-group" id="group-city">
           <label>City / District <span class="req">*</span></label>
-          <input type="text" id="cust-city" class="input" placeholder="e.g. Muzaffarpur" value="Muzaffarpur" required>
+          <input type="text" id="cust-city" class="input" placeholder="e.g. Muzaffarpur" value="Muzaffarpur" maxlength="100" required>
           <span class="field-error">Please enter your city.</span>
         </div>
 
         <div class="form-group">
           <label>Area / Locality</label>
-          <input type="text" id="cust-locality" class="input" placeholder="e.g. Mithanpura, Aamgola">
+          <input type="text" id="cust-locality" class="input" placeholder="e.g. Mithanpura, Aamgola" maxlength="150">
         </div>
       </div>
 
@@ -547,15 +547,15 @@
       <div class="form-grid">
         <div class="form-group full">
           <label>Tell Us About Your Project</label>
-          <textarea id="cust-message" placeholder="Tell us what you need, approximate size/quantity, preferred design, or anything else that will help us understand your project."></textarea>
+          <textarea id="cust-message" placeholder="Tell us what you need, approximate size/quantity, preferred design, or anything else that will help us understand your project." maxlength="2000"></textarea>
         </div>
 
         <div class="form-group full">
           <label>Reference Photographs / Drawings (Optional)</label>
           <div class="dropzone" onclick="document.getElementById('ref-file-input').click()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-            <p>Have a photo or blueprint you like? Click to upload reference images.</p>
-            <input type="file" id="ref-file-input" accept="image/*" multiple style="display: none;" onchange="handleReferenceSelect(event)">
+            <p>Have a photo or blueprint you like? Click to upload reference images (JPEG/PNG/WebP).</p>
+            <input type="file" id="ref-file-input" accept="image/jpeg,image/png,image/webp,image/avif" multiple style="display: none;" onchange="handleReferenceSelect(event)">
           </div>
           <div id="ref-preview-container" class="preview-strip"></div>
         </div>
@@ -726,9 +726,20 @@
     renderRefPreviews();
   }
 
+  // ── Client-side Quote Submission Rate Limiter ──
+  let lastQuoteSubmitTime = 0;
+  const SUBMISSION_COOLDOWN_MS = 15000; // 15 seconds cooldown between submissions
+
   // Form Validation & Submit
   async function handleQuoteSubmit(e) {
     e.preventDefault();
+
+    const now = Date.now();
+    if (now - lastQuoteSubmitTime < SUBMISSION_COOLDOWN_MS) {
+      const waitSec = Math.ceil((SUBMISSION_COOLDOWN_MS - (now - lastQuoteSubmitTime)) / 1000);
+      alert(`Please wait ${waitSec} seconds before submitting another enquiry.`);
+      return;
+    }
 
     const nameEl = document.getElementById("cust-name");
     const phoneEl = document.getElementById("cust-phone");
@@ -737,7 +748,7 @@
     let isValid = true;
 
     // Validate Name
-    if (!nameEl.value.trim()) {
+    if (!nameEl.value.trim() || nameEl.value.trim().length < 2) {
       document.getElementById("group-name").classList.add("has-error");
       isValid = false;
     } else {
@@ -804,6 +815,7 @@
       };
 
       await RS_DB.createLead(leadData);
+      lastQuoteSubmitTime = Date.now();
 
       // Generate dynamic WhatsApp link
       const workStr = selectedWorkTypes.length > 0 ? selectedWorkTypes.join(", ") : category;

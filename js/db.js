@@ -135,6 +135,35 @@ const DB = {
   // Upload image to Cloudinary (or IndexedDB in demo mode)
   async uploadImage(file, folder = "riddhi-siddhi/projects") {
     await this.init();
+
+    if (!file || typeof file !== "object") {
+      throw new Error("Invalid file provided for upload.");
+    }
+
+    // ── Security Check 1: File Size Limit (Max 10 MB) ──
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    if (file.size > MAX_FILE_SIZE) {
+      throw new Error(`File "${file.name}" exceeds maximum allowed size (10 MB).`);
+    }
+
+    // ── Security Check 2: MIME Type Whitelist ──
+    const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/jpg"];
+    if (!ALLOWED_MIME_TYPES.includes((file.type || "").toLowerCase())) {
+      throw new Error(`Invalid file type "${file.type}". Only JPEG, PNG, WebP, and AVIF images are permitted.`);
+    }
+
+    // ── Security Check 3: File Extension Whitelist (Reject dangerous/executable files) ──
+    const fileName = (file.name || "").toLowerCase();
+    const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".avif"];
+    const hasAllowedExt = ALLOWED_EXTENSIONS.some(ext => fileName.endsWith(ext));
+    if (!hasAllowedExt) {
+      throw new Error(`Invalid file extension for "${file.name}". Only .jpg, .jpeg, .png, .webp, and .avif images are permitted.`);
+    }
+
+    // ── Security Check 4: Folder Whitelist ──
+    const ALLOWED_FOLDER_PATTERN = /^riddhi-siddhi\/(projects(\/(covers|gallery))?|leads|uploads)$/;
+    const targetFolder = ALLOWED_FOLDER_PATTERN.test(folder) ? folder : "riddhi-siddhi/projects";
+
     const id = "img_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6);
     const cloudName = window.RS_BACKEND_CONFIG?.cloudinaryCloudName;
 
@@ -145,14 +174,14 @@ const DB = {
 
         const formData = new FormData();
         formData.append("file", optimizedFile);
-        formData.append("folder", folder);
+        formData.append("folder", targetFolder);
 
         let isSigned = false;
 
         // Try getting signature from Supabase Edge Function if user is logged in
         if (AdminAuth.isAuthenticated()) {
           const { data: signData, error: signErr } = await this._supabase.functions.invoke("cloudinary-signature", {
-            body: { folder }
+            body: { folder: targetFolder }
           });
           if (signErr) {
             console.error("Supabase signature error:", signErr);
@@ -357,21 +386,35 @@ const DB = {
 
   async saveProject(projectData) {
     await this.init();
+    if (!projectData || typeof projectData !== "object") {
+      throw new Error("Invalid project data provided.");
+    }
+
+    const name = String(projectData.name || "").trim().substring(0, 200);
+    if (!name || name.length < 2) {
+      throw new Error("Project name is required (minimum 2 characters).");
+    }
+
+    const ALLOWED_CATEGORIES = ["aluminium", "upvc", "steel"];
+    const rawCategory = String(projectData.category || "aluminium").toLowerCase().trim();
+    const cleanCategory = ALLOWED_CATEGORIES.includes(rawCategory) ? rawCategory : "aluminium";
+
+    const rawSlug = projectData.slug ? this.generateSlug(projectData.slug) : this.generateSlug(name);
+    const slug = rawSlug.substring(0, 100);
+
     const isNew = !projectData.id;
-    const cleanCategory = (projectData.category || "aluminium").toLowerCase().trim();
-    const slug = projectData.slug ? this.generateSlug(projectData.slug) : this.generateSlug(projectData.name);
 
     if (this.isSupabaseMode()) {
       try {
         const projectPayload = {
-          name: projectData.name || "Untitled Project",
+          name,
           slug,
           category: cleanCategory,
-          short_description: projectData.shortDescription || "",
-          description: projectData.description || "",
-          location: projectData.location || "",
-          year: projectData.year || String(new Date().getFullYear()),
-          services: projectData.services || "",
+          short_description: String(projectData.shortDescription || "").trim().substring(0, 500),
+          description: String(projectData.description || "").trim().substring(0, 5000),
+          location: String(projectData.location || "").trim().substring(0, 100),
+          year: String(projectData.year || new Date().getFullYear()).trim().substring(0, 10),
+          services: String(projectData.services || "").trim().substring(0, 200),
           featured: Boolean(projectData.featured),
           published: Boolean(projectData.published) // Default to false if unset
         };
@@ -876,10 +919,10 @@ const AdminAuth = {
       if (!error && data) {
         this.userProfile = data;
       } else {
-        this.userProfile = { role: "admin" };
+        this.userProfile = { role: "user" };
       }
     } catch (e) {
-      this.userProfile = { role: "admin" };
+      this.userProfile = { role: "user" };
     }
   },
 
