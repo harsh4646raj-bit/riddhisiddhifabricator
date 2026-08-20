@@ -332,15 +332,24 @@ const DB = {
     return (
       all.find(
         (p) =>
-          (p.category || "").toLowerCase() === catLower &&
+          (!catLower || (p.category || "").toLowerCase() === catLower) &&
           (p.slug || "").toLowerCase() === slugLower
-      ) || null
+      ) ||
+      all.find((p) => (p.slug || "").toLowerCase() === slugLower) ||
+      all.find((p) => String(p.id) === slugLower) ||
+      null
     );
   },
 
   async getProjectById(id) {
+    if (!id) return null;
+    const cleanId = String(id).trim().toLowerCase();
     const all = await this.getAllProjects(false);
-    return all.find((p) => String(p.id) === String(id)) || null;
+    return (
+      all.find((p) => String(p.id).toLowerCase() === cleanId) ||
+      all.find((p) => (p.slug || "").toLowerCase() === cleanId) ||
+      null
+    );
   },
 
   async saveProject(projectData) {

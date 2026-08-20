@@ -540,218 +540,245 @@
   let currentImageIndex = 0;
 
   async function initProjectPage() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const category = urlParams.get("category");
-    const slug = urlParams.get("slug");
-    const id = urlParams.get("id");
-
     const container = document.getElementById("project-container");
+    if (!container) return;
 
-    let project = null;
-    if (category && slug) {
-      project = await RS_DB.getProjectBySlug(category, slug);
-    } else if (id) {
-      project = await RS_DB.getProjectById(id);
-    }
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const category = (urlParams.get("category") || "").trim();
+      const slug = (urlParams.get("slug") || "").trim();
+      const id = (urlParams.get("id") || "").trim();
 
-    if (!project) {
+      let project = null;
+      if (category && slug) {
+        project = await RS_DB.getProjectBySlug(category, slug);
+      }
+      if (!project && slug) {
+        project = await RS_DB.getProjectBySlug("", slug);
+      }
+      if (!project && id) {
+        project = await RS_DB.getProjectById(id);
+      }
+
+      if (!project) {
+        container.innerHTML = `
+          <div class="not-found">
+            <h2>Project Not Found</h2>
+            <p>The project you are looking for does not exist or is currently unpublished.</p>
+            <a class="btn-inquire" href="projects.html?category=${encodeURIComponent(category || 'aluminium')}">
+              &larr; View ${category ? category.toUpperCase() : 'ALL'} Projects
+            </a>
+          </div>
+        `;
+        return;
+      }
+
+      // Collect all images (Cover + Gallery) FIRST to prevent reference errors
+      allGalleryImages = [];
+      const rawCover = project.coverImage || {};
+      const coverUrl = rawCover.secure_url || rawCover.url || rawCover.thumbnail_url || (typeof rawCover === "string" ? rawCover : "");
+
+      if (coverUrl) {
+        const absCover = coverUrl.startsWith("http") ? coverUrl : `https://riddhisiddhifabricator.vercel.app/${coverUrl}`;
+        document.getElementById("og-img")?.setAttribute("content", absCover);
+        document.getElementById("tw-img")?.setAttribute("content", absCover);
+        allGalleryImages.push({ url: coverUrl, caption: project.name + " Cover" });
+      }
+
+      if (Array.isArray(project.galleryImages)) {
+        project.galleryImages.forEach((img, idx) => {
+          const url = img?.secure_url || img?.url || img?.thumbnail_url || (typeof img === "string" ? img : "");
+          if (url && url !== coverUrl) {
+            allGalleryImages.push({ url, caption: img?.caption || img?.alt_text || `${project.name} Photo ${idx + 1}` });
+          }
+        });
+      }
+
+      // Document Title & Dynamic SEO Metadata
+      const catUpper = (project.category || "Fabrication").toUpperCase();
+      const projectTitle = `${project.name} (${catUpper}) — Riddhi Siddhi Fabricator`;
+      const projectDesc = project.shortDescription || `Explore ${project.name}, a custom architectural fabrication project by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar.`;
+      const canonicalHref = `https://riddhisiddhifabricator.vercel.app/project?category=${encodeURIComponent(project.category)}&slug=${encodeURIComponent(project.slug)}`;
+
+      document.title = projectTitle;
+      document.getElementById("canonical-url")?.setAttribute("href", canonicalHref);
+      document.getElementById("og-url")?.setAttribute("content", canonicalHref);
+      document.getElementById("og-title")?.setAttribute("content", projectTitle);
+      document.getElementById("og-desc")?.setAttribute("content", projectDesc);
+      document.getElementById("tw-title")?.setAttribute("content", projectTitle);
+      document.getElementById("tw-desc")?.setAttribute("content", projectDesc);
+
+      // Update Dynamic Schema (CreativeWork & BreadcrumbList)
+      const schemaEl = document.getElementById("project-schema");
+      if (schemaEl) {
+        const dynamicSchema = {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "BreadcrumbList",
+              "@id": `${canonicalHref}#breadcrumb`,
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://riddhisiddhifabricator.vercel.app/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": `${catUpper} Projects`,
+                  "item": `https://riddhisiddhifabricator.vercel.app/projects?category=${encodeURIComponent(project.category)}`
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": project.name,
+                  "item": canonicalHref
+                }
+              ]
+            },
+            {
+              "@type": "CreativeWork",
+              "@id": `${canonicalHref}#work`,
+              "name": project.name,
+              "headline": project.name,
+              "description": projectDesc,
+              "url": canonicalHref,
+              "image": coverUrl ? (coverUrl.startsWith("http") ? coverUrl : `https://riddhisiddhifabricator.vercel.app/${coverUrl}`) : undefined,
+              "creator": {
+                "@type": ["LocalBusiness", "HomeAndConstructionBusiness"],
+                "@id": "https://riddhisiddhifabricator.vercel.app/#organization",
+                "name": "Riddhi Siddhi Fabricator",
+                "url": "https://riddhisiddhifabricator.vercel.app/"
+              },
+              "locationCreated": {
+                "@type": "Place",
+                "name": project.location || "Muzaffarpur, Bihar"
+              },
+              "material": project.material || project.category
+            }
+          ]
+        };
+        schemaEl.textContent = JSON.stringify(dynamicSchema, null, 2);
+      }
+
+      // WhatsApp Message URL
+      const waText = encodeURIComponent(
+        `Hi Riddhi Siddhi Fabricator, I am inquiring about your ${catUpper} project: "${project.name}" (${window.location.href}). Could you provide more details and pricing?`
+      );
+      const waUrl = `https://wa.me/919771086644?text=${waText}`;
+
+      // Render Project HTML
+      container.innerHTML = `
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="sep">&rsaquo;</span>
+          <a href="projects.html?category=${encodeURIComponent(project.category)}">${escapeHtml(project.category)}</a>
+          <span class="sep">&rsaquo;</span>
+          <span style="color: var(--text);">${escapeHtml(project.name)}</span>
+        </div>
+
+        <!-- Hero Cover Image -->
+        ${coverUrl ? `
+          <div class="project-cover-container" onclick="openLightbox(0)" style="cursor: pointer;">
+            <img class="project-cover-img" src="${coverUrl}" alt="${escapeHtml(project.name)}" onerror="this.parentElement.style.display='none'">
+          </div>
+        ` : ""}
+
+        <!-- Main Grid: Info + Specs -->
+        <div class="project-main-grid">
+          <div class="project-info-col">
+            <span class="project-category-badge">${escapeHtml(project.category)}</span>
+            <h1 class="project-title">${escapeHtml(project.name)}</h1>
+            ${project.shortDescription ? `<p class="project-lead">${escapeHtml(project.shortDescription)}</p>` : ""}
+            ${project.description ? `<div class="project-full-desc">${escapeHtml(project.description)}</div>` : ""}
+          </div>
+
+          <div class="specs-card">
+            <h3>Project Specifications</h3>
+            
+            <div class="spec-item">
+              <span class="spec-label">Material Category</span>
+              <span class="spec-value" style="text-transform: capitalize;">${escapeHtml(project.category)}</span>
+            </div>
+
+            ${project.location ? `
+              <div class="spec-item">
+                <span class="spec-label">Location</span>
+                <span class="spec-value">${escapeHtml(project.location)}</span>
+              </div>
+            ` : ""}
+
+            ${project.services ? `
+              <div class="spec-item">
+                <span class="spec-label">Work / Services</span>
+                <span class="spec-value">${escapeHtml(project.services)}</span>
+              </div>
+            ` : ""}
+
+            ${project.year ? `
+              <div class="spec-item">
+                <span class="spec-label">Year</span>
+                <span class="spec-value">${escapeHtml(project.year)}</span>
+              </div>
+            ` : ""}
+
+            <div class="project-actions">
+              <a class="btn-inquire" href="quote.html?material=${encodeURIComponent(project.category)}&project=${encodeURIComponent(project.name)}">
+                Request a Similar Project
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </a>
+              <a class="btn-share" href="${waUrl}" target="_blank" rel="noopener" style="text-decoration: none;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                Inquire via WhatsApp
+              </a>
+              <button class="btn-share" data-title="${escapeHtml(project.name)}" onclick="shareProject(this.dataset.title)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                Share Project
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Gallery Section -->
+        ${allGalleryImages.length > 1 ? `
+          <div class="gallery-section">
+            <div class="gallery-header">
+              <h2>Project Photographs</h2>
+              <p>Click any photograph to inspect in full resolution.</p>
+            </div>
+            <div class="gallery-grid">
+              ${allGalleryImages.map((img, idx) => `
+                <div class="gallery-item" onclick="openLightbox(${idx})">
+                  <img class="gallery-thumb" src="${img.url}" alt="${escapeHtml(img.caption)}" loading="lazy" onerror="this.parentElement.style.display='none'">
+                  <div class="gallery-item-overlay">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        ` : ""}
+      `;
+    } catch (err) {
+      console.error("Failed to load project details:", err);
       container.innerHTML = `
         <div class="not-found">
-          <h2>Project Not Found</h2>
-          <p>The project you are looking for does not exist or is currently unpublished.</p>
-          <a class="btn-inquire" href="projects.html?category=${encodeURIComponent(category || 'aluminium')}">
-            &larr; View ${category ? category.toUpperCase() : 'ALL'} Projects
-          </a>
+          <h2>Unable to Load Project</h2>
+          <p>An unexpected error occurred while loading project details. Please try refreshing or return to our projects gallery.</p>
+          <div style="display: flex; gap: 14px; justify-content: center; margin-top: 24px; flex-wrap: wrap;">
+            <button class="btn-inquire" onclick="location.reload()" style="cursor: pointer;">
+              Retry Loading
+            </button>
+            <a class="btn-inquire" href="projects.html" style="background: rgba(185,168,172,0.12); color: var(--text);">
+              &larr; Browse All Projects
+            </a>
+          </div>
         </div>
       `;
-      return;
     }
-
-    // Document Title & Dynamic SEO Metadata
-    const projectTitle = `${project.name} (${project.category.toUpperCase()}) — Riddhi Siddhi Fabricator`;
-    const projectDesc = project.shortDescription || `Explore ${project.name}, a custom architectural fabrication project by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar.`;
-    const canonicalHref = `https://riddhisiddhifabricator.vercel.app/project?category=${encodeURIComponent(project.category)}&slug=${encodeURIComponent(project.slug)}`;
-
-    document.title = projectTitle;
-    document.getElementById("canonical-url")?.setAttribute("href", canonicalHref);
-    document.getElementById("og-url")?.setAttribute("content", canonicalHref);
-    document.getElementById("og-title")?.setAttribute("content", projectTitle);
-    document.getElementById("og-desc")?.setAttribute("content", projectDesc);
-    document.getElementById("tw-title")?.setAttribute("content", projectTitle);
-    document.getElementById("tw-desc")?.setAttribute("content", projectDesc);
-
-    // Update Dynamic Schema (CreativeWork & BreadcrumbList)
-    const schemaEl = document.getElementById("project-schema");
-    if (schemaEl) {
-      const dynamicSchema = {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": `${canonicalHref}#breadcrumb`,
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://riddhisiddhifabricator.vercel.app/"
-              },
-              {
-                "@type": "ListItem",
-                "position": 2,
-                "name": `${project.category.toUpperCase()} Projects`,
-                "item": `https://riddhisiddhifabricator.vercel.app/projects?category=${encodeURIComponent(project.category)}`
-              },
-              {
-                "@type": "ListItem",
-                "position": 3,
-                "name": project.name,
-                "item": canonicalHref
-              }
-            ]
-          },
-          {
-            "@type": "CreativeWork",
-            "@id": `${canonicalHref}#work`,
-            "name": project.name,
-            "headline": project.name,
-            "description": projectDesc,
-            "url": canonicalHref,
-            "image": coverUrl ? (coverUrl.startsWith("http") ? coverUrl : `https://riddhisiddhifabricator.vercel.app/${coverUrl}`) : undefined,
-            "creator": {
-              "@type": ["LocalBusiness", "HomeAndConstructionBusiness"],
-              "@id": "https://riddhisiddhifabricator.vercel.app/#organization",
-              "name": "Riddhi Siddhi Fabricator",
-              "url": "https://riddhisiddhifabricator.vercel.app/"
-            },
-            "locationCreated": {
-              "@type": "Place",
-              "name": project.location || "Muzaffarpur, Bihar"
-            },
-            "material": project.material || project.category
-          }
-        ]
-      };
-      schemaEl.textContent = JSON.stringify(dynamicSchema, null, 2);
-    }
-
-    // Collect all images (Cover + Gallery)
-    allGalleryImages = [];
-    const coverUrl = project.coverImage?.secure_url || project.coverImage?.url || project.coverImage?.thumbnail_url || (typeof project.coverImage === "string" ? project.coverImage : "");
-    if (coverUrl) {
-      const absCover = coverUrl.startsWith("http") ? coverUrl : `https://riddhisiddhifabricator.vercel.app/${coverUrl}`;
-      document.getElementById("og-img")?.setAttribute("content", absCover);
-      document.getElementById("tw-img")?.setAttribute("content", absCover);
-      allGalleryImages.push({ url: coverUrl, caption: project.name + " Cover" });
-    }
-    if (Array.isArray(project.galleryImages)) {
-      project.galleryImages.forEach((img, idx) => {
-        const url = img?.secure_url || img?.url || img?.thumbnail_url || (typeof img === "string" ? img : "");
-        if (url && url !== coverUrl) {
-          allGalleryImages.push({ url, caption: img?.caption || img?.alt_text || `${project.name} Photo ${idx + 1}` });
-        }
-      });
-    }
-
-    // WhatsApp Message URL
-    const waText = encodeURIComponent(
-      `Hi Riddhi Siddhi Fabricator, I am inquiring about your ${project.category.toUpperCase()} project: "${project.name}" (${window.location.href}). Could you provide more details and pricing?`
-    );
-    const waUrl = `https://wa.me/919771086644?text=${waText}`;
-
-    // Render HTML
-    container.innerHTML = `
-      <!-- Breadcrumb -->
-      <div class="breadcrumb">
-        <a href="index.html">Home</a>
-        <span class="sep">&rsaquo;</span>
-        <a href="projects.html?category=${encodeURIComponent(project.category)}">${escapeHtml(project.category)}</a>
-        <span class="sep">&rsaquo;</span>
-        <span style="color: var(--text);">${escapeHtml(project.name)}</span>
-      </div>
-
-      <!-- Hero Cover Image -->
-      ${coverUrl ? `
-        <div class="project-cover-container" onclick="openLightbox(0)" style="cursor: pointer;">
-          <img class="project-cover-img" src="${coverUrl}" alt="${escapeHtml(project.name)}">
-        </div>
-      ` : ""}
-
-      <!-- Main Grid: Info + Specs -->
-      <div class="project-main-grid">
-        <div class="project-info-col">
-          <span class="project-category-badge">${escapeHtml(project.category)}</span>
-          <h1 class="project-title">${escapeHtml(project.name)}</h1>
-          ${project.shortDescription ? `<p class="project-lead">${escapeHtml(project.shortDescription)}</p>` : ""}
-          ${project.description ? `<div class="project-full-desc">${escapeHtml(project.description)}</div>` : ""}
-        </div>
-
-        <div class="specs-card">
-          <h3>Project Specifications</h3>
-          
-          <div class="spec-item">
-            <span class="spec-label">Material Category</span>
-            <span class="spec-value" style="text-transform: capitalize;">${escapeHtml(project.category)}</span>
-          </div>
-
-          ${project.location ? `
-            <div class="spec-item">
-              <span class="spec-label">Location</span>
-              <span class="spec-value">${escapeHtml(project.location)}</span>
-            </div>
-          ` : ""}
-
-          ${project.services ? `
-            <div class="spec-item">
-              <span class="spec-label">Work / Services</span>
-              <span class="spec-value">${escapeHtml(project.services)}</span>
-            </div>
-          ` : ""}
-
-          ${project.year ? `
-            <div class="spec-item">
-              <span class="spec-label">Year</span>
-              <span class="spec-value">${escapeHtml(project.year)}</span>
-            </div>
-          ` : ""}
-
-          <div class="project-actions">
-            <a class="btn-inquire" href="quote.html?material=${encodeURIComponent(project.category)}&project=${encodeURIComponent(project.name)}">
-              Request a Similar Project
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </a>
-            <a class="btn-share" href="${waUrl}" target="_blank" rel="noopener" style="text-decoration: none;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
-              Inquire via WhatsApp
-            </a>
-            <button class="btn-share" data-title="${escapeHtml(project.name)}" onclick="shareProject(this.dataset.title)">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-              Share Project
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Additional Gallery Section -->
-      ${allGalleryImages.length > 1 ? `
-        <div class="gallery-section">
-          <div class="gallery-header">
-            <h2>Project Photographs</h2>
-            <p>Click any photograph to inspect in full resolution.</p>
-          </div>
-          <div class="gallery-grid">
-            ${allGalleryImages.map((img, idx) => `
-              <div class="gallery-item" onclick="openLightbox(${idx})">
-                <img class="gallery-thumb" src="${img.url}" alt="${escapeHtml(img.caption)}" loading="lazy">
-                <div class="gallery-item-overlay">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-                </div>
-              </div>
-            `).join("")}
-          </div>
-        </div>
-      ` : ""}
-    `;
   }
 
   // ── Lightbox Logic ──
