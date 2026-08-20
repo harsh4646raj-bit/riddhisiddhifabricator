@@ -1,7 +1,10 @@
 # Cloudflare Pages Redirects & URL Rewrites
 
-# Clean admin URL rewrite
-/admin    /admin.html    200
+# Clean admin and page URL rewrites
+/admin       /admin.html       200
+/quote       /quote.html       200
+/projects    /projects.html    200
+/project     /project.html     200
 
 # Canonical clean URLs
-/home     /              301
+/home        /                 301

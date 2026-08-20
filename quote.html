@@ -75,6 +75,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/dist/umd/supabase.min.js"></script>
 <style>
   :root {
     --bg:           #0E0709;
@@ -612,8 +613,8 @@
   </div>
 </footer>
 
-<script src="js/backend-config.js"></script>
-<script src="js/db.js"></script>
+<script src="js/backend-config.js?v=3.0"></script>
+<script src="js/db.js?v=3.0"></script>
 <script>
   let referencePhotos = [];
 
@@ -637,6 +638,8 @@
       document.getElementById("ref-project-banner").style.display = "flex";
       document.getElementById("cust-message").value = `I am interested in a similar fabrication work as "${project}". Please share details and estimate.`;
     }
+
+    handleSameWhatsappToggle();
   }
 
   function clearRefProject() {
@@ -665,8 +668,9 @@
   // Sync WhatsApp with Phone if checked
   function syncWhatsapp() {
     const isSame = document.getElementById("same-whatsapp").checked;
+    const waInput = document.getElementById("cust-whatsapp");
     if (isSame) {
-      document.getElementById("cust-whatsapp").value = document.getElementById("cust-phone").value;
+      waInput.value = document.getElementById("cust-phone").value;
     }
   }
 
@@ -675,6 +679,14 @@
     const waInput = document.getElementById("cust-whatsapp");
     if (isSame) {
       waInput.value = document.getElementById("cust-phone").value;
+      waInput.readOnly = true;
+      waInput.style.opacity = "0.7";
+      waInput.style.cursor = "default";
+    } else {
+      waInput.readOnly = false;
+      waInput.style.opacity = "1";
+      waInput.style.cursor = "text";
+      waInput.focus();
     }
   }
 

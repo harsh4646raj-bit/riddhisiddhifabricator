@@ -120,7 +120,9 @@ function drawFrame(i) {
   const j = nearestDecoded(i);
   if (j < 0) return;
   const bmp = state.bitmaps.get(j);
+  if (!bmp || !bmp.width || !bmp.height) return;
   const cw = canvas.width, ch = canvas.height;
+  if (!cw || !ch) return;
 
   const aspectCanvas = cw / ch;
   const aspectBmp = bmp.width / bmp.height;
