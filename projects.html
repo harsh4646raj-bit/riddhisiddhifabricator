@@ -471,6 +471,7 @@
     <a class="cat-tab" id="tab-aluminium" href="projects.html?category=aluminium">Aluminium</a>
     <a class="cat-tab" id="tab-upvc" href="projects.html?category=upvc">uPVC</a>
     <a class="cat-tab" id="tab-steel" href="projects.html?category=steel">Steel</a>
+    <a class="cat-tab" id="tab-featured" href="projects.html?category=featured">Featured</a>
   </div>
 
   <!-- Grid or Empty State Container -->
@@ -503,8 +504,9 @@
 <script>
   // Parse active category from URL
   const urlParams = new URLSearchParams(window.location.search);
+  const validCategories = ["aluminium", "upvc", "steel", "featured"];
   let activeCategory = (urlParams.get("category") || "aluminium").toLowerCase().trim();
-  if (!["aluminium", "upvc", "steel"].includes(activeCategory)) {
+  if (!validCategories.includes(activeCategory)) {
     activeCategory = "aluminium";
   }
 
@@ -512,12 +514,14 @@
   const categoryTitles = {
     aluminium: "Aluminium",
     upvc: "uPVC",
-    steel: "Steel"
+    steel: "Steel",
+    featured: "Featured"
   };
   const categoryDescriptions = {
     aluminium: "Explore custom aluminium fabrication projects in Muzaffarpur — including 3-track sliding windows with mosquito mesh, casement doors, office glass partitions, and durable anodized structural frames.",
     upvc: "Browse energy-efficient uPVC window and door installations in Bihar — featuring acoustic soundproofing, thermal insulation, multi-chamber profiles, and waterproof bathroom doors.",
-    steel: "View architectural stainless steel fabrication projects in Muzaffarpur — heavy-duty Jindal 304 SS main gates, CNC laser-cut entrance doors, staircase handrails, and glass balcony railings."
+    steel: "View architectural stainless steel fabrication projects in Muzaffarpur — heavy-duty Jindal 304 SS main gates, CNC laser-cut entrance doors, staircase handrails, and glass balcony railings.",
+    featured: "Explore our curated showcase of master craftsmanship across aluminium, uPVC, and stainless steel architectural installations in Bihar."
   };
 
   document.title = `${categoryTitles[activeCategory]} Fabrication Projects — Riddhi Siddhi Fabricator, Muzaffarpur`;
@@ -540,6 +544,13 @@
       const projects = await RS_DB.getProjectsByCategory(activeCategory, true);
       
       if (!projects || projects.length === 0) {
+        const emptyTitle = activeCategory === "featured" 
+          ? "Featured Projects Coming Soon" 
+          : `${categoryTitles[activeCategory]} Projects Coming Soon`;
+        const emptyDesc = activeCategory === "featured"
+          ? "We’re currently selecting some of our finest fabrication projects to showcase here."
+          : `We are currently curating and uploading photographs of our recent ${categoryTitles[activeCategory]} projects. Please check back shortly or reach out to us directly.`;
+
         container.innerHTML = `
           <div class="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -547,8 +558,8 @@
               <circle cx="8.5" cy="8.5" r="1.5"/>
               <path d="M21 15l-5-5L5 21"/>
             </svg>
-            <h3>Projects Coming Soon</h3>
-            <p>We are currently curating and uploading photographs of our recent ${categoryTitles[activeCategory]} projects. Please check back shortly or reach out to us directly.</p>
+            <h3>${emptyTitle}</h3>
+            <p>${emptyDesc}</p>
           </div>
         `;
         return;

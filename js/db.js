@@ -322,6 +322,9 @@ const DB = {
   async getProjectsByCategory(category, onlyPublished = true) {
     const catLower = (category || "").toLowerCase().trim();
     const all = await this.getAllProjects(onlyPublished);
+    if (catLower === "featured") {
+      return all.filter((p) => Boolean(p.featured));
+    }
     return all.filter((p) => (p.category || "").toLowerCase() === catLower);
   },
 
