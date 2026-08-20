@@ -219,10 +219,18 @@ serve(async (req: Request) => {
     }
 
     const PHONE_REGEX = /^[0-9+() -]{10,20}$/;
-    const digitsOnly = phone.replace(/[^\d]/g, "");
-    if (!phone || !PHONE_REGEX.test(phone) || digitsOnly.length < 10) {
+    const phoneDigits = phone.replace(/[^\d]/g, "");
+    if (!phone || !PHONE_REGEX.test(phone) || phoneDigits.length < 10) {
       return new Response(
-        JSON.stringify({ success: false, error: "Please enter a valid 10-digit phone number." }),
+        JSON.stringify({ success: false, error: "Please enter a valid phone number with at least 10 digits." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const waDigits = whatsapp.replace(/[^\d]/g, "");
+    if (!whatsapp || !PHONE_REGEX.test(whatsapp) || waDigits.length < 10) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Please enter a valid WhatsApp number with at least 10 digits." }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }

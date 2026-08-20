@@ -540,6 +540,24 @@ const DB = {
 
   async createLead(leadData) {
     await this.init();
+    if (!leadData || typeof leadData !== "object") {
+      throw new Error("Invalid quote request data.");
+    }
+
+    const name = (leadData.name || "").trim().substring(0, 100);
+    const phone = (leadData.phone || "").trim().substring(0, 20);
+    const whatsapp = (leadData.whatsapp || leadData.phone || "").trim().substring(0, 20);
+
+    const phoneDigits = phone.replace(/[^\d]/g, "");
+    if (phoneDigits.length < 10) {
+      throw new Error("Phone number must have at least 10 digits.");
+    }
+
+    const waDigits = whatsapp.replace(/[^\d]/g, "");
+    if (waDigits.length < 10) {
+      throw new Error("WhatsApp number must have at least 10 digits.");
+    }
+
     const now = new Date().toISOString();
 
     if (this.isSupabaseMode()) {
@@ -547,9 +565,9 @@ const DB = {
         // 1. Try Supabase Edge Function (handles DB insert + instant Telegram notification)
         const { data, error } = await this._supabase.functions.invoke("submit-quote", {
           body: {
-            name: (leadData.name || "").trim(),
-            phone: (leadData.phone || "").trim(),
-            whatsapp: (leadData.whatsapp || leadData.phone || "").trim(),
+            name,
+            phone,
+            whatsapp,
             category: (leadData.category || "Not sure").trim(),
             workTypes: Array.isArray(leadData.workTypes) ? leadData.workTypes : [],
             city: (leadData.city || "Muzaffarpur").trim(),

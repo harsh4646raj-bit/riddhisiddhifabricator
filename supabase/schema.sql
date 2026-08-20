@@ -203,6 +203,16 @@ BEGIN
     RAISE EXCEPTION 'Name and Phone Number are required.';
   END IF;
 
+  -- Validate minimum 10 digits on phone number
+  IF LENGTH(REGEXP_REPLACE(TRIM(p_phone), '[^\d]', '', 'g')) < 10 THEN
+    RAISE EXCEPTION 'Phone number must contain at least 10 digits.';
+  END IF;
+
+  -- Validate minimum 10 digits on whatsapp number if provided
+  IF TRIM(p_whatsapp) <> '' AND LENGTH(REGEXP_REPLACE(TRIM(p_whatsapp), '[^\d]', '', 'g')) < 10 THEN
+    RAISE EXCEPTION 'WhatsApp number must contain at least 10 digits.';
+  END IF;
+
   -- Insert lead with forced server-controlled metadata
   INSERT INTO public.leads (
     name,

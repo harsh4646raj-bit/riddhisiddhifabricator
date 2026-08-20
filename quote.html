@@ -490,13 +490,14 @@
 
         <div class="form-group" id="group-phone">
           <label>Phone Number <span class="req">*</span></label>
-          <input type="tel" id="cust-phone" class="input" placeholder="e.g. 9876543210" required maxlength="15" oninput="syncWhatsapp()">
-          <span class="field-error">Please enter a valid 10-digit phone number.</span>
+          <input type="tel" id="cust-phone" class="input" placeholder="e.g. 9876543210" required minlength="10" maxlength="15" oninput="syncWhatsapp()">
+          <span class="field-error">Please enter a valid phone number (minimum 10 digits).</span>
         </div>
 
         <div class="form-group" id="group-whatsapp">
-          <label>WhatsApp Number</label>
-          <input type="tel" id="cust-whatsapp" class="input" placeholder="WhatsApp number" maxlength="15">
+          <label>WhatsApp Number <span class="req">*</span></label>
+          <input type="tel" id="cust-whatsapp" class="input" placeholder="e.g. 9876543210" minlength="10" maxlength="15" oninput="handleWhatsappInput()">
+          <span class="field-error">Please enter a valid WhatsApp number (minimum 10 digits).</span>
           <label class="checkbox-wrap">
             <input type="checkbox" id="same-whatsapp" checked onchange="handleSameWhatsappToggle()">
             <span class="checkbox-label">WhatsApp number is the same as my phone number</span>
@@ -669,19 +670,42 @@
   function syncWhatsapp() {
     const isSame = document.getElementById("same-whatsapp").checked;
     const waInput = document.getElementById("cust-whatsapp");
+    const phoneInput = document.getElementById("cust-phone");
+    const rawPhone = phoneInput.value.replace(/[^\d]/g, "");
+
+    if (rawPhone.length >= 10) {
+      document.getElementById("group-phone").classList.remove("has-error");
+    }
+
     if (isSame) {
-      waInput.value = document.getElementById("cust-phone").value;
+      waInput.value = phoneInput.value;
+      if (rawPhone.length >= 10) {
+        document.getElementById("group-whatsapp").classList.remove("has-error");
+      }
+    }
+  }
+
+  function handleWhatsappInput() {
+    const waInput = document.getElementById("cust-whatsapp");
+    const rawWa = waInput.value.replace(/[^\d]/g, "");
+    if (rawWa.length >= 10) {
+      document.getElementById("group-whatsapp").classList.remove("has-error");
     }
   }
 
   function handleSameWhatsappToggle() {
     const isSame = document.getElementById("same-whatsapp").checked;
     const waInput = document.getElementById("cust-whatsapp");
+    const phoneInput = document.getElementById("cust-phone");
+
     if (isSame) {
-      waInput.value = document.getElementById("cust-phone").value;
+      waInput.value = phoneInput.value;
       waInput.readOnly = true;
       waInput.style.opacity = "0.7";
       waInput.style.cursor = "default";
+      if (phoneInput.value.replace(/[^\d]/g, "").length >= 10) {
+        document.getElementById("group-whatsapp").classList.remove("has-error");
+      }
     } else {
       waInput.readOnly = false;
       waInput.style.opacity = "1";
@@ -743,11 +767,13 @@
 
     const nameEl = document.getElementById("cust-name");
     const phoneEl = document.getElementById("cust-phone");
+    const waEl = document.getElementById("cust-whatsapp");
     const cityEl = document.getElementById("cust-city");
+    const isSameWa = document.getElementById("same-whatsapp").checked;
 
     let isValid = true;
 
-    // Validate Name
+    // 1. Validate Name
     if (!nameEl.value.trim() || nameEl.value.trim().length < 2) {
       document.getElementById("group-name").classList.add("has-error");
       isValid = false;
@@ -755,7 +781,7 @@
       document.getElementById("group-name").classList.remove("has-error");
     }
 
-    // Validate Indian Phone Number (10 digits, starting 6-9, or with +91)
+    // 2. Strict Phone Number Validation (strictly at least 10 digits)
     const rawPhone = phoneEl.value.replace(/[^\d]/g, "");
     if (rawPhone.length < 10) {
       document.getElementById("group-phone").classList.add("has-error");
@@ -764,7 +790,17 @@
       document.getElementById("group-phone").classList.remove("has-error");
     }
 
-    // Validate City
+    // 3. Strict WhatsApp Number Validation (strictly at least 10 digits)
+    const effectiveWaVal = isSameWa ? phoneEl.value.trim() : waEl.value.trim();
+    const rawWa = effectiveWaVal.replace(/[^\d]/g, "");
+    if (rawWa.length < 10) {
+      document.getElementById("group-whatsapp").classList.add("has-error");
+      isValid = false;
+    } else {
+      document.getElementById("group-whatsapp").classList.remove("has-error");
+    }
+
+    // 4. Validate City
     if (!cityEl.value.trim()) {
       document.getElementById("group-city").classList.add("has-error");
       isValid = false;
@@ -777,7 +813,7 @@
     // Collect Data
     const name = nameEl.value.trim();
     const phone = phoneEl.value.trim();
-    const whatsapp = document.getElementById("cust-whatsapp").value.trim() || phone;
+    const whatsapp = isSameWa ? phone : (waEl.value.trim() || phone);
     const category = document.getElementById("cust-category").value;
     const locality = document.getElementById("cust-locality").value.trim();
     const city = cityEl.value.trim();
