@@ -270,81 +270,122 @@ const DB = {
   async getAllProjects(onlyPublished = false) {
     await this.init();
 
+    // Helper function to map raw Supabase records to normalized project format
+    const normalizeSupabaseProjects = (data) => {
+      return (data || []).map((p) => {
+        const rawImages = (p.project_images || []).sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+        const images = rawImages.map(img => ({
+          id: img.id,
+          public_id: img.public_id,
+          url: img.secure_url || img.thumbnail_url || img.url || "",
+          secure_url: img.secure_url || img.thumbnail_url || img.url || "",
+          thumbnail: img.thumbnail_url || img.secure_url || img.thumbnail || "",
+          thumbnail_url: img.thumbnail_url || img.secure_url || img.thumbnail || "",
+          alt_text: img.alt_text || p.name,
+          sort_order: img.sort_order,
+          is_cover: img.is_cover
+        }));
+
+        const rawCover = images.find((img) => img.is_cover) || images[0] || p.cover_image || {};
+        const coverUrl = rawCover.secure_url || rawCover.url || (typeof rawCover === "string" ? rawCover : "");
+        const coverThumb = rawCover.thumbnail_url || rawCover.thumbnail || coverUrl;
+
+        const cover = {
+          public_id: rawCover.public_id || "",
+          url: coverUrl,
+          secure_url: coverUrl,
+          thumbnail: coverThumb,
+          thumbnail_url: coverThumb
+        };
+
+        return {
+          id: p.id,
+          name: p.name,
+          slug: p.slug,
+          category: (p.category || "").toLowerCase(),
+          shortDescription: p.short_description || "",
+          description: p.description || "",
+          location: p.location || "",
+          year: p.year || "",
+          services: p.services || "",
+          featured: Boolean(p.featured === true || p.featured === "true" || p.featured === 1),
+          published: Boolean(p.published === true || p.published === "true" || p.published === 1),
+          coverImage: cover,
+          galleryImages: images,
+          createdAt: p.created_at,
+          updatedAt: p.updated_at
+        };
+      });
+    };
+
     if (this.isSupabaseMode()) {
-      try {
-        let query = this._supabase
-          .from("projects")
-          .select(`
-            *,
-            project_images (
-              id,
-              public_id,
-              secure_url,
-              thumbnail_url,
-              alt_text,
-              sort_order,
-              is_cover
-            )
-          `)
-          .order("created_at", { ascending: false });
+      // Tier 1: Query Supabase JS Client with 3.5-second timeout
+      if (this._supabase) {
+        try {
+          const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Supabase client query timed out (3.5s)")), 3500)
+          );
 
-        if (onlyPublished) {
-          query = query.eq("published", true);
+          let query = this._supabase
+            .from("projects")
+            .select(`
+              *,
+              project_images (
+                id,
+                public_id,
+                secure_url,
+                thumbnail_url,
+                alt_text,
+                sort_order,
+                is_cover
+              )
+            `)
+            .order("created_at", { ascending: false });
+
+          if (onlyPublished) {
+            query = query.eq("published", true);
+          }
+
+          const { data, error } = await Promise.race([query, timeoutPromise]);
+          if (error) throw error;
+          if (Array.isArray(data) && data.length > 0) {
+            return normalizeSupabaseProjects(data);
+          }
+        } catch (err) {
+          console.warn("Supabase SDK query failed/timed out, attempting direct REST fetch fallback:", err.message || err);
         }
+      }
 
-        const { data, error } = await query;
-        if (error) throw error;
+      // Tier 2: Direct REST fetch fallback with 3.5-second timeout
+      if (window.RS_BACKEND_CONFIG?.supabaseUrl && window.RS_BACKEND_CONFIG?.supabaseAnonKey) {
+        try {
+          const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+          const fetchTimeout = setTimeout(() => { if (controller) controller.abort(); }, 3500);
 
-        // Normalize response format
-        return (data || []).map((p) => {
-          const rawImages = (p.project_images || []).sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
-          const images = rawImages.map(img => ({
-            id: img.id,
-            public_id: img.public_id,
-            url: img.secure_url || img.thumbnail_url || img.url || "",
-            secure_url: img.secure_url || img.thumbnail_url || img.url || "",
-            thumbnail: img.thumbnail_url || img.secure_url || img.thumbnail || "",
-            thumbnail_url: img.thumbnail_url || img.secure_url || img.thumbnail || "",
-            alt_text: img.alt_text || p.name,
-            sort_order: img.sort_order,
-            is_cover: img.is_cover
-          }));
+          const restUrl = `${window.RS_BACKEND_CONFIG.supabaseUrl}/rest/v1/projects?select=*,project_images(*)&order=created_at.desc${onlyPublished ? '&published=eq.true' : ''}`;
+          const response = await fetch(restUrl, {
+            method: "GET",
+            headers: {
+              "apikey": window.RS_BACKEND_CONFIG.supabaseAnonKey,
+              "Authorization": `Bearer ${window.RS_BACKEND_CONFIG.supabaseAnonKey}`
+            },
+            signal: controller ? controller.signal : undefined
+          });
+          clearTimeout(fetchTimeout);
 
-          const rawCover = images.find((img) => img.is_cover) || images[0] || p.cover_image || {};
-          const coverUrl = rawCover.secure_url || rawCover.url || (typeof rawCover === "string" ? rawCover : "");
-          const coverThumb = rawCover.thumbnail_url || rawCover.thumbnail || coverUrl;
-
-          const cover = {
-            public_id: rawCover.public_id || "",
-            url: coverUrl,
-            secure_url: coverUrl,
-            thumbnail: coverThumb,
-            thumbnail_url: coverThumb
-          };
-
-          return {
-            id: p.id,
-            name: p.name,
-            slug: p.slug,
-            category: (p.category || "").toLowerCase(),
-            shortDescription: p.short_description || "",
-            description: p.description || "",
-            location: p.location || "",
-            year: p.year || "",
-            services: p.services || "",
-            featured: Boolean(p.featured === true || p.featured === "true" || p.featured === 1),
-            published: Boolean(p.published === true || p.published === "true" || p.published === 1),
-            coverImage: cover,
-            galleryImages: images,
-            createdAt: p.created_at,
-            updatedAt: p.updated_at
-          };
-        });
-      } catch (err) {
-        console.error("Supabase error in getAllProjects:", err);
+          if (response.ok) {
+            const rawData = await response.json();
+            if (Array.isArray(rawData) && rawData.length > 0) {
+              return normalizeSupabaseProjects(rawData);
+            }
+          }
+        } catch (restErr) {
+          console.warn("Direct REST fallback failed:", restErr.message || restErr);
+        }
       }
     }
 
+    // Tier 3: Local IndexedDB / Seeds fallback
     return this._getLocalProjects(onlyPublished);
   },
 
@@ -358,17 +399,30 @@ const DB = {
   },
 
   async getProjectBySlug(category, slug) {
+    if (!slug) return null;
+    let decodedSlug = "";
+    try {
+      decodedSlug = decodeURIComponent(slug).trim().toLowerCase();
+    } catch (_) {
+      decodedSlug = String(slug).trim().toLowerCase();
+    }
     const catLower = (category || "").toLowerCase().trim();
-    const slugLower = (slug || "").toLowerCase().trim();
+    const slugLower = String(slug).toLowerCase().trim();
+
     const all = await this.getAllProjects(true);
+
     return (
-      all.find(
-        (p) =>
-          (!catLower || (p.category || "").toLowerCase() === catLower) &&
-          (p.slug || "").toLowerCase() === slugLower
+      // 1. Exact Category + Exact Slug Match
+      all.find((p) =>
+        (!catLower || (p.category || "").toLowerCase() === catLower) &&
+        ((p.slug || "").toLowerCase() === slugLower || (p.slug || "").toLowerCase() === decodedSlug)
       ) ||
-      all.find((p) => (p.slug || "").toLowerCase() === slugLower) ||
-      all.find((p) => String(p.id) === slugLower) ||
+      // 2. Slug Match across all categories
+      all.find((p) => (p.slug || "").toLowerCase() === slugLower || (p.slug || "").toLowerCase() === decodedSlug) ||
+      // 3. ID Match
+      all.find((p) => String(p.id).toLowerCase() === slugLower || String(p.id).toLowerCase() === decodedSlug) ||
+      // 4. Normalized Name Match
+      all.find((p) => this.generateSlug(p.name || "") === slugLower || this.generateSlug(p.name || "") === decodedSlug) ||
       null
     );
   },
@@ -380,6 +434,7 @@ const DB = {
     return (
       all.find((p) => String(p.id).toLowerCase() === cleanId) ||
       all.find((p) => (p.slug || "").toLowerCase() === cleanId) ||
+      all.find((p) => this.generateSlug(p.name || "") === cleanId) ||
       null
     );
   },
