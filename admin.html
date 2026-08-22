@@ -1163,8 +1163,8 @@
     document.getElementById("proj-services").value = p.services || "";
     document.getElementById("proj-short-desc").value = p.shortDescription || "";
     document.getElementById("proj-desc").value = p.description || "";
-    document.getElementById("proj-published").checked = p.published === true;
-    document.getElementById("proj-featured").checked = p.featured === true;
+    document.getElementById("proj-published").checked = Boolean(p.published === true || p.published === "true" || p.published === 1);
+    document.getElementById("proj-featured").checked = Boolean(p.featured === true || p.featured === "true" || p.featured === 1);
 
     currentCoverData = p.coverImage || null;
     currentGalleryData = Array.isArray(p.galleryImages) ? [...p.galleryImages] : [];

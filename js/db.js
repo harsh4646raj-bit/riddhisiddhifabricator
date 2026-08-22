@@ -332,8 +332,8 @@ const DB = {
             location: p.location || "",
             year: p.year || "",
             services: p.services || "",
-            featured: Boolean(p.featured),
-            published: Boolean(p.published),
+            featured: Boolean(p.featured === true || p.featured === "true" || p.featured === 1),
+            published: Boolean(p.published === true || p.published === "true" || p.published === 1),
             coverImage: cover,
             galleryImages: images,
             createdAt: p.created_at,
@@ -352,7 +352,7 @@ const DB = {
     const catLower = (category || "").toLowerCase().trim();
     const all = await this.getAllProjects(onlyPublished);
     if (catLower === "featured") {
-      return all.filter((p) => Boolean(p.featured));
+      return all.filter((p) => Boolean(p.featured === true || p.featured === "true" || p.featured === 1));
     }
     return all.filter((p) => (p.category || "").toLowerCase() === catLower);
   },
@@ -404,19 +404,33 @@ const DB = {
 
     const isNew = !projectData.id;
 
+    const cover = projectData.coverImage;
+    const coverUrl = cover?.secure_url || cover?.url || (typeof cover === 'string' ? cover : null);
+    const coverThumb = cover?.thumbnail_url || cover?.thumbnail || coverUrl;
+    const coverObj = coverUrl ? {
+      public_id: cover?.public_id || "cover_" + Date.now(),
+      secure_url: coverUrl,
+      thumbnail_url: coverThumb
+    } : null;
+
+    const isFeatured = Boolean(projectData.featured === true || projectData.featured === "true" || projectData.featured === 1);
+    const isPublished = Boolean(projectData.published === true || projectData.published === "true" || projectData.published === 1);
+
     if (this.isSupabaseMode()) {
       try {
         const projectPayload = {
           name,
           slug,
           category: cleanCategory,
+          cover_image: coverObj,
           short_description: String(projectData.shortDescription || "").trim().substring(0, 500),
           description: String(projectData.description || "").trim().substring(0, 5000),
           location: String(projectData.location || "").trim().substring(0, 100),
           year: String(projectData.year || new Date().getFullYear()).trim().substring(0, 10),
           services: String(projectData.services || "").trim().substring(0, 200),
-          featured: Boolean(projectData.featured),
-          published: Boolean(projectData.published) // Default to false if unset
+          featured: isFeatured,
+          published: isPublished,
+          updated_at: new Date().toISOString()
         };
 
         let projectId = projectData.id;
@@ -431,12 +445,16 @@ const DB = {
           if (createErr) throw createErr;
           projectId = createdProj.id;
         } else {
-          const { error: updateErr } = await this._supabase
+          const { data: updatedRows, error: updateErr } = await this._supabase
             .from("projects")
             .update(projectPayload)
-            .eq("id", projectId);
+            .eq("id", projectId)
+            .select();
 
           if (updateErr) throw updateErr;
+          if (!updatedRows || updatedRows.length === 0) {
+            throw new Error("Unable to update project. Please ensure you are logged in as an authenticated admin.");
+          }
 
           // Delete existing images to replace with updated set
           await this._supabase.from("project_images").delete().eq("project_id", projectId);
@@ -444,31 +462,29 @@ const DB = {
 
         // Insert project_images
         const gallery = Array.isArray(projectData.galleryImages) ? projectData.galleryImages : [];
-        const cover = projectData.coverImage;
-
         const allImagesToInsert = [];
-        const coverUrl = cover?.secure_url || cover?.url || (typeof cover === 'string' ? cover : null);
+
         if (coverUrl) {
           allImagesToInsert.push({
             project_id: projectId,
             public_id: cover?.public_id || "cover_" + Date.now(),
             secure_url: coverUrl,
-            thumbnail_url: cover?.thumbnail_url || cover?.thumbnail || coverUrl,
-            alt_text: projectData.name + " Cover",
+            thumbnail_url: coverThumb,
+            alt_text: name + " Cover",
             sort_order: 0,
             is_cover: true
           });
         }
 
         gallery.forEach((img, idx) => {
-          const url = img.secure_url || img.url || img;
-          if (url && (!cover || url !== cover.secure_url)) {
+          const gUrl = img.secure_url || img.url || (typeof img === 'string' ? img : null);
+          if (gUrl && gUrl !== coverUrl) {
             allImagesToInsert.push({
               project_id: projectId,
               public_id: img.public_id || `gallery_${Date.now()}_${idx}`,
-              secure_url: url,
-              thumbnail_url: img.thumbnail_url || img.thumbnail || url,
-              alt_text: `${projectData.name} Photo ${idx + 1}`,
+              secure_url: gUrl,
+              thumbnail_url: img.thumbnail_url || img.thumbnail || gUrl,
+              alt_text: `${name} Photo ${idx + 1}`,
               sort_order: idx + 1,
               is_cover: false
             });
@@ -480,7 +496,11 @@ const DB = {
           if (imgErr) console.warn("Error inserting project images:", imgErr);
         }
 
-        return this.getProjectById(projectId);
+        const saved = await this.getProjectById(projectId);
+        if (saved) {
+          await this._saveLocalProject(saved);
+        }
+        return saved;
       } catch (err) {
         console.error("Supabase error saving project:", err);
         alert("Project save error: " + (err.message || "Failed to write to database"));
@@ -742,6 +762,27 @@ const DB = {
 
   async _getLocalProjects(onlyPublished = false) {
     const seeds = typeof SEED_PROJECTS !== "undefined" && Array.isArray(SEED_PROJECTS) ? SEED_PROJECTS : [];
+    
+    const normalize = (items) => {
+      return (items || []).map(p => ({
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        category: (p.category || "").toLowerCase(),
+        shortDescription: p.shortDescription || p.short_description || "",
+        description: p.description || "",
+        location: p.location || "",
+        year: p.year || "",
+        services: p.services || "",
+        featured: Boolean(p.featured === true || p.featured === "true" || p.featured === 1),
+        published: Boolean(p.published === true || p.published === "true" || p.published === 1),
+        coverImage: p.coverImage || p.cover_image || null,
+        galleryImages: Array.isArray(p.galleryImages) ? p.galleryImages : (Array.isArray(p.project_images) ? p.project_images : []),
+        createdAt: p.createdAt || p.created_at || new Date().toISOString(),
+        updatedAt: p.updatedAt || p.updated_at || new Date().toISOString()
+      }));
+    };
+
     try {
       const idb = await this._initIDB();
       if (idb) {
@@ -760,18 +801,23 @@ const DB = {
                 }
               });
             }
-            if (onlyPublished) list = list.filter((p) => p.published === true);
-            resolve(list);
+            let normalized = normalize(list);
+            if (onlyPublished) normalized = normalized.filter((p) => p.published === true);
+            resolve(normalized);
           };
           req.onerror = () => {
             let fb = this._getLocalStorageFallback("rs_local_projects_backup", onlyPublished);
-            resolve(fb.length > 0 ? fb : (onlyPublished ? seeds.filter(s => s.published) : seeds));
+            let normalized = normalize(fb.length > 0 ? fb : seeds);
+            if (onlyPublished) normalized = normalized.filter((p) => p.published === true);
+            resolve(normalized);
           };
         });
       }
     } catch (e) {}
     let fallback = this._getLocalStorageFallback("rs_local_projects_backup", onlyPublished);
-    return fallback.length > 0 ? fallback : (onlyPublished ? seeds.filter(s => s.published) : seeds);
+    let normalized = normalize(fallback.length > 0 ? fallback : seeds);
+    if (onlyPublished) normalized = normalized.filter((p) => p.published === true);
+    return normalized;
   },
 
   async _saveLocalProject(project) {
