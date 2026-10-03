@@ -1135,11 +1135,18 @@
   addEventListener("scroll", revealCheck, { passive: true });
   revealCheck();
 
-  /* ── Nav scroll state ── */
-  const nav = document.getElementById("mainnav");
-  addEventListener("scroll", () => {
-    nav.classList.toggle("scrolled", scrollY > 60);
-  }, { passive: true });
+  /* ── Client-side routing (/about direct navigation) ── */
+  if (window.location.pathname.replace(/\/+$/, "") === "/about" || window.location.hash === "#about") {
+    const scrollToAbout = () => {
+      const el = document.getElementById("about");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    };
+    if (document.readyState === "complete") {
+      setTimeout(scrollToAbout, 150);
+    } else {
+      window.addEventListener("load", () => setTimeout(scrollToAbout, 150));
+    }
+  }
 </script>
 
 </body>
