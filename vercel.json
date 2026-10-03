@@ -4,6 +4,7 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/about", "destination": "/" },
+    { "source": "/contact", "destination": "/" },
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/quote", "destination": "/quote.html" },
     { "source": "/projects", "destination": "/projects.html" },

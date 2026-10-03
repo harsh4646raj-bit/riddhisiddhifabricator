@@ -1135,8 +1135,9 @@
   addEventListener("scroll", revealCheck, { passive: true });
   revealCheck();
 
-  /* ── Client-side routing (/about direct navigation) ── */
-  if (window.location.pathname.replace(/\/+$/, "") === "/about" || window.location.hash === "#about") {
+  /* ── Client-side routing (/about and /contact direct navigation) ── */
+  const path = window.location.pathname.replace(/\/+$/, "");
+  if (path === "/about" || window.location.hash === "#about") {
     const scrollToAbout = () => {
       const el = document.getElementById("about");
       if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -1145,6 +1146,16 @@
       setTimeout(scrollToAbout, 150);
     } else {
       window.addEventListener("load", () => setTimeout(scrollToAbout, 150));
+    }
+  } else if (path === "/contact" || window.location.hash === "#contact") {
+    const scrollToContact = () => {
+      const el = document.getElementById("contact");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    };
+    if (document.readyState === "complete") {
+      setTimeout(scrollToContact, 150);
+    } else {
+      window.addEventListener("load", () => setTimeout(scrollToContact, 150));
     }
   }
 </script>
