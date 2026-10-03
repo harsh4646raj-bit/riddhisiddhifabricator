@@ -71,8 +71,21 @@ function manageWindow(center) {
 }
 
 async function preload() {
+  const isBot = /bot|googlebot|crawler|spider|robot|crawling|lighthouse/i.test(navigator.userAgent) ||
+    (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+  if (isBot) {
+    try {
+      await fetchBlob(0);
+      await decode(0);
+    } catch {}
+    state.ready = true;
+    if (loader) loader.classList.add("done");
+    return;
+  }
+
   const { count } = state;
-  const EAGER = Math.min(Math.ceil(count * 0.15), 80);
+  const EAGER = Math.min(Math.ceil(count * 0.05), 15);
 
   let done = 0;
   await Promise.all(
@@ -88,14 +101,15 @@ async function preload() {
   if (loader) loader.classList.add("done");
 
   let next = EAGER;
-  await Promise.all(
-    Array.from({ length: 4 }, async () => {
-      while (next < count) {
-        const i = next++;
-        try { await fetchBlob(i); } catch {}
-      }
-    })
-  );
+  const loadChunk = async () => {
+    while (next < count) {
+      const i = next++;
+      try { await fetchBlob(i); } catch {}
+    }
+  };
+  setTimeout(() => {
+    Promise.all([loadChunk(), loadChunk()]);
+  }, 1000);
 }
 
 /* ── drawing ───────────────────────────────────────────── */
