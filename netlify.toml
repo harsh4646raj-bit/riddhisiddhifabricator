@@ -28,7 +28,7 @@
 
 [[redirects]]
   from = "/about"
-  to = "/index.html"
+  to = "/"
   status = 200
 
 [[redirects]]
