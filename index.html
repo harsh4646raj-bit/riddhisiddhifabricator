@@ -454,42 +454,180 @@
   }
 
   /* ═══════════════════════════════════════════════════
-     HERO
+     HERO REFINEMENT (Phase 2)
      ═══════════════════════════════════════════════════ */
   .hero {
     min-height: 100vh;
     padding-top: 14vh;
+    padding-bottom: 8vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
+    position: relative;
   }
   .hero .glass {
     margin: 0 auto;
     text-align: center;
-    max-width: 780px;
+    max-width: 760px;
+    padding: clamp(36px, 4.5vw, 54px) clamp(24px, 4vw, 48px);
+    background: rgba(18, 10, 13, 0.65);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid var(--glass-border);
+    border-radius: 28px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+  }
+  .hero .kicker {
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--taupe);
+    font-weight: 600;
+    margin-bottom: 14px;
+    opacity: 0.9;
   }
   .hero h1 {
-    font-size: clamp(24px, 4.4vw, 56px);
+    font-size: clamp(24px, 3.8vw, 48px);
     font-weight: 700;
     letter-spacing: -0.025em;
-    line-height: 1.15;
+    line-height: 1.16;
+    color: var(--text);
+    margin: 0 auto;
+    max-width: 24ch;
   }
-  .hero p.lead {
-    margin-top: 16px;
-    font-size: clamp(14px, 1.1vw, 16.5px);
-    max-width: 58ch;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.65;
-  }
-  .hero .cta-row { justify-content: center; }
 
-  .scroll-hint {
-    position: absolute; bottom: 4vh; left: 50%; transform: translateX(-50%);
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-    color: var(--text-muted); font-size: 10px;
-    letter-spacing: 0.35em; text-transform: uppercase;
+  /* Material Discoverability & uPVC Prominence */
+  .hero-materials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 12px;
+    flex-wrap: wrap;
+    margin: 18px 0 16px;
   }
+  .hero-mat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    background: rgba(14, 7, 9, 0.5);
+    border: 1px solid var(--glass-border);
+    color: var(--text-dim);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+  }
+  .hero-mat-pill:hover {
+    color: var(--text);
+    border-color: rgba(185, 168, 172, 0.35);
+    background: rgba(83, 49, 59, 0.3);
+    transform: translateY(-1px);
+  }
+  .hero-mat-upvc {
+    background: rgba(83, 49, 59, 0.4);
+    border-color: rgba(122, 79, 94, 0.45);
+    color: var(--blush);
+    font-weight: 600;
+    box-shadow: 0 2px 14px rgba(83, 49, 59, 0.25);
+  }
+  .hero-mat-upvc:hover {
+    background: rgba(107, 67, 80, 0.55);
+    border-color: var(--plum-glow);
+    box-shadow: 0 4px 18px rgba(83, 49, 59, 0.4);
+  }
+  .mat-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #A86D7F;
+    box-shadow: 0 0 8px #A86D7F;
+    display: inline-block;
+  }
+  .hero-mat-sep {
+    color: var(--text-muted);
+    font-size: 10px;
+  }
+
+  /* Supporting Description */
+  .hero p.lead {
+    margin: 0 auto;
+    font-size: clamp(14px, 1.1vw, 16px);
+    color: var(--text-dim);
+    font-weight: 400;
+    line-height: 1.68;
+    max-width: 54ch;
+  }
+
+  /* Service Area Reassurance Chip */
+  .service-reassurance-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin: 18px auto 0;
+    padding: 6px 14px;
+    border-radius: 100px;
+    background: rgba(185, 168, 172, 0.06);
+    border: 1px solid rgba(185, 168, 172, 0.12);
+    color: var(--taupe);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+  }
+  .service-reassurance-chip svg {
+    color: var(--plum-glow);
+    flex-shrink: 0;
+  }
+
+  /* Focused 2-Button Hero CTA */
+  .hero .cta-row {
+    margin-top: 26px;
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .hero-btn-primary {
+    padding: 14px 34px;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    box-shadow: 0 8px 30px rgba(83, 49, 59, 0.45);
+  }
+  .hero-btn-secondary {
+    padding: 14px 28px;
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+  }
+
+  /* Interactive Scroll Hint */
+  .scroll-hint {
+    position: absolute;
+    bottom: 3.5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color 0.25s ease;
+    cursor: pointer;
+  }
+  .scroll-hint:hover { color: var(--taupe); }
   .scroll-hint::after {
-    content: ""; width: 1px; height: 36px;
+    content: ""; width: 1px; height: 32px;
     background: linear-gradient(to bottom, var(--taupe), transparent);
     animation: scroll-pulse 2.2s ease-in-out infinite;
   }
@@ -774,16 +912,52 @@
      MOBILE
      ═══════════════════════════════════════════════════ */
   @media (max-width: 768px) {
-    .section { padding: 10vh 5vw; }
-    .glass {
-      padding: clamp(28px, 5vw, 44px);
+    .section { padding: 8vh 4vw; }
+    .hero { min-height: auto; padding-top: 92px; padding-bottom: 40px; }
+    .hero .glass {
+      padding: clamp(26px, 5vw, 36px) clamp(16px, 4vw, 24px);
       border-radius: 22px;
+      max-width: 100%;
     }
+    .hero h1 {
+      font-size: clamp(21px, 5.8vw, 32px);
+      line-height: 1.2;
+      max-width: 100%;
+    }
+    .hero-materials {
+      gap: 6px 8px;
+      margin: 14px 0 12px;
+    }
+    .hero-mat-pill {
+      font-size: 10.5px;
+      padding: 5px 11px;
+    }
+    .hero p.lead {
+      font-size: 13.5px;
+      line-height: 1.6;
+      margin-top: 0;
+    }
+    .service-reassurance-chip {
+      font-size: 10.5px;
+      padding: 5px 11px;
+      margin-top: 14px;
+    }
+    .hero .cta-row {
+      margin-top: 20px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .hero-btn-primary, .hero-btn-secondary {
+      width: 100%;
+      min-height: 48px;
+      justify-content: center;
+      padding: 13px 20px;
+    }
+    .scroll-hint { display: none; }
     .section-left, .section-right {
       justify-content: center;
     }
-    .hero h1 { font-size: clamp(21px, 6.2vw, 36px); line-height: 1.2; }
-    .hero p.lead { font-size: 14px; line-height: 1.6; margin-top: 14px; }
     .cta-row { flex-direction: column; align-items: stretch; }
     .btn-primary, .btn-secondary { justify-content: center; }
   }
@@ -856,21 +1030,39 @@
     <div class="glass" data-reveal>
       <p class="kicker">Riddhi Siddhi Fabricator</p>
       <h1>uPVC, Aluminium &amp; Steel Fabrication in Muzaffarpur</h1>
-      <p class="materials">Aluminium &nbsp;&bull;&nbsp; uPVC &nbsp;&bull;&nbsp; Steel</p>
+      <div class="hero-materials">
+        <a href="projects.html?category=upvc" class="hero-mat-pill hero-mat-upvc" title="Explore uPVC Windows &amp; Doors">
+          <span class="mat-dot" aria-hidden="true"></span>
+          <span>uPVC Windows &amp; Doors</span>
+        </a>
+        <span class="hero-mat-sep" aria-hidden="true">&bull;</span>
+        <a href="projects.html?category=aluminium" class="hero-mat-pill" title="Explore Aluminium Work">
+          <span>Aluminium</span>
+        </a>
+        <span class="hero-mat-sep" aria-hidden="true">&bull;</span>
+        <a href="projects.html?category=steel" class="hero-mat-pill" title="Explore Steel Fabrication">
+          <span>Steel &amp; Gates</span>
+        </a>
+      </div>
       <p class="lead">Custom uPVC, aluminium and steel windows, doors, gates and railings, with free site measurement and estimates across Muzaffarpur and nearby areas.</p>
+      <div class="service-reassurance-chip">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Free Site Measurement &bull; Muzaffarpur &amp; Nearby Areas</span>
+      </div>
       <div class="cta-row">
-        <a class="btn-primary" href="quote.html">
+        <a class="btn-primary hero-btn-primary" href="quote.html">
           Get a Quote
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
-        <a class="btn-secondary" href="projects.html?category=featured">
+        <a class="btn-secondary hero-btn-secondary" href="projects.html?category=featured">
           View Featured Work
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
-        <a class="btn-secondary" href="#work">Explore Our Work</a>
       </div>
     </div>
-    <div class="scroll-hint">Scroll</div>
+    <a class="scroll-hint" href="#work" aria-label="Explore our work section">
+      <span>Scroll to Explore</span>
+    </a>
   </section>
 
   <!-- ─── ALUMINIUM ─── -->
