@@ -464,7 +464,21 @@
   .hero .glass {
     margin: 0 auto;
     text-align: center;
-    max-width: 640px;
+    max-width: 780px;
+  }
+  .hero h1 {
+    font-size: clamp(24px, 4.4vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+  .hero p.lead {
+    margin-top: 16px;
+    font-size: clamp(14px, 1.1vw, 16.5px);
+    max-width: 58ch;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.65;
   }
   .hero .cta-row { justify-content: center; }
 
@@ -768,7 +782,8 @@
     .section-left, .section-right {
       justify-content: center;
     }
-    .hero h1 { font-size: clamp(28px, 8vw, 48px); }
+    .hero h1 { font-size: clamp(21px, 6.2vw, 36px); line-height: 1.2; }
+    .hero p.lead { font-size: 14px; line-height: 1.6; margin-top: 14px; }
     .cta-row { flex-direction: column; align-items: stretch; }
     .btn-primary, .btn-secondary { justify-content: center; }
   }
@@ -840,9 +855,9 @@
   <section class="section hero" id="hero">
     <div class="glass" data-reveal>
       <p class="kicker">Riddhi Siddhi Fabricator</p>
-      <h1>Crafted For <span class="accent">Your Space.</span></h1>
+      <h1>uPVC, Aluminium &amp; Steel Fabrication in Muzaffarpur</h1>
       <p class="materials">Aluminium &nbsp;&bull;&nbsp; uPVC &nbsp;&bull;&nbsp; Steel</p>
-      <p class="lead">Precision fabrication for modern homes and spaces.</p>
+      <p class="lead">Custom uPVC, aluminium and steel windows, doors, gates and railings, with free site measurement and estimates across Muzaffarpur and nearby areas.</p>
       <div class="cta-row">
         <a class="btn-primary" href="quote.html">
           Get a Quote
