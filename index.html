@@ -6,7 +6,21 @@
 <title>Riddhi Siddhi Fabricator — Aluminium, uPVC & Steel Fabrication in Muzaffarpur</title>
 <meta name="description" content="Custom fabrication of aluminium, uPVC, and steel windows, doors, gates, railings, and facades by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar. Request a quote today.">
 <link rel="icon" type="image/jpeg" href="Logo.jpeg">
-<link rel="canonical" href="https://riddhisiddhifabricator.vercel.app/">
+<link id="canonical-url" rel="canonical" href="https://riddhisiddhifabricator.vercel.app/">
+<script>
+  (function() {
+    var p = window.location.pathname.replace(/\/+$/, "");
+    var c = document.getElementById("canonical-url");
+    var og = document.getElementById("og-url");
+    if (p === "/about") {
+      if (c) c.setAttribute("href", "https://riddhisiddhifabricator.vercel.app/about");
+      if (og) og.setAttribute("content", "https://riddhisiddhifabricator.vercel.app/about");
+    } else if (p === "/contact") {
+      if (c) c.setAttribute("href", "https://riddhisiddhifabricator.vercel.app/contact");
+      if (og) og.setAttribute("content", "https://riddhisiddhifabricator.vercel.app/contact");
+    }
+  })();
+</script>
 
 <!-- Geo / Location Metadata -->
 <meta name="geo.region" content="IN-BR">
@@ -17,7 +31,7 @@
 <!-- Open Graph / Social Sharing -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Riddhi Siddhi Fabricator">
-<meta property="og:url" content="https://riddhisiddhifabricator.vercel.app/">
+<meta id="og-url" property="og:url" content="https://riddhisiddhifabricator.vercel.app/">
 <meta property="og:title" content="Riddhi Siddhi Fabricator — Aluminium, uPVC & Steel Fabrication in Muzaffarpur">
 <meta property="og:description" content="Custom fabrication of aluminium, uPVC, and steel windows, doors, gates, railings, and facades by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar. Request a quote today.">
 <meta property="og:image" content="https://riddhisiddhifabricator.vercel.app/Logo.jpeg">

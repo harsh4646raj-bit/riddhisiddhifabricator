@@ -6,7 +6,26 @@
 <title>Project Details — Riddhi Siddhi Fabricator, Muzaffarpur</title>
 <meta name="description" content="Explore custom architectural fabrication projects in aluminium, uPVC, and steel by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar.">
 <link rel="icon" type="image/jpeg" href="Logo.jpeg">
-<link id="canonical-url" rel="canonical" href="https://riddhisiddhifabricator.vercel.app/project">
+<script>
+  (function() {
+    var params = new URLSearchParams(window.location.search);
+    var cat = params.get("category");
+    var slug = params.get("slug");
+    if (cat && slug) {
+      var href = "https://riddhisiddhifabricator.vercel.app/project?category=" + encodeURIComponent(cat) + "&slug=" + encodeURIComponent(slug);
+      var canonicalEl = document.querySelector('link[rel="canonical"]');
+      if (!canonicalEl) {
+        canonicalEl = document.createElement("link");
+        canonicalEl.setAttribute("rel", "canonical");
+        canonicalEl.id = "canonical-url";
+        document.head.appendChild(canonicalEl);
+      }
+      canonicalEl.setAttribute("href", href);
+      var ogUrl = document.getElementById("og-url");
+      if (ogUrl) ogUrl.setAttribute("content", href);
+    }
+  })();
+</script>
 
 <!-- Geo / Location Metadata -->
 <meta name="geo.region" content="IN-BR">
@@ -17,7 +36,7 @@
 <!-- Open Graph / Social Sharing -->
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Riddhi Siddhi Fabricator">
-<meta id="og-url" property="og:url" content="https://riddhisiddhifabricator.vercel.app/project">
+<meta id="og-url" property="og:url" content="">
 <meta id="og-title" property="og:title" content="Project Details — Riddhi Siddhi Fabricator, Muzaffarpur">
 <meta id="og-desc" property="og:description" content="Explore custom architectural fabrication projects in aluminium, uPVC, and steel by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar.">
 <meta id="og-img" property="og:image" content="https://riddhisiddhifabricator.vercel.app/Logo.jpeg">
@@ -625,7 +644,14 @@
 
       try {
         document.title = projectTitle;
-        document.getElementById("canonical-url")?.setAttribute("href", canonicalHref);
+        let canonicalEl = document.getElementById("canonical-url") || document.querySelector('link[rel="canonical"]');
+        if (!canonicalEl) {
+          canonicalEl = document.createElement("link");
+          canonicalEl.setAttribute("rel", "canonical");
+          canonicalEl.id = "canonical-url";
+          document.head.appendChild(canonicalEl);
+        }
+        canonicalEl.setAttribute("href", canonicalHref);
         document.getElementById("og-url")?.setAttribute("content", canonicalHref);
         document.getElementById("og-title")?.setAttribute("content", projectTitle);
         document.getElementById("og-desc")?.setAttribute("content", projectDesc);
