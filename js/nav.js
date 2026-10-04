@@ -94,7 +94,7 @@
     "#mainnav .nav-cta-btn:hover { background: #6B4350; box-shadow: 0 6px 24px rgba(83, 49, 59, 0.4); transform: translateY(-1px); }",
 
     /* Hamburger button */
-    ".rs-hamburger { display: none; background: none; border: none; color: #B9A8AC; cursor: pointer; padding: 10px; margin: -10px -4px -10px 0; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; border-radius: 8px; transition: color 0.2s, background 0.2s; -webkit-tap-highlight-color: transparent; }",
+    ".rs-hamburger { display: none; background: none; border: none; color: #B9A8AC; cursor: pointer; padding: 0; margin: 0; width: 44px; height: 44px; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; border-radius: 8px; flex-shrink: 0; transition: color 0.2s, background 0.2s; -webkit-tap-highlight-color: transparent; box-sizing: border-box; }",
     ".rs-hamburger:hover { color: #F5F0E8; background: rgba(185, 168, 172, 0.08); }",
     ".rs-hamburger:focus-visible { outline: 2px solid #7A4F5E; outline-offset: 2px; }",
 
@@ -147,10 +147,12 @@
 
     /* ════ Responsive Breakpoint (<= 992px) ════ */
     "@media (max-width: " + BREAKPOINT + "px) {",
+    "  #mainnav { padding: 12px 16px !important; box-sizing: border-box !important; }",
     "  #mainnav .nav-links { display: none !important; }",
-    "  #mainnav .nav-phone span { display: none; }",
-    "  #mainnav .nav-phone { padding: 8px; min-width: 40px; justify-content: center; }",
-    "  .rs-hamburger { display: flex !important; }",
+    "  #mainnav .nav-phone { display: none !important; }",
+    "  #mainnav .nav-right { gap: 10px !important; flex-shrink: 0 !important; }",
+    "  #mainnav .nav-cta-btn { padding: 8px 16px !important; font-size: 11px !important; }",
+    "  .rs-hamburger { display: flex !important; width: 44px !important; height: 44px !important; min-width: 44px !important; min-height: 44px !important; padding: 0 !important; margin: 0 !important; flex-shrink: 0 !important; }",
     "  .rs-quick-contact { display: block; }",
     "  body { padding-bottom: 74px; }",
     "}",
