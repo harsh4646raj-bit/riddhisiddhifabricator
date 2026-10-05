@@ -4,8 +4,8 @@ const SEED_PROJECTS = [
     "name": "Stainless Steel & Teak Wood Residential Main Gate",
     "slug": "ss-teak-wood-residential-main-gate",
     "category": "steel",
-    "shortDescription": "Heavy-duty 304 grade stainless steel double leaf main entrance gate with horizontal weather-resistant teak wood grain paneling and security upper grill.",
-    "description": "Engineered and fabricated for a private residence in Muzaffarpur. Features Jindal 304 grade stainless steel box sections, seamless precision TIG welds, horizontal wood-grain composite panel infills, and heavy-duty ball-bearing hinges for effortless opening.",
+    "shortDescription": "Heavy-duty stainless steel double leaf main entrance gate with horizontal weather-resistant teak wood grain paneling and security upper grill.",
+    "description": "Engineered and fabricated for a private residence in Muzaffarpur. Features heavy-gauge stainless steel box sections, seamless precision TIG welds, horizontal wood-grain composite panel infills, and heavy-duty ball-bearing hinges for effortless opening.",
     "location": "Muzaffarpur, Bihar",
     "year": "2025",
     "services": "Main Gate Fabrication, Stainless Steel Design, Wood Composite Infill",
@@ -83,7 +83,7 @@ const SEED_PROJECTS = [
       },
       {
         "url": "assets/projects/stainless-steel-heavy-main-gate-swastik-om-design.webp",
-        "alt": "Stainless steel boundary gate with Om and Swastik symbols in Jindal Steel"
+        "alt": "Stainless steel boundary gate with Om and Swastik symbols in stainless steel"
       }
     ]
   },
@@ -169,7 +169,7 @@ const SEED_PROJECTS = [
     "slug": "luxury-crystal-acrylic-pillar-ss-railings",
     "category": "steel",
     "shortDescription": "High-end interior staircase handrails featuring bubble crystal acrylic master pillars, finial glass spheres, and stainless steel pipe runs.",
-    "description": "Designed for premium interior duplexes and bungalows. Combines illuminated bubble acrylic crystal newels, ornate glass spheres, and 304 grade stainless steel tubing for an elevated luxury aesthetic.",
+    "description": "Designed for premium interior duplexes and bungalows. Combines illuminated bubble acrylic crystal newels, ornate glass spheres, and architectural stainless steel tubing for an elevated luxury aesthetic.",
     "location": "Muzaffarpur, Bihar",
     "year": "2025",
     "services": "Crystal Newel Installation, Acrylic Pillar Balustrades, Decorative Railings",
@@ -204,7 +204,7 @@ const SEED_PROJECTS = [
     "name": "Exterior Terrace & Balcony Stainless Steel Railings",
     "slug": "exterior-terrace-balcony-ss-railings",
     "category": "steel",
-    "shortDescription": "Weatherproof 304 grade stainless steel horizontal balustrades and curved railings for residential balconies and exterior staircases.",
+    "shortDescription": "Weatherproof stainless steel horizontal balustrades and curved railings for residential balconies and exterior staircases.",
     "description": "Robust outdoor balcony railing solutions engineered for maximum wind resistance, child safety, and zero corrosion in monsoon weather.",
     "location": "Muzaffarpur, Bihar",
     "year": "2024",
