@@ -389,8 +389,194 @@
   .btn-back-home {
     color: var(--taupe); text-decoration: none; font-size: 12px; letter-spacing: 0.1em;
     text-transform: uppercase; transition: color 0.2s;
+    display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 16px;
   }
   .btn-back-home:hover { color: var(--text); }
+
+  /* Quick Direct Contact Banner */
+  .quote-direct-contact {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+    padding: 10px 20px;
+    border-radius: 100px;
+    background: rgba(83, 49, 59, 0.25);
+    border: 1px solid rgba(185, 168, 172, 0.14);
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .direct-contact-links {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .direct-link-tel, .direct-link-wa {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--blush);
+    font-weight: 500;
+    text-decoration: none;
+    min-height: 44px;
+    padding: 0 6px;
+    transition: color 0.2s;
+  }
+  .direct-link-tel:hover { color: #fff; }
+  .direct-link-wa { color: #25D366; }
+  .direct-link-wa:hover { color: #4eed84; }
+  .direct-sep { color: var(--text-muted); }
+
+  /* 4-Step Process Strip */
+  .quote-steps-strip {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+    align-items: center;
+    gap: 10px;
+    margin: 28px 0 32px;
+    padding: 16px 20px;
+    background: rgba(14, 7, 9, 0.45);
+    border: 1px solid rgba(185, 168, 172, 0.1);
+    border-radius: 18px;
+  }
+  .quote-step-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(83, 49, 59, 0.4);
+    border: 1px solid rgba(185, 168, 172, 0.2);
+    color: var(--blush);
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .step-text strong {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.01em;
+  }
+  .step-text span {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .quote-step-arrow {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* Form Error Banner */
+  .form-error-banner {
+    background: rgba(239, 83, 80, 0.12);
+    border: 1px solid rgba(239, 83, 80, 0.35);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin: 20px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .error-banner-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    color: #ff8a80;
+  }
+  .error-banner-content svg { flex-shrink: 0; margin-top: 2px; }
+  .error-banner-text strong {
+    display: block;
+    font-size: 13px;
+    color: #ffcdd2;
+    margin-bottom: 2px;
+  }
+  .error-banner-text p {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin: 0;
+  }
+  .error-banner-actions {
+    display: flex;
+    gap: 10px;
+    padding-left: 32px;
+    flex-wrap: wrap;
+  }
+  .btn-error-tel, .btn-error-wa {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    min-height: 44px;
+  }
+  .btn-error-tel {
+    background: rgba(83, 49, 59, 0.5);
+    border: 1px solid rgba(185, 168, 172, 0.2);
+    color: var(--blush);
+  }
+  .btn-error-wa {
+    background: rgba(37, 211, 102, 0.15);
+    border: 1px solid rgba(37, 211, 102, 0.3);
+    color: #4eed84;
+  }
+
+  /* Helper text */
+  .helper-text {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* Success steps summary */
+  .success-steps-summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+    padding: 12px 18px;
+    background: rgba(14, 7, 9, 0.5);
+    border: 1px solid rgba(185, 168, 172, 0.1);
+    border-radius: 100px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .succ-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .succ-num {
+    color: #81C784;
+    font-weight: 600;
+  }
+  .succ-step-sep {
+    color: var(--text-muted);
+  }
+  .success-home-link {
+    margin-top: 12px;
+  }
 
   /* Footer */
   .site-footer {
@@ -412,10 +598,22 @@
   .footer-brand img { height: 26px; }
   .footer-copy { font-size: 11px; color: var(--text-muted); }
 
+  @media (max-width: 768px) {
+    .quote-steps-strip {
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 16px;
+    }
+    .quote-step-arrow { display: none; }
+  }
+
   @media (max-width: 600px) {
     .quote-card { padding: 28px 20px; border-radius: 20px; }
     .form-grid { grid-template-columns: 1fr; }
     .form-group.full { grid-column: span 1; }
+    .quote-direct-contact { border-radius: 18px; padding: 12px 16px; }
+    .quote-steps-strip { grid-template-columns: 1fr; gap: 12px; padding: 14px 16px; }
+    .success-steps-summary { border-radius: 16px; flex-direction: column; align-items: flex-start; }
+    .succ-step-sep { display: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -469,7 +667,56 @@
   <div class="quote-header">
     <p class="kicker">Fabrication Estimate</p>
     <h1>Request a Free Fabrication Quote</h1>
-    <p class="subtitle">Tell us about your custom fabrication project in Muzaffarpur or Bihar. Quotations are calculated based on your exact dimensions, material specifications (stainless steel, multi-chamber uPVC, or anodized aluminium), glass specifications, and on-site installation requirements.</p>
+    <p class="subtitle">Tell us about your custom fabrication project in Muzaffarpur and nearby areas. We provide free site measurement, discuss your specific design requirements, and prepare custom estimates based on your dimensions and selected materials.</p>
+    <div class="quote-direct-contact">
+      <span>Need immediate assistance or prefer talking directly?</span>
+      <div class="direct-contact-links">
+        <a href="tel:9771086644" class="direct-link-tel">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Call 9771086644
+        </a>
+        <span class="direct-sep">&bull;</span>
+        <a href="https://wa.me/919771086644" class="direct-link-wa" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+          WhatsApp Chat
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4-Step Process Strip -->
+  <div class="quote-steps-strip" aria-label="How our quote process works">
+    <div class="quote-step-item">
+      <div class="step-num">1</div>
+      <div class="step-text">
+        <strong>Share Requirements</strong>
+        <span>Submit project details</span>
+      </div>
+    </div>
+    <div class="quote-step-arrow" aria-hidden="true">&rarr;</div>
+    <div class="quote-step-item">
+      <div class="step-num">2</div>
+      <div class="step-text">
+        <strong>Site Measurement</strong>
+        <span>Free visit &amp; discussion</span>
+      </div>
+    </div>
+    <div class="quote-step-arrow" aria-hidden="true">&rarr;</div>
+    <div class="quote-step-item">
+      <div class="step-num">3</div>
+      <div class="step-text">
+        <strong>Custom Estimate</strong>
+        <span>Clear pricing for your space</span>
+      </div>
+    </div>
+    <div class="quote-step-arrow" aria-hidden="true">&rarr;</div>
+    <div class="quote-step-item">
+      <div class="step-num">4</div>
+      <div class="step-text">
+        <strong>Work Planning</strong>
+        <span>Fabrication &amp; fitting</span>
+      </div>
+    </div>
   </div>
 
   <!-- Reference Project Indicator if passed via URL -->
@@ -487,21 +734,21 @@
       <div class="form-section-title">1. Your Contact Information</div>
       <div class="form-grid">
         <div class="form-group full" id="group-name">
-          <label>Full Name <span class="req">*</span></label>
+          <label for="cust-name">Full Name <span class="req">*</span></label>
           <input type="text" id="cust-name" class="input" placeholder="e.g. Rahul Kumar" maxlength="100" required>
           <span class="field-error">Please enter your full name.</span>
         </div>
 
         <div class="form-group" id="group-phone">
-          <label>Phone Number <span class="req">*</span></label>
+          <label for="cust-phone">Phone Number <span class="req">*</span></label>
           <input type="tel" id="cust-phone" class="input" placeholder="e.g. 9876543210" required minlength="10" maxlength="15" oninput="syncWhatsapp()">
-          <span class="field-error">Please enter a valid phone number (minimum 10 digits).</span>
+          <span class="field-error">Please enter a valid 10-digit mobile number.</span>
         </div>
 
         <div class="form-group" id="group-whatsapp">
-          <label>WhatsApp Number <span class="req">*</span></label>
+          <label for="cust-whatsapp">WhatsApp Number <span class="req">*</span></label>
           <input type="tel" id="cust-whatsapp" class="input" placeholder="e.g. 9876543210" minlength="10" maxlength="15" oninput="handleWhatsappInput()">
-          <span class="field-error">Please enter a valid WhatsApp number (minimum 10 digits).</span>
+          <span class="field-error">Please enter a valid 10-digit WhatsApp number.</span>
           <label class="checkbox-wrap">
             <input type="checkbox" id="same-whatsapp" checked onchange="handleSameWhatsappToggle()">
             <span class="checkbox-label">WhatsApp number is the same as my phone number</span>
@@ -513,10 +760,10 @@
       <div class="form-section-title">2. Project Requirements</div>
       <div class="form-grid">
         <div class="form-group full">
-          <label>Material Category <span class="req">*</span></label>
+          <label for="cust-category">Material Category <span class="req">*</span></label>
           <select id="cust-category" required>
-            <option value="Aluminium">Aluminium Fabrication</option>
             <option value="uPVC">uPVC Windows &amp; Doors</option>
+            <option value="Aluminium">Aluminium Fabrication</option>
             <option value="Steel">Steel Fabrication &amp; Railings</option>
             <option value="Not sure">Not Sure (Need Advice)</option>
           </select>
@@ -530,19 +777,18 @@
             <label class="work-pill-label"><input type="checkbox" name="workType" value="Gates"> Gates</label>
             <label class="work-pill-label"><input type="checkbox" name="workType" value="Railings"> Railings</label>
             <label class="work-pill-label"><input type="checkbox" name="workType" value="Partitions"> Partitions</label>
-            <label class="work-pill-label"><input type="checkbox" name="workType" value="Facades"> Facades</label>
-            <label class="work-pill-label"><input type="checkbox" name="workType" value="Other"> Other</label>
+            <label class="work-pill-label"><input type="checkbox" name="workType" value="Other / Custom"> Other / Custom</label>
           </div>
         </div>
 
         <div class="form-group" id="group-city">
-          <label>City / District <span class="req">*</span></label>
+          <label for="cust-city">City / District <span class="req">*</span></label>
           <input type="text" id="cust-city" class="input" placeholder="e.g. Muzaffarpur" value="Muzaffarpur" maxlength="100" required>
-          <span class="field-error">Please enter your city.</span>
+          <span class="field-error">Please enter your site location or city.</span>
         </div>
 
         <div class="form-group">
-          <label>Area / Locality</label>
+          <label for="cust-locality">Area / Locality</label>
           <input type="text" id="cust-locality" class="input" placeholder="e.g. Mithanpura, Aamgola" maxlength="150">
         </div>
       </div>
@@ -551,8 +797,9 @@
       <div class="form-section-title">3. Project Details &amp; References</div>
       <div class="form-grid">
         <div class="form-group full">
-          <label>Tell Us About Your Project</label>
-          <textarea id="cust-message" placeholder="Tell us what you need, approximate size/quantity, preferred design, or anything else that will help us understand your project." maxlength="2000"></textarea>
+          <label for="cust-message">Tell Us About Your Project</label>
+          <textarea id="cust-message" placeholder="Tell us what you need, including approximate size, quantity, design preference, or any other requirement." maxlength="2000"></textarea>
+          <span class="helper-text">Rough dimensions or counts are welcome. Exact site measurements will be verified on-site for free.</span>
         </div>
 
         <div class="form-group full">
@@ -575,6 +822,21 @@
         </div>
       </div>
 
+      <!-- In-Page Error Banner -->
+      <div id="form-error-banner" class="form-error-banner" style="display: none;" role="alert">
+        <div class="error-banner-content">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div class="error-banner-text">
+            <strong>Submission Could Not Be Completed</strong>
+            <p id="form-error-msg">We couldn't submit your request right now. Please try again or contact us directly by phone or WhatsApp.</p>
+          </div>
+        </div>
+        <div class="error-banner-actions">
+          <a href="tel:9771086644" class="btn-error-tel">Call 9771086644</a>
+          <a href="https://wa.me/919771086644" class="btn-error-wa" target="_blank" rel="noopener">WhatsApp Us</a>
+        </div>
+      </div>
+
       <button type="submit" class="btn-submit" id="submit-btn">
         <span>Get My Quote</span>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -582,25 +844,35 @@
     </form>
 
     <!-- ── SUCCESS VIEW ── -->
-    <div id="success-view">
+    <div id="success-view" role="status" aria-live="polite">
       <div class="success-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
-      <h2>Thank You!</h2>
-      <p class="lead-msg">Your enquiry has been received. Our fabrication team at <strong>Riddhi Siddhi Fabricator</strong> will review your details and contact you shortly with an estimate.</p>
+      <h2>Your Quote Request Has Been Submitted</h2>
+      <p class="lead-msg">Thank you! We have received your fabrication requirements. Our team at <strong>Riddhi Siddhi Fabricator</strong> will review your details and contact you to discuss your project and schedule a free site measurement.</p>
+
+      <div class="success-steps-summary">
+        <div class="succ-step"><span class="succ-num">&check;</span> Requirement Submitted</div>
+        <div class="succ-step-sep">&rarr;</div>
+        <div class="succ-step"><span class="succ-num">2</span> Phone / WhatsApp Discussion</div>
+        <div class="succ-step-sep">&rarr;</div>
+        <div class="succ-step"><span class="succ-num">3</span> Free Site Measurement &amp; Estimate</div>
+      </div>
       
       <div class="success-actions">
         <a id="success-wa-btn" class="btn-whatsapp" href="#" target="_blank" rel="noopener">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
-          Chat on WhatsApp
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+          Send Details on WhatsApp
         </a>
         <a class="btn-call" href="tel:9771086644">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
           Call Us: 9771086644
         </a>
       </div>
 
-      <a class="btn-back-home" href="index.html">&larr; Return to Homepage</a>
+      <div class="success-home-link">
+        <a class="btn-back-home" href="index.html">&larr; Return to Homepage</a>
+      </div>
     </div>
   </div>
 </main>
@@ -755,18 +1027,43 @@
     renderRefPreviews();
   }
 
-  // ── Client-side Quote Submission Rate Limiter ──
+  // ── Client-side Quote Submission Protection & Error Handling ──
   let lastQuoteSubmitTime = 0;
+  let isSubmitting = false;
   const SUBMISSION_COOLDOWN_MS = 15000; // 15 seconds cooldown between submissions
+
+  function showFormError(msg) {
+    const banner = document.getElementById("form-error-banner");
+    const textEl = document.getElementById("form-error-msg");
+    if (banner && textEl) {
+      textEl.textContent = msg;
+      banner.style.display = "flex";
+      banner.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+
+  function hideFormError() {
+    const banner = document.getElementById("form-error-banner");
+    if (banner) banner.style.display = "none";
+  }
+
+  document.getElementById("quote-form").addEventListener("input", () => {
+    hideFormError();
+  });
 
   // Form Validation & Submit
   async function handleQuoteSubmit(e) {
     e.preventDefault();
 
+    // Prevent concurrent duplicate submissions
+    if (isSubmitting) return;
+
+    hideFormError();
+
     const now = Date.now();
     if (now - lastQuoteSubmitTime < SUBMISSION_COOLDOWN_MS) {
       const waitSec = Math.ceil((SUBMISSION_COOLDOWN_MS - (now - lastQuoteSubmitTime)) / 1000);
-      alert(`Please wait ${waitSec} seconds before submitting another enquiry.`);
+      showFormError(`Please wait ${waitSec} seconds before submitting another enquiry, or contact us directly by phone or WhatsApp.`);
       return;
     }
 
@@ -778,7 +1075,7 @@
 
     let isValid = true;
 
-    // 1. Validate Name
+    // 1. Validate Name (at least 2 characters)
     if (!nameEl.value.trim() || nameEl.value.trim().length < 2) {
       document.getElementById("group-name").classList.add("has-error");
       isValid = false;
@@ -786,7 +1083,7 @@
       document.getElementById("group-name").classList.remove("has-error");
     }
 
-    // 2. Strict Phone Number Validation (strictly at least 10 digits)
+    // 2. Validate Phone Number (at least 10 digits)
     const rawPhone = phoneEl.value.replace(/[^\d]/g, "");
     if (rawPhone.length < 10) {
       document.getElementById("group-phone").classList.add("has-error");
@@ -795,7 +1092,7 @@
       document.getElementById("group-phone").classList.remove("has-error");
     }
 
-    // 3. Strict WhatsApp Number Validation (strictly at least 10 digits)
+    // 3. Validate WhatsApp Number
     const effectiveWaVal = isSameWa ? phoneEl.value.trim() : waEl.value.trim();
     const rawWa = effectiveWaVal.replace(/[^\d]/g, "");
     if (rawWa.length < 10) {
@@ -813,7 +1110,15 @@
       document.getElementById("group-city").classList.remove("has-error");
     }
 
-    if (!isValid) return;
+    if (!isValid) {
+      const firstError = document.querySelector(".form-group.has-error");
+      if (firstError) {
+        firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+        const input = firstError.querySelector("input, select, textarea");
+        if (input) input.focus();
+      }
+      return;
+    }
 
     // Collect Data
     const name = nameEl.value.trim();
@@ -832,12 +1137,13 @@
 
     const prefContact = document.querySelector("input[name='prefContact']:checked")?.value || "Either";
 
-    // Disable Submit Button (prevent duplicate submission)
+    // Disable Submit Button & Set Loading State
+    isSubmitting = true;
     const submitBtn = document.getElementById("submit-btn");
     submitBtn.disabled = true;
     submitBtn.innerHTML = `
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
-      <span>Submitting Quote...</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+      <span>Submitting Quote Request...</span>
     `;
 
     try {
@@ -857,6 +1163,7 @@
 
       await RS_DB.createLead(leadData);
       lastQuoteSubmitTime = Date.now();
+      isSubmitting = false;
 
       // Generate dynamic WhatsApp link
       const workStr = selectedWorkTypes.length > 0 ? selectedWorkTypes.join(", ") : category;
@@ -872,7 +1179,9 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
 
     } catch (err) {
-      alert("Submission error: " + (err.message || "Please check your network connection and try again."));
+      console.error("Quote submission error:", err);
+      isSubmitting = false;
+      showFormError("We couldn't submit your request right now. Please check your network connection and try again, or contact us directly by phone or WhatsApp.");
       submitBtn.disabled = false;
       submitBtn.innerHTML = `<span>Get My Quote</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>`;
     }
