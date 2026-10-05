@@ -1078,6 +1078,27 @@
     align-items: center;
     justify-content: center;
   }
+  .faq-header {
+    text-align: center;
+  }
+
+  /* Section headers text contrast over 3D background canvas */
+  .work-header,
+  .showcase-header,
+  .faq-header {
+    text-shadow: 0 2px 14px rgba(10, 5, 7, 0.95), 0 1px 3px rgba(0, 0, 0, 0.85);
+  }
+  .work-header h2,
+  .showcase-header h2,
+  .faq-header h2 {
+    text-shadow: 0 2px 18px rgba(10, 5, 7, 0.98), 0 1px 4px rgba(0, 0, 0, 0.9);
+  }
+  .work-header p.lead,
+  .showcase-header p.lead,
+  .faq-header p.lead {
+    text-shadow: 0 1px 10px rgba(10, 5, 7, 0.95);
+  }
+
   .faq-container {
     max-width: 800px;
     width: 100%;
@@ -1221,7 +1242,37 @@
      MOBILE
      ═══════════════════════════════════════════════════ */
   @media (max-width: 768px) {
-    .section { padding: 8vh 4vw; }
+    /* Mobile spacing normalization: release 100vh lock & normalize mobile section padding */
+    .section,
+    .work-section,
+    .showcase-section,
+    .faq-section,
+    .about-section {
+      min-height: auto;
+      padding: 44px 5vw;
+    }
+    .trust-section {
+      padding: 24px 5vw !important;
+    }
+    .work-header { margin-bottom: 24px; }
+    .showcase-header { margin-bottom: 24px; }
+    .faq-container { margin-top: 20px; }
+
+    /* Subtle ambient vignette tune on mobile to prevent bright frame washout */
+    #vignette {
+      background:
+        radial-gradient(ellipse 80% 80% at 50% 50%, rgba(14, 7, 9, 0.2) 0%, transparent 45%, rgba(14, 7, 9, 0.7) 90%),
+        linear-gradient(to bottom, rgba(14, 7, 9, 0.3) 0%, transparent 12%, transparent 88%, rgba(14, 7, 9, 0.45) 100%);
+    }
+
+    /* Soft localized readability scrim behind standalone mobile section headers */
+    .work-header,
+    .showcase-header,
+    .faq-header {
+      background: radial-gradient(ellipse 90% 80% at 50% 50%, rgba(14, 7, 9, 0.52) 0%, transparent 90%);
+      padding: 12px 14px;
+      border-radius: 18px;
+    }
     .hero { min-height: auto; padding-top: 92px; padding-bottom: 40px; }
     .hero .glass {
       padding: clamp(26px, 5vw, 36px) clamp(16px, 4vw, 24px);
@@ -1682,7 +1733,7 @@
 
   <!-- ─── FAQ / DIRECT ANSWERS ─── -->
   <section class="section faq-section" id="faq">
-    <div data-reveal style="text-align: center;">
+    <div class="faq-header" data-reveal style="text-align: center;">
       <p class="kicker">Frequently Asked Questions</p>
       <h2>Common Questions About Our Fabrication Work</h2>
       <p class="lead" style="margin: 12px auto 0; text-align: center; max-width: 650px;">Direct, transparent answers regarding our materials, custom fabrication process, and quotation estimates.</p>
