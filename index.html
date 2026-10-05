@@ -1618,16 +1618,27 @@
   /* ── Dynamic Recently Completed Projects Loader (Phase 3.1) ── */
   async function loadRecentlyCompletedShowcase() {
     const grid = document.getElementById("showcase-grid");
+    const section = document.getElementById("projects-showcase");
     if (!grid || typeof RS_DB === "undefined") return;
 
     try {
       await RS_DB.init();
       const recent = await RS_DB.getRecentlyCompletedProjects(4);
 
-      if (!Array.isArray(recent) || recent.length === 0) {
-        return; // Retain fallback
+      if (!Array.isArray(recent)) {
+        throw new Error("Invalid response format from database");
       }
 
+      // Case 1: Database succeeded and returned 0 projects (e.g. all unchecked in Admin)
+      // MUST NOT display stale hardcoded projects; clear cards and hide section
+      if (recent.length === 0) {
+        grid.innerHTML = "";
+        if (section) section.style.display = "none";
+        return;
+      }
+
+      // Case 2: Database succeeded and returned 1, 2, 3, or 4 projects
+      if (section) section.style.display = "";
       grid.innerHTML = recent.map((p) => {
         const coverImg = p.coverImage?.secure_url || p.coverImage?.url || p.coverImage?.thumbnail_url || p.coverImage || "";
         const thumbUrl = (p.coverImage?.public_id && RS_DB.getCloudinaryUrl)
@@ -1678,7 +1689,8 @@
         if (typeof io !== "undefined" && io) io.observe(el);
       });
     } catch (err) {
-      console.warn("Failed to load dynamic showcase projects:", err);
+      console.warn("Database/network query failed; retaining pre-rendered fallback showcase:", err);
+      // Case 3: DB/Network failure -> pre-rendered fallback HTML cards remain visible
     }
   }
 

@@ -267,58 +267,57 @@ const DB = {
   // PROJECTS PORTFOLIO (SUPABASE POSTGRESQL)
   // ══════════════════════════════════════════════════
 
+  _normalizeSupabaseProjects(data) {
+    return (data || []).map((p) => {
+      const rawImages = (p.project_images || []).sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+      const images = rawImages.map(img => ({
+        id: img.id,
+        public_id: img.public_id,
+        url: img.secure_url || img.thumbnail_url || img.url || "",
+        secure_url: img.secure_url || img.thumbnail_url || img.url || "",
+        thumbnail: img.thumbnail_url || img.secure_url || img.thumbnail || "",
+        thumbnail_url: img.thumbnail_url || img.secure_url || img.thumbnail || "",
+        alt_text: img.alt_text || p.name,
+        sort_order: img.sort_order,
+        is_cover: img.is_cover
+      }));
+
+      const rawCover = images.find((img) => img.is_cover) || images[0] || p.cover_image || {};
+      const coverUrl = rawCover.secure_url || rawCover.url || (typeof rawCover === "string" ? rawCover : "");
+      const coverThumb = rawCover.thumbnail_url || rawCover.thumbnail || coverUrl;
+
+      const cover = {
+        public_id: rawCover.public_id || "",
+        url: coverUrl,
+        secure_url: coverUrl,
+        thumbnail: coverThumb,
+        thumbnail_url: coverThumb
+      };
+
+      return {
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        category: (p.category || "").toLowerCase(),
+        shortDescription: p.short_description || "",
+        description: p.description || "",
+        location: p.location || "",
+        year: p.year || "",
+        services: p.services || "",
+        featured: Boolean(p.featured === true || p.featured === "true" || p.featured === 1),
+        published: Boolean(p.published === true || p.published === "true" || p.published === 1),
+        is_recently_completed: Boolean(p.is_recently_completed === true || p.is_recently_completed === "true" || p.is_recently_completed === 1),
+        recently_completed_at: p.recently_completed_at || null,
+        coverImage: cover,
+        galleryImages: images,
+        createdAt: p.created_at,
+        updatedAt: p.updated_at
+      };
+    });
+  },
+
   async getAllProjects(onlyPublished = false) {
     await this.init();
-
-    // Helper function to map raw Supabase records to normalized project format
-    const normalizeSupabaseProjects = (data) => {
-      return (data || []).map((p) => {
-        const rawImages = (p.project_images || []).sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
-        const images = rawImages.map(img => ({
-          id: img.id,
-          public_id: img.public_id,
-          url: img.secure_url || img.thumbnail_url || img.url || "",
-          secure_url: img.secure_url || img.thumbnail_url || img.url || "",
-          thumbnail: img.thumbnail_url || img.secure_url || img.thumbnail || "",
-          thumbnail_url: img.thumbnail_url || img.secure_url || img.thumbnail || "",
-          alt_text: img.alt_text || p.name,
-          sort_order: img.sort_order,
-          is_cover: img.is_cover
-        }));
-
-        const rawCover = images.find((img) => img.is_cover) || images[0] || p.cover_image || {};
-        const coverUrl = rawCover.secure_url || rawCover.url || (typeof rawCover === "string" ? rawCover : "");
-        const coverThumb = rawCover.thumbnail_url || rawCover.thumbnail || coverUrl;
-
-        const cover = {
-          public_id: rawCover.public_id || "",
-          url: coverUrl,
-          secure_url: coverUrl,
-          thumbnail: coverThumb,
-          thumbnail_url: coverThumb
-        };
-
-        return {
-          id: p.id,
-          name: p.name,
-          slug: p.slug,
-          category: (p.category || "").toLowerCase(),
-          shortDescription: p.short_description || "",
-          description: p.description || "",
-          location: p.location || "",
-          year: p.year || "",
-          services: p.services || "",
-          featured: Boolean(p.featured === true || p.featured === "true" || p.featured === 1),
-          published: Boolean(p.published === true || p.published === "true" || p.published === 1),
-          is_recently_completed: Boolean(p.is_recently_completed === true || p.is_recently_completed === "true" || p.is_recently_completed === 1),
-          recently_completed_at: p.recently_completed_at || null,
-          coverImage: cover,
-          galleryImages: images,
-          createdAt: p.created_at,
-          updatedAt: p.updated_at
-        };
-      });
-    };
 
     if (this.isSupabaseMode()) {
       // Tier 1: Query Supabase JS Client with 3.5-second timeout
@@ -351,7 +350,7 @@ const DB = {
           const { data, error } = await Promise.race([query, timeoutPromise]);
           if (error) throw error;
           if (Array.isArray(data) && data.length > 0) {
-            return normalizeSupabaseProjects(data);
+            return this._normalizeSupabaseProjects(data);
           }
         } catch (err) {
           console.warn("Supabase SDK query failed/timed out, attempting direct REST fetch fallback:", err.message || err);
@@ -378,7 +377,7 @@ const DB = {
           if (response.ok) {
             const rawData = await response.json();
             if (Array.isArray(rawData) && rawData.length > 0) {
-              return normalizeSupabaseProjects(rawData);
+              return this._normalizeSupabaseProjects(rawData);
             }
           }
         } catch (restErr) {
@@ -401,7 +400,88 @@ const DB = {
   },
 
   async getRecentlyCompletedProjects(limit = 4) {
-    const all = await this.getAllProjects(true);
+    await this.init();
+
+    if (this.isSupabaseMode()) {
+      let data = null;
+      let lastError = null;
+
+      // Tier 1: Supabase JS Client with 3.5s timeout
+      if (this._supabase) {
+        try {
+          const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Supabase query timed out")), 3500)
+          );
+          const query = this._supabase
+            .from("projects")
+            .select(`
+              *,
+              project_images (
+                id,
+                public_id,
+                secure_url,
+                thumbnail_url,
+                alt_text,
+                sort_order,
+                is_cover
+              )
+            `)
+            .eq("published", true)
+            .eq("is_recently_completed", true)
+            .order("recently_completed_at", { ascending: false })
+            .limit(limit);
+
+          const res = await Promise.race([query, timeoutPromise]);
+          if (res.error) throw res.error;
+          if (Array.isArray(res.data)) {
+            data = res.data;
+          }
+        } catch (err) {
+          lastError = err;
+          console.warn("Supabase SDK recent projects failed:", err.message);
+        }
+      }
+
+      // Tier 2: Direct REST fetch fallback with 3.5s timeout
+      if (!data && window.RS_BACKEND_CONFIG?.supabaseUrl && window.RS_BACKEND_CONFIG?.supabaseAnonKey) {
+        try {
+          const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+          const fetchTimeout = setTimeout(() => { if (controller) controller.abort(); }, 3500);
+          const restUrl = `${window.RS_BACKEND_CONFIG.supabaseUrl}/rest/v1/projects?select=*,project_images(*)&published=eq.true&is_recently_completed=eq.true&order=recently_completed_at.desc&limit=${limit}`;
+          const response = await fetch(restUrl, {
+            method: "GET",
+            headers: {
+              "apikey": window.RS_BACKEND_CONFIG.supabaseAnonKey,
+              "Authorization": `Bearer ${window.RS_BACKEND_CONFIG.supabaseAnonKey}`
+            },
+            signal: controller ? controller.signal : undefined
+          });
+          clearTimeout(fetchTimeout);
+
+          if (response.ok) {
+            const rawData = await response.json();
+            if (Array.isArray(rawData)) {
+              data = rawData;
+            }
+          } else {
+            throw new Error(`REST fetch failed with status ${response.status}`);
+          }
+        } catch (restErr) {
+          lastError = restErr;
+          console.warn("REST fallback for recent projects failed:", restErr.message);
+        }
+      }
+
+      if (Array.isArray(data)) {
+        return this._normalizeSupabaseProjects(data);
+      }
+
+      // If both network queries failed, throw error to trigger caller's resilience fallback
+      throw lastError || new Error("Failed to connect to Supabase database");
+    }
+
+    // Local / Demo Mode fallback
+    const all = await this._getLocalProjects(true);
     return all
       .filter((p) => Boolean(p.is_recently_completed === true || p.is_recently_completed === "true" || p.is_recently_completed === 1))
       .sort((a, b) => new Date(b.recently_completed_at || 0) - new Date(a.recently_completed_at || 0))
