@@ -720,6 +720,184 @@
   }
 
   /* ═══════════════════════════════════════════════════
+     RECENT COMPLETED PROJECTS SHOWCASE (Phase 3)
+     ═══════════════════════════════════════════════════ */
+  .showcase-section {
+    min-height: auto;
+    padding: 12vh 6vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  .showcase-header {
+    text-align: center;
+    margin-bottom: 44px;
+  }
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    max-width: 1100px;
+    width: 100%;
+  }
+  .showcase-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 22px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.4s cubic-bezier(.25,.8,.25,1);
+    position: relative;
+  }
+  .showcase-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(185, 168, 172, 0.28);
+    box-shadow: 0 20px 54px rgba(0, 0, 0, 0.5);
+    background: rgba(22, 12, 16, 0.75);
+  }
+  .showcase-card:focus-visible {
+    outline: 2px solid var(--plum-glow);
+    outline-offset: 3px;
+  }
+  .showcase-img-wrap {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: #140B0E;
+    overflow: hidden;
+    position: relative;
+  }
+  .showcase-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(.25,.8,.25,1);
+  }
+  .showcase-card:hover .showcase-img {
+    transform: scale(1.04);
+  }
+  .showcase-body {
+    padding: 22px 24px 26px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .showcase-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .showcase-cat-pill {
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 100px;
+    background: rgba(83, 49, 59, 0.35);
+    border: 1px solid rgba(185, 168, 172, 0.15);
+    color: var(--blush);
+  }
+  .showcase-cat-upvc {
+    background: rgba(83, 49, 59, 0.5);
+    border-color: rgba(122, 79, 94, 0.45);
+  }
+  .showcase-badge {
+    font-size: 11px;
+    color: var(--taupe);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    letter-spacing: 0.04em;
+    font-weight: 400;
+  }
+  .showcase-badge svg {
+    color: var(--plum-glow);
+    flex-shrink: 0;
+  }
+  .showcase-title {
+    font-size: 18.5px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .showcase-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .showcase-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid rgba(185, 168, 172, 0.08);
+  }
+  .showcase-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--blush);
+    transition: gap 0.25s ease, color 0.25s ease;
+  }
+  .showcase-card:hover .showcase-link-btn {
+    gap: 10px;
+    color: var(--taupe);
+  }
+  .showcase-link-btn svg {
+    transition: transform 0.25s ease;
+  }
+  .showcase-card:hover .showcase-link-btn svg {
+    transform: translateX(3px);
+  }
+  @media (max-width: 900px) {
+    .showcase-grid {
+      grid-template-columns: 1fr;
+      gap: 22px;
+      max-width: 580px;
+    }
+    .showcase-section {
+      padding: 8vh 4vw;
+    }
+    .showcase-body {
+      padding: 18px 20px 22px;
+    }
+    .showcase-title {
+      font-size: 17px;
+    }
+  }
+  @media (max-width: 600px) {
+    .showcase-grid {
+      grid-template-columns: 1fr;
+      gap: 18px;
+      max-width: 100%;
+    }
+    .showcase-link-btn {
+      min-height: 44px;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════
      STATS — floating numbers, transparent bg
      ═══════════════════════════════════════════════════ */
   .stats-row {
@@ -1151,6 +1329,123 @@
         <h3>Facades</h3>
         <p>Structural glazing and exterior curtain walls designed for modern showrooms and commercial buildings.</p>
       </div>
+    </div>
+  </section>
+
+  <!-- ─── RECENT COMPLETED PROJECTS (Real Project Showcase) ─── -->
+  <section class="section showcase-section" id="projects-showcase">
+    <div class="showcase-header" data-reveal>
+      <p class="kicker">Real Work</p>
+      <h2>Recent Completed Projects</h2>
+      <p class="lead" style="margin: 12px auto 0; text-align: center; max-width: 620px;">
+        A curated selection of our recent residential and commercial fabrication work, built and installed on-site across Muzaffarpur and nearby areas.
+      </p>
+    </div>
+
+    <div class="showcase-grid">
+      <!-- Project 1: uPVC Window -->
+      <a class="showcase-card" href="project.html?category=upvc&slug=white-upvc-sliding-window-with-integrated-grill" data-reveal aria-label="View project: White uPVC Sliding Window with Integrated Grill">
+        <div class="showcase-img-wrap">
+          <img class="showcase-img" src="https://res.cloudinary.com/ealgnhba/image/upload/c_fill,w_640,h_480,f_auto,q_auto/riddhi-siddhi/projects/covers/vv54krbsjijguamducu9" alt="White uPVC sliding window with integrated safety grill installed in Muzaffarpur" width="640" height="480" loading="lazy">
+        </div>
+        <div class="showcase-body">
+          <div class="showcase-meta">
+            <span class="showcase-cat-pill showcase-cat-upvc">uPVC</span>
+            <span class="showcase-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>Muzaffarpur &bull; Completed</span>
+            </span>
+          </div>
+          <h3 class="showcase-title">White uPVC Sliding Window with Integrated Grill</h3>
+          <p class="showcase-desc">A white uPVC sliding window with an integrated horizontal grill, combining natural light, ventilation, and added security.</p>
+          <div class="showcase-footer">
+            <span class="showcase-link-btn">
+              View Project Details
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Project 2: uPVC Patio / Balcony Door -->
+      <a class="showcase-card" href="project.html?category=upvc&slug=large-upvc-balcony-sliding-glass-door" data-reveal aria-label="View project: Large uPVC Balcony Sliding Glass Door">
+        <div class="showcase-img-wrap">
+          <img class="showcase-img" src="https://res.cloudinary.com/ealgnhba/image/upload/c_fill,w_640,h_480,f_auto,q_auto/riddhi-siddhi/projects/covers/iymvtahwnm7gsn1afzdi" alt="Large white uPVC sliding glass balcony door installation in Muzaffarpur" width="640" height="480" loading="lazy">
+        </div>
+        <div class="showcase-body">
+          <div class="showcase-meta">
+            <span class="showcase-cat-pill showcase-cat-upvc">uPVC</span>
+            <span class="showcase-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>Muzaffarpur &bull; Completed</span>
+            </span>
+          </div>
+          <h3 class="showcase-title">Large uPVC Balcony Sliding Glass Door</h3>
+          <p class="showcase-desc">A large white uPVC sliding glass door designed for balconies, providing a wide opening, abundant natural light, and a clean modern appearance.</p>
+          <div class="showcase-footer">
+            <span class="showcase-link-btn">
+              View Project Details
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Project 3: Aluminium Window -->
+      <a class="showcase-card" href="project.html?category=aluminium&slug=bronze-finish-aluminium-sliding-windows" data-reveal aria-label="View project: Bronze Finish Aluminium Sliding Windows">
+        <div class="showcase-img-wrap">
+          <img class="showcase-img" src="https://res.cloudinary.com/ealgnhba/image/upload/c_fill,w_640,h_480,f_auto,q_auto/riddhi-siddhi/projects/covers/qurfo0ekne2dv7ulevj3" alt="Bronze finish aluminium sliding windows with large glass panels in Muzaffarpur" width="640" height="480" loading="lazy">
+        </div>
+        <div class="showcase-body">
+          <div class="showcase-meta">
+            <span class="showcase-cat-pill">Aluminium</span>
+            <span class="showcase-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>Muzaffarpur &bull; Completed</span>
+            </span>
+          </div>
+          <h3 class="showcase-title">Bronze Finish Aluminium Sliding Windows</h3>
+          <p class="showcase-desc">Modern bronze-finish aluminium sliding windows with large glass panels, offering a clean appearance, natural light, and smooth operation.</p>
+          <div class="showcase-footer">
+            <span class="showcase-link-btn">
+              View Project Details
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Project 4: Steel Door -->
+      <a class="showcase-card" href="project.html?category=steel&slug=stainless-steel-designer-main-door" data-reveal aria-label="View project: Stainless Steel Designer Main Door">
+        <div class="showcase-img-wrap">
+          <img class="showcase-img" src="https://res.cloudinary.com/ealgnhba/image/upload/c_fill,w_640,h_480,f_auto,q_auto/riddhi-siddhi/projects/covers/tyq8c2hav6nl2momrkwo" alt="Stainless steel designer main door with wood finish panels in Muzaffarpur" width="640" height="480" loading="lazy">
+        </div>
+        <div class="showcase-body">
+          <div class="showcase-meta">
+            <span class="showcase-cat-pill">Steel</span>
+            <span class="showcase-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>Muzaffarpur &bull; Completed</span>
+            </span>
+          </div>
+          <h3 class="showcase-title">Stainless Steel Designer Main Door</h3>
+          <p class="showcase-desc">Modern stainless steel main door featuring a wood-finish panel, sleek vertical bars, and a long handle.</p>
+          <div class="showcase-footer">
+            <span class="showcase-link-btn">
+              View Project Details
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- View All Projects CTA -->
+    <div class="cta-row" data-reveal style="margin-top: 44px; justify-content: center;">
+      <a class="btn-primary" href="projects.html?category=featured">
+        View All Projects
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
     </div>
   </section>
 
