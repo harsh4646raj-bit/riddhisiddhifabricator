@@ -5,7 +5,7 @@ const SEED_PROJECTS = [
     "slug": "ss-teak-wood-residential-main-gate",
     "category": "steel",
     "shortDescription": "Heavy-duty stainless steel double leaf main entrance gate with horizontal weather-resistant teak wood grain paneling and security upper grill.",
-    "description": "Engineered and fabricated for a private residence in Muzaffarpur. Features heavy-gauge stainless steel box sections, seamless precision TIG welds, horizontal wood-grain composite panel infills, and heavy-duty ball-bearing hinges for effortless opening.",
+    "description": "Engineered and fabricated for a private residence in Muzaffarpur. Features stainless steel box sections, welded construction, horizontal wood-grain composite panel infills, and ball-bearing hinges for smooth opening.",
     "location": "Muzaffarpur, Bihar",
     "year": "2025",
     "services": "Main Gate Fabrication, Stainless Steel Design, Wood Composite Infill",
@@ -61,7 +61,7 @@ const SEED_PROJECTS = [
     "slug": "grand-residential-high-span-ss-gate",
     "category": "steel",
     "shortDescription": "Double-height stainless steel security gate with vertical slat accents, Swastik auspicious cresting, and top ventilation louvers.",
-    "description": "Designed for multi-story residential architecture. Built from heavy-gauge stainless steel tubing with protective horizontal and vertical rib reinforcement to withstand heavy daily use and all weather conditions.",
+    "description": "Designed for multi-story residential architecture. Built from stainless steel tubing with protective horizontal and vertical rib reinforcement for everyday durability.",
     "location": "Muzaffarpur, Bihar",
     "year": "2024",
     "services": "High-Span Gate Fabrication, Stainless Steel Cresting, Security Gates",
@@ -93,7 +93,7 @@ const SEED_PROJECTS = [
     "slug": "ss-security-doors-safety-enclosures",
     "category": "steel",
     "shortDescription": "Custom residential stainless steel safety doors with decorative laser-cut panels, vertical bar grilles, and architectural pull handles.",
-    "description": "Dual-layer security solutions crafted for apartment and villa main entries. Includes heavy-gauge SS door frames, laser-cut privacy screens, multi-point lock readiness, and anti-cut safety grilles.",
+    "description": "Dual-layer security solutions crafted for apartment and villa main entries. Includes stainless steel door frames, laser-cut privacy screens, lock readiness, and safety grilles.",
     "location": "Muzaffarpur, Bihar",
     "year": "2025",
     "services": "Safety Door Fabrication, Laser Cut Screens, Steel Security Grills",
@@ -204,8 +204,8 @@ const SEED_PROJECTS = [
     "name": "Exterior Terrace & Balcony Stainless Steel Railings",
     "slug": "exterior-terrace-balcony-ss-railings",
     "category": "steel",
-    "shortDescription": "Weatherproof stainless steel horizontal balustrades and curved railings for residential balconies and exterior staircases.",
-    "description": "Robust outdoor balcony railing solutions engineered for maximum wind resistance, child safety, and zero corrosion in monsoon weather.",
+    "shortDescription": "Stainless steel horizontal balustrades and curved railings for residential balconies and exterior staircases.",
+    "description": "Balcony railing solutions fabricated with stainless steel for exterior staircases and balconies.",
     "location": "Muzaffarpur, Bihar",
     "year": "2024",
     "services": "Balcony Railings, Terrace Balustrades, External Stair Safety",
@@ -301,10 +301,10 @@ const SEED_PROJECTS = [
     "slug": "bronze-anodized-aluminium-sliding-windows",
     "category": "aluminium",
     "shortDescription": "Modern 2-track and 3-track dark bronze aluminium sliding windows with tinted glass, mosquito mesh, and granite sill integration.",
-    "description": "Sleek, low-maintenance aluminium windows installed across modern residences. Fitted with tinted reflective glass for thermal insulation, heavy wool pile weather-stripping, and integrated insect screening.",
+    "description": "Sleek, low-maintenance aluminium windows installed across modern residences. Fitted with tinted reflective glass for shading, wool pile weather-stripping, and integrated insect screening.",
     "location": "Muzaffarpur, Bihar",
     "year": "2025",
-    "services": "Aluminium Sliding Windows, 3-Track Systems, Weatherproofing",
+    "services": "Aluminium Sliding Windows, 3-Track Systems, Installation",
     "featured": true,
     "published": true,
     "coverImage": {
@@ -333,14 +333,14 @@ const SEED_PROJECTS = [
   },
   {
     "id": "proj-alum-04",
-    "name": "Designer ACP Aluminium Doors & Waterproof Partitions",
+    "name": "Designer ACP Aluminium Doors & Partitions",
     "slug": "designer-acp-aluminium-doors-partitions",
     "category": "aluminium",
-    "shortDescription": "100% waterproof aluminium frame doors fitted with decorative 3D geometric, Italian marble finish, and teak wood grain ACP panels.",
-    "description": "Zero maintenance, moisture-proof doors engineered for bathrooms, balconies, and interior rooms. Fabricated using powder-coated aluminium frames, Aldecor and Nexa ACP sheets, and stainless steel hardware.",
+    "shortDescription": "Aluminium frame doors fitted with decorative 3D geometric, Italian marble finish, and teak wood grain ACP panels.",
+    "description": "Low-maintenance doors designed for bathrooms, balconies, and interior rooms. Fabricated using powder-coated aluminium frames, ACP sheets, and stainless steel hardware.",
     "location": "Muzaffarpur, Bihar",
     "year": "2025",
-    "services": "ACP Aluminium Doors, Waterproof Bathroom Doors, Interior Partitions",
+    "services": "ACP Aluminium Doors, Bathroom Doors, Interior Partitions",
     "featured": true,
     "published": true,
     "coverImage": {
@@ -412,11 +412,11 @@ const SEED_PROJECTS = [
     "name": "Conch & Fenstech White uPVC Sliding Window Systems",
     "slug": "conch-fenstech-white-upvc-sliding-windows",
     "category": "upvc",
-    "shortDescription": "Energy-efficient multi-chambered white uPVC sliding windows with integrated horizontal security grills, tinted glass, and insect screens.",
-    "description": "Engineered using lead-free, UV-stabilized multi-chamber uPVC profiles from industry leaders Conch and Fenstech. Delivers superior acoustic dampening, dust protection, and thermal insulation against hot Bihar summers.",
+    "shortDescription": "Custom multi-chambered white uPVC sliding windows with integrated horizontal security grills, tinted glass, and insect screens.",
+    "description": "Engineered using UV-stabilized multi-chamber uPVC profiles. Delivers dust protection and weather sealing for residential installations.",
     "location": "Muzaffarpur, Bihar",
     "year": "2025",
-    "services": "uPVC Sliding Windows, Acoustic Insulation, Security Grill Integration",
+    "services": "uPVC Sliding Windows, Window Fabrication, Security Grill Integration",
     "featured": true,
     "published": true,
     "coverImage": {
@@ -453,10 +453,10 @@ const SEED_PROJECTS = [
     "slug": "residential-upvc-casement-privacy-windows",
     "category": "upvc",
     "shortDescription": "Three-panel white uPVC casement windows and decorative frosted glass privacy sliding units for bathrooms and master suites.",
-    "description": "Fitted with heavy-duty friction hinges, multi-point lock transmission gear, EPDM rubber gaskets for 100% watertight sealing, and privacy textured glass.",
+    "description": "Fitted with friction hinges, multi-point lock transmission gear, EPDM rubber gaskets, and privacy textured glass.",
     "location": "Muzaffarpur, Bihar",
     "year": "2025",
-    "services": "Casement Windows, Frosted Privacy Glazing, EPDM Weatherproofing",
+    "services": "Casement Windows, Frosted Privacy Glazing, EPDM Gaskets",
     "featured": true,
     "published": true,
     "coverImage": {
@@ -509,20 +509,20 @@ const SEED_PROJECTS = [
   },
   {
     "id": "proj-upvc-04",
-    "name": "100% Moisture-Proof uPVC Bathroom & Utility Doors",
+    "name": "uPVC Bathroom & Utility Doors",
     "slug": "moisture-proof-upvc-bathroom-doors",
     "category": "upvc",
     "shortDescription": "Solid louvered and tongue-and-groove white uPVC doors with stainless lever latches designed for wet areas and bathrooms.",
-    "description": "Waterproof, rot-proof, and termite-proof uPVC panel doors ideal for high-humidity residential bathrooms, laundry spaces, and kitchen utility zones.",
+    "description": "uPVC panel doors suited for residential bathrooms, laundry spaces, and kitchen utility zones.",
     "location": "Muzaffarpur, Bihar",
     "year": "2025",
-    "services": "Bathroom Doors, Waterproof uPVC Panels, Utility Doors",
+    "services": "Bathroom Doors, uPVC Panels, Utility Doors",
     "featured": false,
     "published": true,
     "coverImage": {
       "url": "assets/projects/white-upvc-louvered-panel-bathroom-door.webp",
       "thumbnail": "assets/projects/white-upvc-louvered-panel-bathroom-door.webp",
-      "alt": "Waterproof white uPVC panel door with modern lever handle for bathroom and utility area"
+      "alt": "White uPVC panel door with modern lever handle for bathroom and utility area"
     },
     "galleryImages": [
       {
@@ -535,7 +535,7 @@ const SEED_PROJECTS = [
       },
       {
         "url": "assets/projects/white-upvc-waterproof-bathroom-door-mosaic-tile.webp",
-        "alt": "Waterproof uPVC door in blue mosaic bathroom"
+        "alt": "White uPVC door in blue mosaic bathroom"
       }
     ]
   }
