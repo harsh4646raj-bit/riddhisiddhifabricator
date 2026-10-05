@@ -1,8 +1,8 @@
 # Cloudflare Pages Redirects & URL Rewrites
 
 # Clean admin and page URL rewrites
-/about       /                 200
-/contact     /                 200
+/about       /about.html       200
+/contact     /contact.html     200
 /admin       /admin.html       200
 /quote       /quote.html       200
 /projects    /projects.html    200

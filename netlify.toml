@@ -28,12 +28,12 @@
 
 [[redirects]]
   from = "/about"
-  to = "/"
+  to = "/about.html"
   status = 200
 
 [[redirects]]
   from = "/contact"
-  to = "/"
+  to = "/contact.html"
   status = 200
 
 [[redirects]]

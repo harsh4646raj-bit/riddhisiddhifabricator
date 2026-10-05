@@ -45,8 +45,8 @@
     }
 
     /* Match about / contact */
-    if (targetUrl.indexOf("#about") !== -1 && (rawPath === "/about" || loc.hash === "#about")) return true;
-    if (targetUrl.indexOf("#contact") !== -1 && (rawPath === "/contact" || loc.hash === "#contact")) return true;
+    if ((targetUrl === "/about" || targetUrl === "about.html" || targetUrl.indexOf("about") !== -1) && (rawPath === "/about" || rawPath.endsWith("/about") || rawPath.endsWith("about") || loc.hash === "#about")) return true;
+    if ((targetUrl === "/contact" || targetUrl === "contact.html" || targetUrl.indexOf("contact") !== -1) && (rawPath === "/contact" || rawPath.endsWith("/contact") || rawPath.endsWith("contact") || loc.hash === "#contact")) return true;
 
     return false;
   }
@@ -58,8 +58,8 @@
     { label: "Aluminium", href: "projects.html?category=aluminium" },
     { label: "Steel & Gates", href: "projects.html?category=steel" },
     { label: "Projects Portfolio", href: "projects.html?category=featured" },
-    { label: "About", href: "index.html#about" },
-    { label: "Contact", href: "index.html#contact" }
+    { label: "About", href: "/about" },
+    { label: "Contact", href: "/contact" }
   ];
 
   /* ── SVG Icons ── */
