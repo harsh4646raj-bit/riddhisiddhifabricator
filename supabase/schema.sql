@@ -75,6 +75,8 @@ CREATE TABLE IF NOT EXISTS public.projects (
   services TEXT DEFAULT '',
   featured BOOLEAN NOT NULL DEFAULT FALSE,
   published BOOLEAN NOT NULL DEFAULT FALSE, -- Default FALSE: must be explicitly published by Admin
+  is_recently_completed BOOLEAN NOT NULL DEFAULT FALSE,
+  recently_completed_at TIMESTAMPTZ DEFAULT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   CONSTRAINT unique_category_slug UNIQUE (category, slug)
@@ -176,8 +178,56 @@ CREATE TRIGGER trigger_sync_project_cover
 -- 9. Database Performance & Query Indexes
 CREATE INDEX IF NOT EXISTS idx_projects_cat_pub ON public.projects(category, published);
 CREATE INDEX IF NOT EXISTS idx_projects_cat_slug ON public.projects(category, slug);
+CREATE INDEX IF NOT EXISTS idx_projects_recently_completed ON public.projects(is_recently_completed, recently_completed_at DESC);
 CREATE INDEX IF NOT EXISTS idx_proj_images_proj_sort ON public.project_images(project_id, sort_order);
 CREATE INDEX IF NOT EXISTS idx_leads_status_created ON public.leads(status, created_at DESC);
+
+-- 9b. FIFO Queue Trigger for Recently Completed Projects (Max 4 Active)
+CREATE OR REPLACE FUNCTION public.enforce_recently_completed_fifo()
+RETURNS TRIGGER AS $$
+DECLARE
+  v_oldest_id UUID;
+  v_count INT;
+BEGIN
+  IF NEW.is_recently_completed = TRUE THEN
+    IF TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND (OLD.is_recently_completed IS DISTINCT FROM TRUE)) THEN
+      NEW.recently_completed_at := COALESCE(NEW.recently_completed_at, NOW());
+    ELSE
+      NEW.recently_completed_at := COALESCE(NEW.recently_completed_at, OLD.recently_completed_at, NOW());
+    END IF;
+
+    SELECT COUNT(*) INTO v_count
+    FROM public.projects
+    WHERE is_recently_completed = TRUE
+      AND (TG_OP = 'INSERT' OR id <> NEW.id);
+
+    IF v_count >= 4 THEN
+      FOR v_oldest_id IN
+        SELECT id
+        FROM public.projects
+        WHERE is_recently_completed = TRUE
+          AND (TG_OP = 'INSERT' OR id <> NEW.id)
+        ORDER BY recently_completed_at ASC NULLS FIRST, created_at ASC
+        LIMIT (v_count - 3)
+      LOOP
+        UPDATE public.projects
+        SET is_recently_completed = FALSE,
+            recently_completed_at = NULL
+        WHERE id = v_oldest_id;
+      END LOOP;
+    END IF;
+  ELSE
+    NEW.recently_completed_at := NULL;
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS trg_recently_completed_fifo ON public.projects;
+CREATE TRIGGER trg_recently_completed_fifo
+  BEFORE INSERT OR UPDATE OF is_recently_completed, recently_completed_at ON public.projects
+  FOR EACH ROW EXECUTE FUNCTION public.enforce_recently_completed_fifo();
 
 -- 10. Secure Stored Procedure for Public Lead Submissions
 CREATE OR REPLACE FUNCTION public.submit_lead(

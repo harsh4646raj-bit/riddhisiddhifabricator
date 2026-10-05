@@ -431,6 +431,11 @@
             <option value="upvc">uPVC</option>
             <option value="steel">Steel</option>
           </select>
+          <select id="recent-filter" class="filter-select" onchange="renderProjectsTable()">
+            <option value="all">All Projects</option>
+            <option value="recent">Recently Completed Only</option>
+            <option value="not_recent">Not Recently Completed</option>
+          </select>
         </div>
         <button class="btn-primary" onclick="openProjectModal()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -447,6 +452,7 @@
               <th>Category</th>
               <th>Status</th>
               <th>Featured</th>
+              <th>Recently Completed</th>
               <th style="text-align: right;">Actions</th>
             </tr>
           </thead>
@@ -561,6 +567,9 @@
         </label>
         <label class="checkbox-label">
           <input type="checkbox" id="proj-featured"> Featured Project
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="proj-recently-completed"> Recently Completed
         </label>
       </div>
 
@@ -903,20 +912,23 @@
     const tbody = document.getElementById("projects-tbody");
     const search = document.getElementById("search-input").value.toLowerCase().trim();
     const category = document.getElementById("category-filter").value;
+    const recentFilter = document.getElementById("recent-filter") ? document.getElementById("recent-filter").value : "all";
 
     const all = await RS_DB.getAllProjects();
     document.getElementById("projects-count-badge").textContent = all.length;
 
     const filtered = all.filter(p => {
       const matchCat = category === "all" || (p.category || "").toLowerCase() === category.toLowerCase();
+      const isRec = Boolean(p.is_recently_completed === true || p.is_recently_completed === "true" || p.is_recently_completed === 1);
+      const matchRecent = recentFilter === "all" || (recentFilter === "recent" && isRec) || (recentFilter === "not_recent" && !isRec);
       const matchSearch = !search || (p.name || "").toLowerCase().includes(search) || (p.location || "").toLowerCase().includes(search);
-      return matchCat && matchSearch;
+      return matchCat && matchRecent && matchSearch;
     });
 
     if (filtered.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="6" style="text-align: center; padding: 48px 20px; color: var(--text-dim);">
+          <td colspan="7" style="text-align: center; padding: 48px 20px; color: var(--text-dim);">
             No projects found. Click <strong>"+ Add Project"</strong> above to upload your first project.
           </td>
         </tr>
@@ -954,6 +966,11 @@
               ${p.featured ? '★ Yes' : '—'}
             </span>
           </td>
+          <td>
+            <span style="font-size: 12px; color: ${p.is_recently_completed ? '#e2b34a' : 'var(--text-muted)'}; font-weight: ${p.is_recently_completed ? '600' : 'normal'};">
+              ${p.is_recently_completed ? '★ Yes' : '—'}
+            </span>
+          </td>
           <td style="text-align: right;">
             <div class="row-actions" style="justify-content: flex-end;">
               <a class="action-icon-btn" href="project.html?category=${encodeURIComponent(p.category)}&slug=${encodeURIComponent(p.slug)}" target="_blank" title="Live Preview">
@@ -983,6 +1000,9 @@
     if (!editMode) {
       document.getElementById("project-form").reset();
       document.getElementById("proj-id").value = "";
+      document.getElementById("proj-published").checked = true;
+      document.getElementById("proj-featured").checked = false;
+      document.getElementById("proj-recently-completed").checked = false;
       currentCoverData = null;
       currentGalleryData = [];
       renderCoverPreview();
@@ -1117,6 +1137,7 @@
       const description = document.getElementById("proj-desc").value;
       const published = document.getElementById("proj-published").checked;
       const featured = document.getElementById("proj-featured").checked;
+      const is_recently_completed = document.getElementById("proj-recently-completed").checked;
 
       if (!currentCoverData && currentGalleryData.length > 0) {
         currentCoverData = currentGalleryData[0];
@@ -1135,7 +1156,8 @@
         year,
         services,
         published,
-        featured
+        featured,
+        is_recently_completed
       };
 
       await RS_DB.saveProject(projectData);
@@ -1165,6 +1187,7 @@
     document.getElementById("proj-desc").value = p.description || "";
     document.getElementById("proj-published").checked = Boolean(p.published === true || p.published === "true" || p.published === 1);
     document.getElementById("proj-featured").checked = Boolean(p.featured === true || p.featured === "true" || p.featured === 1);
+    document.getElementById("proj-recently-completed").checked = Boolean(p.is_recently_completed === true || p.is_recently_completed === "true" || p.is_recently_completed === 1);
 
     currentCoverData = p.coverImage || null;
     currentGalleryData = Array.isArray(p.galleryImages) ? [...p.galleryImages] : [];

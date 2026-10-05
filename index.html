@@ -1342,7 +1342,7 @@
       </p>
     </div>
 
-    <div class="showcase-grid">
+    <div class="showcase-grid" id="showcase-grid">
       <!-- Project 1: uPVC Window -->
       <a class="showcase-card" href="project.html?category=upvc&slug=white-upvc-sliding-window-with-integrated-grill" data-reveal aria-label="View project: White uPVC Sliding Window with Integrated Grill">
         <div class="showcase-img-wrap">
@@ -1590,7 +1590,11 @@
 <!-- ═════════════════════════════════════════════
      SCRIPTS
      ═════════════════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/dist/umd/supabase.min.js"></script>
 <script src="js/nav.js?v=1.1"></script>
+<script src="js/seed-projects.js?v=3.0"></script>
+<script src="js/backend-config.js?v=3.0"></script>
+<script src="js/db.js?v=3.0"></script>
 <script src="main.js"></script>
 <script>
   /* ── Reveal on scroll ── */
@@ -1610,6 +1614,89 @@
   };
   addEventListener("scroll", revealCheck, { passive: true });
   revealCheck();
+
+  /* ── Dynamic Recently Completed Projects Loader (Phase 3.1) ── */
+  async function loadRecentlyCompletedShowcase() {
+    const grid = document.getElementById("showcase-grid");
+    if (!grid || typeof RS_DB === "undefined") return;
+
+    try {
+      await RS_DB.init();
+      const recent = await RS_DB.getRecentlyCompletedProjects(4);
+
+      if (!Array.isArray(recent) || recent.length === 0) {
+        return; // Retain fallback
+      }
+
+      grid.innerHTML = recent.map((p) => {
+        const coverImg = p.coverImage?.secure_url || p.coverImage?.url || p.coverImage?.thumbnail_url || p.coverImage || "";
+        const thumbUrl = (p.coverImage?.public_id && RS_DB.getCloudinaryUrl)
+          ? RS_DB.getCloudinaryUrl(p.coverImage.public_id, "c_fill,w_640,h_480,f_auto,q_auto")
+          : (coverImg || "Logo.jpeg");
+        const finalImgUrl = thumbUrl || coverImg || "Logo.jpeg";
+        const cat = (p.category || "aluminium").toLowerCase();
+        let catLabel = "Aluminium";
+        let catPillClass = "showcase-cat-pill";
+        if (cat === "upvc") {
+          catLabel = "uPVC";
+          catPillClass = "showcase-cat-pill showcase-cat-upvc";
+        } else if (cat === "steel") {
+          catLabel = "Steel";
+        }
+        const loc = p.location ? `${escapeHtml(p.location)} &bull; Completed` : "Muzaffarpur &bull; Completed";
+        const desc = p.shortDescription || p.description || "";
+
+        return `
+          <a class="showcase-card in" href="project.html?category=${encodeURIComponent(cat)}&slug=${encodeURIComponent(p.slug)}" data-reveal aria-label="View project: ${escapeHtml(p.name)}">
+            <div class="showcase-img-wrap">
+              <img class="showcase-img" src="${finalImgUrl}" alt="${escapeHtml(p.name)} installed in Muzaffarpur" width="640" height="480" loading="lazy">
+            </div>
+            <div class="showcase-body">
+              <div class="showcase-meta">
+                <span class="${catPillClass}">${catLabel}</span>
+                <span class="showcase-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <span>${loc}</span>
+                </span>
+              </div>
+              <h3 class="showcase-title">${escapeHtml(p.name)}</h3>
+              <p class="showcase-desc">${escapeHtml(desc)}</p>
+              <div class="showcase-footer">
+                <span class="showcase-link-btn">
+                  View Project Details
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </span>
+              </div>
+            </div>
+          </a>
+        `;
+      }).join("");
+
+      // Re-observe cards with reveal intersection observer
+      grid.querySelectorAll("[data-reveal]").forEach((el) => {
+        el.classList.add("in");
+        if (typeof io !== "undefined" && io) io.observe(el);
+      });
+    } catch (err) {
+      console.warn("Failed to load dynamic showcase projects:", err);
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadRecentlyCompletedShowcase);
+  } else {
+    loadRecentlyCompletedShowcase();
+  }
 
   /* ── Client-side routing (/about and /contact direct navigation) ── */
   const path = window.location.pathname.replace(/\/+$/, "");

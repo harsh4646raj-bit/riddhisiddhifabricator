@@ -310,6 +310,8 @@ const DB = {
           services: p.services || "",
           featured: Boolean(p.featured === true || p.featured === "true" || p.featured === 1),
           published: Boolean(p.published === true || p.published === "true" || p.published === 1),
+          is_recently_completed: Boolean(p.is_recently_completed === true || p.is_recently_completed === "true" || p.is_recently_completed === 1),
+          recently_completed_at: p.recently_completed_at || null,
           coverImage: cover,
           galleryImages: images,
           createdAt: p.created_at,
@@ -398,6 +400,14 @@ const DB = {
     return all.filter((p) => (p.category || "").toLowerCase() === catLower);
   },
 
+  async getRecentlyCompletedProjects(limit = 4) {
+    const all = await this.getAllProjects(true);
+    return all
+      .filter((p) => Boolean(p.is_recently_completed === true || p.is_recently_completed === "true" || p.is_recently_completed === 1))
+      .sort((a, b) => new Date(b.recently_completed_at || 0) - new Date(a.recently_completed_at || 0))
+      .slice(0, limit);
+  },
+
   async getProjectBySlug(category, slug) {
     if (!slug) return null;
     let decodedSlug = "";
@@ -470,6 +480,14 @@ const DB = {
 
     const isFeatured = Boolean(projectData.featured === true || projectData.featured === "true" || projectData.featured === 1);
     const isPublished = Boolean(projectData.published === true || projectData.published === "true" || projectData.published === 1);
+    const isRecentlyCompleted = Boolean(
+      projectData.is_recently_completed === true || 
+      projectData.is_recently_completed === "true" || 
+      projectData.is_recently_completed === 1 ||
+      projectData.isRecentlyCompleted === true ||
+      projectData.isRecentlyCompleted === "true" ||
+      projectData.isRecentlyCompleted === 1
+    );
 
     if (this.isSupabaseMode()) {
       try {
@@ -485,6 +503,7 @@ const DB = {
           services: String(projectData.services || "").trim().substring(0, 200),
           featured: isFeatured,
           published: isPublished,
+          is_recently_completed: isRecentlyCompleted,
           updated_at: new Date().toISOString()
         };
 
@@ -576,12 +595,30 @@ const DB = {
       description: projectData.description || "",
       location: projectData.location || "",
       year: projectData.year || String(new Date().getFullYear()),
-      services: projectData.services || "",
       featured: Boolean(projectData.featured),
       published: Boolean(projectData.published),
+      is_recently_completed: isRecentlyCompleted,
+      recently_completed_at: isRecentlyCompleted 
+        ? (projectData.recently_completed_at || new Date().toISOString()) 
+        : null,
       createdAt: projectData.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
+
+    if (isRecentlyCompleted) {
+      // Enforce FIFO limit of 4 in local storage
+      const allLocal = await this._getLocalProjects(false);
+      const otherRecent = allLocal
+        .filter(p => p.id !== localProject.id && Boolean(p.is_recently_completed))
+        .sort((a, b) => new Date(a.recently_completed_at || 0) - new Date(b.recently_completed_at || 0));
+      while (otherRecent.length >= 4) {
+        const oldest = otherRecent.shift();
+        oldest.is_recently_completed = false;
+        oldest.recently_completed_at = null;
+        await this._saveLocalProject(oldest);
+      }
+    }
+
     await this._saveLocalProject(localProject);
     return localProject;
   },
@@ -831,6 +868,8 @@ const DB = {
         services: p.services || "",
         featured: Boolean(p.featured === true || p.featured === "true" || p.featured === 1),
         published: Boolean(p.published === true || p.published === "true" || p.published === 1),
+        is_recently_completed: Boolean(p.is_recently_completed === true || p.is_recently_completed === "true" || p.is_recently_completed === 1),
+        recently_completed_at: p.recently_completed_at || null,
         coverImage: p.coverImage || p.cover_image || null,
         galleryImages: Array.isArray(p.galleryImages) ? p.galleryImages : (Array.isArray(p.project_images) ? p.project_images : []),
         createdAt: p.createdAt || p.created_at || new Date().toISOString(),
