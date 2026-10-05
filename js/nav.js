@@ -154,7 +154,7 @@
     "  #mainnav .nav-cta-btn { padding: 8px 16px !important; font-size: 11px !important; }",
     "  .rs-hamburger { display: flex !important; width: 44px !important; height: 44px !important; min-width: 44px !important; min-height: 44px !important; padding: 0 !important; margin: 0 !important; flex-shrink: 0 !important; }",
     "  .rs-quick-contact { display: block; }",
-    "  body { padding-bottom: 74px; }",
+    "  body { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 104px) !important; }",
     "}",
 
     /* ════ Desktop Breakpoint (> 992px) ════ */
