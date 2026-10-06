@@ -29,8 +29,10 @@
       }
     }
 
-    if (cat && slug) {
-      var href = "https://riddhisiddhifabricator.vercel.app/project?category=" + encodeURIComponent(cat) + "&slug=" + encodeURIComponent(slug);
+    if (project) {
+      var validCat = (project.category || cat || "").toLowerCase();
+      var validSlug = (project.slug || slug || "").toLowerCase();
+      var href = "https://riddhisiddhifabricator.vercel.app/project?category=" + encodeURIComponent(validCat) + "&slug=" + encodeURIComponent(validSlug);
       var canonicalEl = document.querySelector('link[rel="canonical"]');
       if (!canonicalEl) {
         canonicalEl = document.createElement("link");
@@ -42,72 +44,70 @@
       var ogUrl = document.getElementById("og-url");
       if (ogUrl) ogUrl.setAttribute("content", href);
 
-      if (project) {
-        var catUpper = (project.category || cat || "Fabrication").toUpperCase();
-        var projTitle = (project.name || "Project") + " (" + catUpper + ") — Riddhi Siddhi Fabricator, Muzaffarpur";
-        var projDesc = project.shortDescription || ("Explore " + (project.name || "custom architectural fabrication") + " by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar.");
-        document.title = projTitle;
+      var catUpper = (project.category || cat || "Fabrication").toUpperCase();
+      var projTitle = (project.name || "Project") + " (" + catUpper + ") — Riddhi Siddhi Fabricator, Muzaffarpur";
+      var projDesc = project.shortDescription || ("Explore " + (project.name || "custom architectural fabrication") + " by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar.");
+      document.title = projTitle;
 
-        var descMeta = document.querySelector('meta[name="description"]');
-        if (descMeta) descMeta.setAttribute("content", projDesc);
+      var descMeta = document.querySelector('meta[name="description"]');
+      if (descMeta) descMeta.setAttribute("content", projDesc);
 
-        var ogTitle = document.getElementById("og-title");
-        if (ogTitle) ogTitle.setAttribute("content", projTitle);
-        var ogDesc = document.getElementById("og-desc");
-        if (ogDesc) ogDesc.setAttribute("content", projDesc);
-        var twTitle = document.getElementById("tw-title");
-        if (twTitle) twTitle.setAttribute("content", projTitle);
-        var twDesc = document.getElementById("tw-desc");
-        if (twDesc) twDesc.setAttribute("content", projDesc);
+      var ogTitle = document.getElementById("og-title");
+      if (ogTitle) ogTitle.setAttribute("content", projTitle);
+      var ogDesc = document.getElementById("og-desc");
+      if (ogDesc) ogDesc.setAttribute("content", projDesc);
+      var twTitle = document.getElementById("tw-title");
+      if (twTitle) twTitle.setAttribute("content", projTitle);
+      var twDesc = document.getElementById("tw-desc");
+      if (twDesc) twDesc.setAttribute("content", projDesc);
 
-        var cover = project.coverImage || {};
-        var coverUrl = cover.url || cover.secure_url || "";
-        if (coverUrl) {
-          var absCover = coverUrl.startsWith("http") ? coverUrl : ("https://riddhisiddhifabricator.vercel.app/" + coverUrl);
-          var ogImg = document.getElementById("og-img");
-          if (ogImg) ogImg.setAttribute("content", absCover);
-          var twImg = document.getElementById("tw-img");
-          if (twImg) twImg.setAttribute("content", absCover);
-        }
+      var cover = project.coverImage || {};
+      var coverUrl = cover.url || cover.secure_url || "";
+      if (coverUrl) {
+        var absCover = coverUrl.startsWith("http") ? coverUrl : ("https://riddhisiddhifabricator.vercel.app/" + coverUrl);
+        var ogImg = document.getElementById("og-img");
+        if (ogImg) ogImg.setAttribute("content", absCover);
+        var twImg = document.getElementById("tw-img");
+        if (twImg) twImg.setAttribute("content", absCover);
+      }
 
-        var schemaEl = document.getElementById("project-schema");
-        if (schemaEl) {
-          var schemaData = {
-            "@context": "https://schema.org",
-            "@graph": [
-              {
-                "@type": "BreadcrumbList",
-                "@id": href + "#breadcrumb",
-                "itemListElement": [
-                  { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://riddhisiddhifabricator.vercel.app/" },
-                  { "@type": "ListItem", "position": 2, "name": catUpper + " Projects", "item": "https://riddhisiddhifabricator.vercel.app/projects?category=" + encodeURIComponent(project.category || cat) },
-                  { "@type": "ListItem", "position": 3, "name": project.name || "Project", "item": href }
-                ]
+      var schemaEl = document.getElementById("project-schema");
+      if (schemaEl) {
+        var schemaData = {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "BreadcrumbList",
+              "@id": href + "#breadcrumb",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://riddhisiddhifabricator.vercel.app/" },
+                { "@type": "ListItem", "position": 2, "name": catUpper + " Projects", "item": "https://riddhisiddhifabricator.vercel.app/projects?category=" + encodeURIComponent(project.category || cat) },
+                { "@type": "ListItem", "position": 3, "name": project.name || "Project", "item": href }
+              ]
+            },
+            {
+              "@type": "CreativeWork",
+              "@id": href + "#work",
+              "name": project.name || "Project",
+              "headline": project.name || "Project",
+              "description": projDesc,
+              "url": href,
+              "image": coverUrl ? (coverUrl.startsWith("http") ? coverUrl : ("https://riddhisiddhifabricator.vercel.app/" + coverUrl)) : undefined,
+              "creator": {
+                "@type": ["LocalBusiness", "HomeAndConstructionBusiness"],
+                "@id": "https://riddhisiddhifabricator.vercel.app/#organization",
+                "name": "Riddhi Siddhi Fabricator",
+                "url": "https://riddhisiddhifabricator.vercel.app/"
               },
-              {
-                "@type": "CreativeWork",
-                "@id": href + "#work",
-                "name": project.name || "Project",
-                "headline": project.name || "Project",
-                "description": projDesc,
-                "url": href,
-                "image": coverUrl ? (coverUrl.startsWith("http") ? coverUrl : ("https://riddhisiddhifabricator.vercel.app/" + coverUrl)) : undefined,
-                "creator": {
-                  "@type": ["LocalBusiness", "HomeAndConstructionBusiness"],
-                  "@id": "https://riddhisiddhifabricator.vercel.app/#organization",
-                  "name": "Riddhi Siddhi Fabricator",
-                  "url": "https://riddhisiddhifabricator.vercel.app/"
-                },
-                "locationCreated": {
-                  "@type": "Place",
-                  "name": project.location || "Muzaffarpur, Bihar"
-                },
-                "material": project.material || project.category || "Fabrication"
-              }
-            ]
-          };
-          schemaEl.textContent = JSON.stringify(schemaData, null, 2);
-        }
+              "locationCreated": {
+                "@type": "Place",
+                "name": project.location || "Muzaffarpur, Bihar"
+              },
+              "material": project.material || project.category || "Fabrication"
+            }
+          ]
+        };
+        schemaEl.textContent = JSON.stringify(schemaData, null, 2);
       }
     }
   })();
@@ -850,6 +850,15 @@
           return;
         }
         hasRendered = true;
+        const existingCanonical = document.getElementById("canonical-url") || document.querySelector('link[rel="canonical"]');
+        if (existingCanonical) {
+          existingCanonical.remove();
+        }
+        const ogUrl = document.getElementById("og-url");
+        if (ogUrl) {
+          ogUrl.removeAttribute("content");
+        }
+        document.title = "Project Not Found — Riddhi Siddhi Fabricator, Muzaffarpur";
         container.innerHTML = `
           <div class="not-found">
             <h2>Project Not Found</h2>
