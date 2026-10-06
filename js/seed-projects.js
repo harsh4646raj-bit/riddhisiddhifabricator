@@ -166,7 +166,7 @@ const SEED_PROJECTS = [
   {
     "id": "proj-steel-06",
     "name": "Luxury Crystal & Acrylic Pillar SS Stair Railings",
-    "slug": "luxury-crystal-acrylic-pillar-ss-railings",
+    "slug": "crystal-acrylic-pillar-ss-railings",
     "category": "steel",
     "shortDescription": "High-end interior staircase handrails featuring bubble crystal acrylic master pillars, finial glass spheres, and stainless steel pipe runs.",
     "description": "Designed for premium interior duplexes and bungalows. Combines illuminated bubble acrylic crystal newels, ornate glass spheres, and architectural stainless steel tubing for an elevated luxury aesthetic.",
@@ -510,7 +510,7 @@ const SEED_PROJECTS = [
   {
     "id": "proj-upvc-04",
     "name": "uPVC Bathroom & Utility Doors",
-    "slug": "moisture-proof-upvc-bathroom-doors",
+    "slug": "white-upvc-bathroom-doors",
     "category": "upvc",
     "shortDescription": "Solid louvered and tongue-and-groove white uPVC doors with stainless lever latches designed for wet areas and bathrooms.",
     "description": "uPVC panel doors suited for residential bathrooms, laundry spaces, and kitchen utility zones.",
