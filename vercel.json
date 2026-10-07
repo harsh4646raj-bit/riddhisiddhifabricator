@@ -18,7 +18,8 @@
         }
       ],
       "destination": "/projects/:category/:slug",
-      "statusCode": 301
+      "statusCode": 301,
+      "preserveQueryParams": false
     }
   ],
   "rewrites": [
