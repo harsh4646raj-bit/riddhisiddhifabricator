@@ -6,6 +6,32 @@
 <title>Project Details — Riddhi Siddhi Fabricator, Muzaffarpur</title>
 <meta name="description" content="Explore custom architectural fabrication projects in aluminium, uPVC, and steel by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar.">
 <link rel="icon" type="image/jpeg" href="/Logo.jpeg">
+
+<!-- Structured Data (JSON-LD) - Static Fallback -->
+<script id="project-schema" type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://riddhisiddhifabricator.vercel.app/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Projects Portfolio",
+          "item": "https://riddhisiddhifabricator.vercel.app/projects"
+        }
+      ]
+    }
+  ]
+}
+</script>
 <script src="/js/seed-projects.js?v=3.1"></script>
 <script>
   (function() {
@@ -122,6 +148,11 @@
         };
         schemaEl.textContent = JSON.stringify(schemaData, null, 2);
       }
+    } else if (slug) {
+      var invalidSchema = document.getElementById("project-schema");
+      if (invalidSchema) {
+        invalidSchema.remove();
+      }
     }
   })();
 </script>
@@ -147,38 +178,6 @@
 <meta id="tw-desc" name="twitter:description" content="Explore custom architectural fabrication projects in aluminium, uPVC, and steel by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar.">
 <meta id="tw-img" name="twitter:image" content="https://riddhisiddhifabricator.vercel.app/Logo.jpeg">
 <meta name="twitter:image:alt" content="Riddhi Siddhi Fabricator Project Showcase">
-
-<!-- Structured Data (JSON-LD) -->
-<script id="project-schema" type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://riddhisiddhifabricator.vercel.app/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Projects",
-          "item": "https://riddhisiddhifabricator.vercel.app/projects"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Project Details",
-          "item": "https://riddhisiddhifabricator.vercel.app/project"
-        }
-      ]
-    }
-  ]
-}
-</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -474,6 +473,122 @@
     filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
   }
 
+  /* Related Projects Section */
+  .related-projects-section {
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid var(--glass-border);
+  }
+  .related-header {
+    margin-bottom: 24px;
+  }
+  .related-header h2 {
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .related-header p {
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .related-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s cubic-bezier(.25,.8,.25,1), border-color 0.3s, box-shadow 0.3s;
+  }
+  .related-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(185, 168, 172, 0.3);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+  }
+  .related-img-wrap {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: #140A0D;
+    position: relative;
+  }
+  .related-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s cubic-bezier(.25,.8,.25,1);
+  }
+  .related-card:hover .related-img {
+    transform: scale(1.05);
+  }
+  .related-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .related-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .related-cat-badge {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--taupe);
+    font-weight: 600;
+  }
+  .related-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 8px;
+    transition: color 0.2s;
+  }
+  .related-card:hover .related-title {
+    color: var(--blush);
+  }
+  .related-desc {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .related-link-btn {
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--taupe);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+  }
+  .related-card:hover .related-link-btn {
+    color: var(--blush);
+  }
+
   /* Fullscreen Lightbox */
   #lightbox {
     position: fixed; inset: 0; z-index: 2000;
@@ -730,11 +845,11 @@
         window.__RS_EARLY_IMAGES = allImgs;
 
         var h = '';
-        h += '<div class="breadcrumb">';
+        h += '<nav class="breadcrumb" aria-label="Breadcrumb">';
         h += '<a href="/">Home</a><span class="sep">&rsaquo;</span>';
         h += '<a href="/projects">Projects Portfolio</a><span class="sep">&rsaquo;</span>';
         h += '<span style="color: var(--text);">' + esc(project.name || 'Project') + '</span>';
-        h += '</div>';
+        h += '</nav>';
 
         if (coverUrl) {
           h += '<div class="project-cover-container" onclick="openLightbox(0)" style="cursor: pointer;">';
@@ -786,6 +901,59 @@
             h += '</div>';
           });
           h += '</div></div>';
+        }
+
+        var relatedList = (typeof SEED_PROJECTS !== "undefined" && Array.isArray(SEED_PROJECTS))
+          ? SEED_PROJECTS.filter(function(p) {
+              return (p.category || "").toLowerCase() === (project.category || "").toLowerCase() &&
+                     (p.slug || "").toLowerCase() !== (project.slug || "").toLowerCase() &&
+                     p.published !== false;
+            }).slice(0, 3)
+          : [];
+
+        if (relatedList.length > 0) {
+          h += '<section class="related-projects-section" aria-label="Related Projects">';
+          h += '<div class="related-header">';
+          h += '<h2>Related Projects</h2>';
+          h += '<p>Explore more architectural fabrication projects in the same material category.</p>';
+          h += '</div>';
+          h += '<div class="related-grid">';
+          relatedList.forEach(function(rp) {
+            var rpCat = (rp.category || "fabrication").toLowerCase();
+            var rpSlug = (rp.slug || "").toLowerCase();
+            var rpUrl = '/projects/' + encodeURIComponent(rpCat) + '/' + encodeURIComponent(rpSlug);
+            var rawCover = rp.coverImage || {};
+            var imgUrl = rawCover.thumbnail_url || rawCover.secure_url || rawCover.thumbnail || rawCover.url || (typeof rawCover === "string" ? rawCover : "");
+            if (imgUrl && !imgUrl.startsWith("http")) {
+              imgUrl = "/" + imgUrl.replace(/^\/+/, "");
+            }
+            if (!imgUrl) imgUrl = "/Logo.jpeg";
+            var rpName = rp.name || "Project";
+            var rpDesc = rp.shortDescription || "";
+
+            h += '<a class="related-card" href="' + esc(rpUrl) + '" aria-label="View related project: ' + esc(rpName) + '">';
+            h += '<div class="related-img-wrap">';
+            h += '<img class="related-img" src="' + esc(imgUrl) + '" alt="' + esc(rpName) + '" loading="lazy" onerror="this.src=\'/Logo.jpeg\'">';
+            h += '</div>';
+            h += '<div class="related-body">';
+            h += '<div class="related-meta">';
+            h += '<span class="related-cat-badge">' + esc(rpCat.toUpperCase()) + '</span>';
+            if (rp.year) {
+              h += '<span style="font-size: 11px; color: var(--text-muted);">' + esc(rp.year) + '</span>';
+            }
+            h += '</div>';
+            h += '<h3 class="related-title">' + esc(rpName) + '</h3>';
+            if (rpDesc) {
+              h += '<p class="related-desc">' + esc(rpDesc) + '</p>';
+            }
+            h += '<span class="related-link-btn">';
+            h += 'View Project Details';
+            h += '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+            h += '</span>';
+            h += '</div>';
+            h += '</a>';
+          });
+          h += '</div></section>';
         }
 
         container.innerHTML = h;
@@ -897,6 +1065,10 @@
         const ogUrl = document.getElementById("og-url");
         if (ogUrl) {
           ogUrl.removeAttribute("content");
+        }
+        const projectSchema = document.getElementById("project-schema");
+        if (projectSchema) {
+          projectSchema.remove();
         }
         document.title = "Project Not Found — Riddhi Siddhi Fabricator, Muzaffarpur";
         container.innerHTML = `
@@ -1034,13 +1206,13 @@
       hasRendered = true;
       container.innerHTML = `
         <!-- Breadcrumb -->
-        <div class="breadcrumb">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
           <a href="/">Home</a>
           <span class="sep">&rsaquo;</span>
           <a href="/projects">Projects Portfolio</a>
           <span class="sep">&rsaquo;</span>
           <span style="color: var(--text);">${escapeHtml(project.name || 'Project')}</span>
-        </div>
+        </nav>
 
         <!-- Hero Cover Image -->
         ${coverUrl ? `
@@ -1123,10 +1295,68 @@
             </div>
           </div>
         ` : ""}
+
+        <!-- Related Projects Section -->
+        ${(() => {
+          const relatedList = (typeof SEED_PROJECTS !== "undefined" && Array.isArray(SEED_PROJECTS))
+            ? SEED_PROJECTS.filter(p =>
+                (p.category || "").toLowerCase() === validCat &&
+                (p.slug || "").toLowerCase() !== validSlug &&
+                p.published !== false
+              ).slice(0, 3)
+            : [];
+          if (relatedList.length === 0) return "";
+          return `
+            <section class="related-projects-section" aria-label="Related Projects">
+              <div class="related-header">
+                <h2>Related Projects</h2>
+                <p>Explore more architectural fabrication projects in the same material category.</p>
+              </div>
+              <div class="related-grid">
+                ${relatedList.map(rp => {
+                  const rpCat = (rp.category || "fabrication").toLowerCase();
+                  const rpSlug = (rp.slug || "").toLowerCase();
+                  const rpUrl = `/projects/${encodeURIComponent(rpCat)}/${encodeURIComponent(rpSlug)}`;
+                  const rawCover = rp.coverImage || {};
+                  let imgUrl = rawCover.thumbnail_url || rawCover.secure_url || rawCover.thumbnail || rawCover.url || (typeof rawCover === "string" ? rawCover : "");
+                  if (imgUrl && !imgUrl.startsWith("http")) {
+                    imgUrl = `/${imgUrl.replace(/^\/+/, "")}`;
+                  }
+                  if (!imgUrl) imgUrl = "/Logo.jpeg";
+                  const rpName = rp.name || "Project";
+                  const rpDesc = rp.shortDescription || "";
+                  return `
+                    <a class="related-card" href="${escapeHtml(rpUrl)}" aria-label="View related project: ${escapeHtml(rpName)}">
+                      <div class="related-img-wrap">
+                        <img class="related-img" src="${escapeHtml(imgUrl)}" alt="${escapeHtml(rpName)}" loading="lazy" onerror="this.src='/Logo.jpeg'">
+                      </div>
+                      <div class="related-body">
+                        <div class="related-meta">
+                          <span class="related-cat-badge">${escapeHtml(rpCat.toUpperCase())}</span>
+                          ${rp.year ? `<span style="font-size: 11px; color: var(--text-muted);">${escapeHtml(rp.year)}</span>` : ""}
+                        </div>
+                        <h3 class="related-title">${escapeHtml(rpName)}</h3>
+                        ${rpDesc ? `<p class="related-desc">${escapeHtml(rpDesc)}</p>` : ""}
+                        <span class="related-link-btn">
+                          View Project Details
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </span>
+                      </div>
+                    </a>
+                  `;
+                }).join("")}
+              </div>
+            </section>
+          `;
+        })()}
       `;
     } catch (err) {
       clearTimeout(loadingTimeout);
       console.error("Failed to load project details:", err);
+      const projectSchema = document.getElementById("project-schema");
+      if (projectSchema) {
+        projectSchema.remove();
+      }
       renderErrorState("An unexpected error occurred while loading project details. Please try refreshing or return to our projects gallery.");
     }
   }
