@@ -2,6 +2,25 @@
   "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/project",
+      "has": [
+        {
+          "type": "query",
+          "key": "category",
+          "value": "(?<category>upvc|aluminium|steel)"
+        },
+        {
+          "type": "query",
+          "key": "slug",
+          "value": "(?<slug>[a-z0-9-]+)"
+        }
+      ],
+      "destination": "/projects/:category/:slug",
+      "statusCode": 301
+    }
+  ],
   "rewrites": [
     { "source": "/about", "destination": "/about.html" },
     { "source": "/contact", "destination": "/contact.html" },
