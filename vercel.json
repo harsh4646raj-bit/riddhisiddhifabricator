@@ -7,7 +7,7 @@
     { "source": "/contact", "destination": "/contact.html" },
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/quote", "destination": "/quote.html" },
-    { "source": "/projects/:category(upvc|aluminium|steel)/:slug", "destination": "/project.html" },
+    { "source": "/projects/:category(upvc|aluminium|steel)/:slug", "destination": "/project" },
     { "source": "/projects", "destination": "/projects.html" },
     { "source": "/project", "destination": "/project.html" }
   ],
