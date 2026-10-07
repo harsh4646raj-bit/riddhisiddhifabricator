@@ -572,8 +572,9 @@
         <div class="projects-grid">
           ${projects.map(p => {
             const coverSrc = p.coverImage?.thumbnail_url || p.coverImage?.secure_url || p.coverImage?.thumbnail || p.coverImage?.url || p.coverImage || "";
+            const cardCat = (p.category || 'aluminium').toLowerCase();
             return `
-              <a class="project-card" href="project.html?category=${encodeURIComponent(p.category)}&slug=${encodeURIComponent(p.slug)}">
+              <a class="project-card" href="/projects/${encodeURIComponent(cardCat)}/${encodeURIComponent(p.slug)}">
                 <div class="card-image-wrap">
                   ${coverSrc ? `
                     <img class="card-image" src="${coverSrc}" alt="${escapeHtml(p.name)}" loading="lazy">

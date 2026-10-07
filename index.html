@@ -1591,7 +1591,7 @@
 
     <div class="showcase-grid" id="showcase-grid">
       <!-- Project 1: uPVC Window -->
-      <a class="showcase-card" href="project.html?category=upvc&slug=conch-fenstech-white-upvc-sliding-windows" data-reveal aria-label="View project: White uPVC Sliding Window with Integrated Grill">
+      <a class="showcase-card" href="/projects/upvc/conch-fenstech-white-upvc-sliding-windows" data-reveal aria-label="View project: White uPVC Sliding Window with Integrated Grill">
         <div class="showcase-img-wrap">
           <img class="showcase-img" src="https://res.cloudinary.com/ealgnhba/image/upload/c_fill,w_640,h_480,f_auto,q_auto/riddhi-siddhi/projects/covers/vv54krbsjijguamducu9" alt="White uPVC sliding window with integrated safety grill installed in Muzaffarpur" width="640" height="480" loading="lazy">
         </div>
@@ -1615,7 +1615,7 @@
       </a>
 
       <!-- Project 2: uPVC Patio / Balcony Door -->
-      <a class="showcase-card" href="project.html?category=upvc&slug=high-aperture-upvc-sliding-patio-doors" data-reveal aria-label="View project: Large uPVC Balcony Sliding Glass Door">
+      <a class="showcase-card" href="/projects/upvc/high-aperture-upvc-sliding-patio-doors" data-reveal aria-label="View project: Large uPVC Balcony Sliding Glass Door">
         <div class="showcase-img-wrap">
           <img class="showcase-img" src="https://res.cloudinary.com/ealgnhba/image/upload/c_fill,w_640,h_480,f_auto,q_auto/riddhi-siddhi/projects/covers/iymvtahwnm7gsn1afzdi" alt="Large white uPVC sliding glass balcony door installation in Muzaffarpur" width="640" height="480" loading="lazy">
         </div>
@@ -1639,7 +1639,7 @@
       </a>
 
       <!-- Project 3: Aluminium Window -->
-      <a class="showcase-card" href="project.html?category=aluminium&slug=bronze-anodized-aluminium-sliding-windows" data-reveal aria-label="View project: Bronze Finish Aluminium Sliding Windows">
+      <a class="showcase-card" href="/projects/aluminium/bronze-anodized-aluminium-sliding-windows" data-reveal aria-label="View project: Bronze Finish Aluminium Sliding Windows">
         <div class="showcase-img-wrap">
           <img class="showcase-img" src="https://res.cloudinary.com/ealgnhba/image/upload/c_fill,w_640,h_480,f_auto,q_auto/riddhi-siddhi/projects/covers/qurfo0ekne2dv7ulevj3" alt="Bronze finish aluminium sliding windows with large glass panels in Muzaffarpur" width="640" height="480" loading="lazy">
         </div>
@@ -1663,7 +1663,7 @@
       </a>
 
       <!-- Project 4: Steel Door -->
-      <a class="showcase-card" href="project.html?category=steel&slug=ss-security-doors-safety-enclosures" data-reveal aria-label="View project: Stainless Steel Designer Main Door">
+      <a class="showcase-card" href="/projects/steel/ss-security-doors-safety-enclosures" data-reveal aria-label="View project: Stainless Steel Designer Main Door">
         <div class="showcase-img-wrap">
           <img class="showcase-img" src="https://res.cloudinary.com/ealgnhba/image/upload/c_fill,w_640,h_480,f_auto,q_auto/riddhi-siddhi/projects/covers/tyq8c2hav6nl2momrkwo" alt="Stainless steel designer main door with wood finish panels in Muzaffarpur" width="640" height="480" loading="lazy">
         </div>
@@ -1909,7 +1909,7 @@
         const desc = p.shortDescription || p.description || "";
 
         return `
-          <a class="showcase-card in" href="project.html?category=${encodeURIComponent(cat)}&slug=${encodeURIComponent(p.slug)}" data-reveal aria-label="View project: ${escapeHtml(p.name)}">
+          <a class="showcase-card in" href="/projects/${encodeURIComponent(cat)}/${encodeURIComponent(p.slug)}" data-reveal aria-label="View project: ${escapeHtml(p.name)}">
             <div class="showcase-img-wrap">
               <img class="showcase-img" src="${finalImgUrl}" alt="${escapeHtml(p.name)} installed in Muzaffarpur" width="640" height="480" loading="lazy">
             </div>
