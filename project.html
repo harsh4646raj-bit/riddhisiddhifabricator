@@ -5,26 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Project Details — Riddhi Siddhi Fabricator, Muzaffarpur</title>
 <meta name="description" content="Explore custom architectural fabrication projects in aluminium, uPVC, and steel by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar.">
-<link rel="icon" type="image/jpeg" href="Logo.jpeg">
-<script src="js/seed-projects.js?v=3.1"></script>
+<link rel="icon" type="image/jpeg" href="/Logo.jpeg">
+<script src="/js/seed-projects.js?v=3.1"></script>
 <script>
   (function() {
-    var params = new URLSearchParams(window.location.search);
-    var rawCat = params.get("category") || "";
-    var rawSlug = params.get("slug") || "";
     var cat = "";
     var slug = "";
-    try { cat = decodeURIComponent(rawCat).trim().toLowerCase(); } catch (_) { cat = rawCat.trim().toLowerCase(); }
-    try { slug = decodeURIComponent(rawSlug).trim().toLowerCase(); } catch (_) { slug = rawSlug.trim().toLowerCase(); }
+
+    // 1. Primary: Parse clean pathname (/projects/:category/:slug)
+    var pathname = (window.location.pathname || "").replace(/\/+$/, "");
+    var cleanMatch = pathname.match(/^\/projects\/(upvc|aluminium|steel)\/([a-z0-9-]+)$/i);
+    if (cleanMatch) {
+      cat = cleanMatch[1].toLowerCase().trim();
+      slug = cleanMatch[2].toLowerCase().trim();
+    } else {
+      // 2. Backward compatibility: Fallback to query parameters (?category=...&slug=...)
+      var params = new URLSearchParams(window.location.search);
+      var rawCat = params.get("category") || "";
+      var rawSlug = params.get("slug") || "";
+      try { cat = decodeURIComponent(rawCat).trim().toLowerCase(); } catch (_) { cat = rawCat.trim().toLowerCase(); }
+      try { slug = decodeURIComponent(rawSlug).trim().toLowerCase(); } catch (_) { slug = rawSlug.trim().toLowerCase(); }
+    }
 
     var project = null;
-    if (typeof SEED_PROJECTS !== "undefined" && Array.isArray(SEED_PROJECTS)) {
-      if (cat && slug) {
+    if (typeof SEED_PROJECTS !== "undefined" && Array.isArray(SEED_PROJECTS) && slug) {
+      // Strict category validation: Category MUST match if specified
+      if (cat) {
         project = SEED_PROJECTS.find(function(p) {
-          return (!cat || (p.category || "").toLowerCase() === cat) && (p.slug || "").toLowerCase() === slug;
+          return (p.category || "").toLowerCase() === cat && (p.slug || "").toLowerCase() === slug;
         });
-      }
-      if (!project && slug) {
+      } else {
+        // Query param without category: match slug and adopt project category
         project = SEED_PROJECTS.find(function(p) { return (p.slug || "").toLowerCase() === slug; });
       }
     }
@@ -32,7 +43,8 @@
     if (project) {
       var validCat = (project.category || cat || "").toLowerCase();
       var validSlug = (project.slug || slug || "").toLowerCase();
-      var href = "https://riddhisiddhifabricator.vercel.app/project?category=" + encodeURIComponent(validCat) + "&slug=" + encodeURIComponent(validSlug);
+      var cleanCanonicalUrl = "https://riddhisiddhifabricator.vercel.app/projects/" + encodeURIComponent(validCat) + "/" + encodeURIComponent(validSlug);
+      
       var canonicalEl = document.querySelector('link[rel="canonical"]');
       if (!canonicalEl) {
         canonicalEl = document.createElement("link");
@@ -40,9 +52,10 @@
         canonicalEl.id = "canonical-url";
         document.head.appendChild(canonicalEl);
       }
-      canonicalEl.setAttribute("href", href);
+      canonicalEl.setAttribute("href", cleanCanonicalUrl);
+
       var ogUrl = document.getElementById("og-url");
-      if (ogUrl) ogUrl.setAttribute("content", href);
+      if (ogUrl) ogUrl.setAttribute("content", cleanCanonicalUrl);
 
       var catUpper = (project.category || cat || "Fabrication").toUpperCase();
       var projTitle = (project.name || "Project") + " (" + catUpper + ") — Riddhi Siddhi Fabricator, Muzaffarpur";
@@ -64,7 +77,7 @@
       var cover = project.coverImage || {};
       var coverUrl = cover.url || cover.secure_url || "";
       if (coverUrl) {
-        var absCover = coverUrl.startsWith("http") ? coverUrl : ("https://riddhisiddhifabricator.vercel.app/" + coverUrl);
+        var absCover = coverUrl.startsWith("http") ? coverUrl : ("https://riddhisiddhifabricator.vercel.app/" + coverUrl.replace(/^\/+/, ""));
         var ogImg = document.getElementById("og-img");
         if (ogImg) ogImg.setAttribute("content", absCover);
         var twImg = document.getElementById("tw-img");
@@ -78,21 +91,21 @@
           "@graph": [
             {
               "@type": "BreadcrumbList",
-              "@id": href + "#breadcrumb",
+              "@id": cleanCanonicalUrl + "#breadcrumb",
               "itemListElement": [
                 { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://riddhisiddhifabricator.vercel.app/" },
-                { "@type": "ListItem", "position": 2, "name": catUpper + " Projects", "item": "https://riddhisiddhifabricator.vercel.app/projects?category=" + encodeURIComponent(project.category || cat) },
-                { "@type": "ListItem", "position": 3, "name": project.name || "Project", "item": href }
+                { "@type": "ListItem", "position": 2, "name": "Projects Portfolio", "item": "https://riddhisiddhifabricator.vercel.app/projects" },
+                { "@type": "ListItem", "position": 3, "name": project.name || "Project", "item": cleanCanonicalUrl }
               ]
             },
             {
               "@type": "CreativeWork",
-              "@id": href + "#work",
+              "@id": cleanCanonicalUrl + "#work",
               "name": project.name || "Project",
               "headline": project.name || "Project",
               "description": projDesc,
-              "url": href,
-              "image": coverUrl ? (coverUrl.startsWith("http") ? coverUrl : ("https://riddhisiddhifabricator.vercel.app/" + coverUrl)) : undefined,
+              "url": cleanCanonicalUrl,
+              "image": coverUrl ? (coverUrl.startsWith("http") ? coverUrl : ("https://riddhisiddhifabricator.vercel.app/" + coverUrl.replace(/^\/+/, ""))) : undefined,
               "creator": {
                 "@type": ["LocalBusiness", "HomeAndConstructionBusiness"],
                 "@id": "https://riddhisiddhifabricator.vercel.app/#organization",
@@ -570,15 +583,15 @@
      ARCHITECTURAL AMBIENT BACKGROUND
      ═════════════════════════════════════════════ -->
 <div class="page-bg-container">
-  <video class="page-bg-video" autoplay muted loop playsinline poster="assets/projects_bg.webp">
-    <source src="assets/projects_bg.mp4" type="video/mp4">
+  <video class="page-bg-video" autoplay muted loop playsinline poster="/assets/projects_bg.webp">
+    <source src="/assets/projects_bg.mp4" type="video/mp4">
   </video>
   <div class="page-bg-overlay"></div>
 </div>
 
 <nav id="mainnav">
   <a class="nav-logo" href="/">
-    <img src="Logo.jpeg" alt="Riddhi Siddhi Fabricator Logo">
+    <img src="/Logo.jpeg" alt="Riddhi Siddhi Fabricator Logo">
     <span>Riddhi Siddhi</span>
   </a>
   <div class="nav-links">
@@ -655,23 +668,33 @@
     }
 
     try {
-      var params = new URLSearchParams(window.location.search);
-      var rawCat = params.get("category") || "";
-      var rawSlug = params.get("slug") || "";
       var cat = "";
       var slug = "";
-      try { cat = decodeURIComponent(rawCat).trim().toLowerCase(); } catch (_) { cat = rawCat.trim().toLowerCase(); }
-      try { slug = decodeURIComponent(rawSlug).trim().toLowerCase(); } catch (_) { slug = rawSlug.trim().toLowerCase(); }
+
+      // 1. Primary: Parse clean pathname (/projects/:category/:slug)
+      var pathname = (window.location.pathname || "").replace(/\/+$/, "");
+      var cleanMatch = pathname.match(/^\/projects\/(upvc|aluminium|steel)\/([a-z0-9-]+)$/i);
+      if (cleanMatch) {
+        cat = cleanMatch[1].toLowerCase().trim();
+        slug = cleanMatch[2].toLowerCase().trim();
+      } else {
+        // 2. Backward compatibility: Fallback to query parameters
+        var params = new URLSearchParams(window.location.search);
+        var rawCat = params.get("category") || "";
+        var rawSlug = params.get("slug") || "";
+        try { cat = decodeURIComponent(rawCat).trim().toLowerCase(); } catch (_) { cat = rawCat.trim().toLowerCase(); }
+        try { slug = decodeURIComponent(rawSlug).trim().toLowerCase(); } catch (_) { slug = rawSlug.trim().toLowerCase(); }
+      }
+
       if (!slug) return;
 
       var project = null;
       if (typeof SEED_PROJECTS !== "undefined" && Array.isArray(SEED_PROJECTS)) {
-        if (cat && slug) {
+        if (cat) {
           project = SEED_PROJECTS.find(function(p) {
-            return (!cat || (p.category || "").toLowerCase() === cat) && (p.slug || "").toLowerCase() === slug;
+            return (p.category || "").toLowerCase() === cat && (p.slug || "").toLowerCase() === slug;
           });
-        }
-        if (!project && slug) {
+        } else {
           project = SEED_PROJECTS.find(function(p) { return (p.slug || "").toLowerCase() === slug; });
         }
       }
@@ -684,6 +707,9 @@
         var catUpper = (project.category || "Fabrication").toUpperCase();
         var rawCover = project.coverImage || {};
         var coverUrl = rawCover.url || rawCover.secure_url || (typeof rawCover === "string" ? rawCover : "");
+        if (coverUrl && !coverUrl.startsWith("http")) {
+          coverUrl = "/" + coverUrl.replace(/^\/+/, "");
+        }
 
         var waText = encodeURIComponent('Hi Riddhi Siddhi Fabricator, I am inquiring about your ' + catUpper + ' project: "' + (project.name || 'Project') + '" (' + window.location.href + '). Could you provide more details and pricing?');
         var waUrl = "https://wa.me/919771086644?text=" + waText;
@@ -693,6 +719,9 @@
         if (Array.isArray(project.galleryImages)) {
           project.galleryImages.forEach(function(img, idx) {
             var u = img.url || img.secure_url || (typeof img === "string" ? img : "");
+            if (u && !u.startsWith("http")) {
+              u = "/" + u.replace(/^\/+/, "");
+            }
             if (u && u !== coverUrl) {
               allImgs.push({ url: u, caption: img.alt || img.alt_text || (project.name + " Photo " + (idx + 1)) });
             }
@@ -703,7 +732,7 @@
         var h = '';
         h += '<div class="breadcrumb">';
         h += '<a href="/">Home</a><span class="sep">&rsaquo;</span>';
-        h += '<a href="/projects?category=' + encodeURIComponent(project.category || 'aluminium') + '">' + esc(catUpper) + ' Projects</a><span class="sep">&rsaquo;</span>';
+        h += '<a href="/projects">Projects Portfolio</a><span class="sep">&rsaquo;</span>';
         h += '<span style="color: var(--text);">' + esc(project.name || 'Project') + '</span>';
         h += '</div>';
 
@@ -788,19 +817,19 @@
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-brand">
-      <img src="Logo.jpeg" alt="Riddhi Siddhi Fabricator Logo">
+      <img src="/Logo.jpeg" alt="Riddhi Siddhi Fabricator Logo">
       <span>Riddhi Siddhi Fabricator</span>
     </div>
     <div class="footer-copy">
-      &copy; 2026 Riddhi Siddhi Fabricator. Muzaffarpur, Bihar. &bull; <a href="admin.html" style="color: inherit; text-decoration: none; opacity: 0.5;">Admin</a>
+      &copy; 2026 Riddhi Siddhi Fabricator. Muzaffarpur, Bihar. &bull; <a href="/admin" style="color: inherit; text-decoration: none; opacity: 0.5;">Admin</a>
     </div>
   </div>
 </footer>
 
-<script src="js/nav.js?v=1.2"></script>
-<script src="js/seed-projects.js?v=3.1"></script>
-<script src="js/backend-config.js?v=3.0"></script>
-<script src="js/db.js?v=3.0"></script>
+<script src="/js/nav.js?v=1.2"></script>
+<script src="/js/seed-projects.js?v=3.1"></script>
+<script src="/js/backend-config.js?v=3.0"></script>
+<script src="/js/db.js?v=3.0"></script>
 <script>
   let allGalleryImages = window.__RS_EARLY_IMAGES || [];
   let currentImageIndex = 0;
@@ -819,36 +848,47 @@
     }, 6000);
 
     try {
-      const urlParams = new URLSearchParams(window.location.search);
-      let rawCategory = urlParams.get("category") || "";
-      let rawSlug = urlParams.get("slug") || "";
-      let rawId = urlParams.get("id") || "";
-
       let category = "";
       let slug = "";
       let id = "";
 
-      try { category = decodeURIComponent(rawCategory).trim(); } catch (_) { category = rawCategory.trim(); }
-      try { slug = decodeURIComponent(rawSlug).trim(); } catch (_) { slug = rawSlug.trim(); }
-      try { id = decodeURIComponent(rawId).trim(); } catch (_) { id = rawId.trim(); }
+      // 1. Primary: Parse clean pathname (/projects/:category/:slug)
+      const pathname = (window.location.pathname || "").replace(/\/+$/, "");
+      const cleanMatch = pathname.match(/^\/projects\/(upvc|aluminium|steel)\/([a-z0-9-]+)$/i);
+      if (cleanMatch) {
+        category = cleanMatch[1].toLowerCase().trim();
+        slug = cleanMatch[2].toLowerCase().trim();
+      } else {
+        // 2. Backward compatibility: Fallback to query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        let rawCategory = urlParams.get("category") || "";
+        let rawSlug = urlParams.get("slug") || "";
+        let rawId = urlParams.get("id") || "";
+        try { category = decodeURIComponent(rawCategory).trim().toLowerCase(); } catch (_) { category = rawCategory.trim().toLowerCase(); }
+        try { slug = decodeURIComponent(rawSlug).trim().toLowerCase(); } catch (_) { slug = rawSlug.trim().toLowerCase(); }
+        try { id = decodeURIComponent(rawId).trim(); } catch (_) { id = rawId.trim(); }
+      }
 
       let project = null;
       if (category && slug) {
         project = await RS_DB.getProjectBySlug(category, slug);
       }
-      if (!project && slug) {
+      if (!project && slug && !cleanMatch) {
+        // Allow fallback only on legacy query URLs if category was omitted
         project = await RS_DB.getProjectBySlug("", slug);
       }
-      if (!project && id) {
+      if (!project && id && !cleanMatch) {
         project = await RS_DB.getProjectById(id);
+      }
+
+      // STRICT VALIDATION: If category was parsed, project category MUST match exactly
+      if (project && category && (project.category || "").toLowerCase() !== category.toLowerCase()) {
+        project = null;
       }
 
       clearTimeout(loadingTimeout);
 
       if (!project) {
-        if (window.__RS_SEED_PROJECT_RENDERED) {
-          return;
-        }
         hasRendered = true;
         const existingCanonical = document.getElementById("canonical-url") || document.querySelector('link[rel="canonical"]');
         if (existingCanonical) {
@@ -874,11 +914,14 @@
       // Collect all images (Cover + Gallery) FIRST to prevent reference errors
       allGalleryImages = [];
       const rawCover = project.coverImage || {};
-      const coverUrl = rawCover.secure_url || rawCover.url || rawCover.thumbnail_url || (typeof rawCover === "string" ? rawCover : "");
+      let coverUrl = rawCover.secure_url || rawCover.url || rawCover.thumbnail_url || (typeof rawCover === "string" ? rawCover : "");
+      if (coverUrl && !coverUrl.startsWith("http")) {
+        coverUrl = "/" + coverUrl.replace(/^\/+/, "");
+      }
 
       if (coverUrl) {
         try {
-          const absCover = coverUrl.startsWith("http") ? coverUrl : `https://riddhisiddhifabricator.vercel.app/${coverUrl}`;
+          const absCover = coverUrl.startsWith("http") ? coverUrl : `https://riddhisiddhifabricator.vercel.app/${coverUrl.replace(/^\/+/, "")}`;
           document.getElementById("og-img")?.setAttribute("content", absCover);
           document.getElementById("tw-img")?.setAttribute("content", absCover);
         } catch (_) {}
@@ -887,7 +930,10 @@
 
       if (Array.isArray(project.galleryImages)) {
         project.galleryImages.forEach((img, idx) => {
-          const url = img?.secure_url || img?.url || img?.thumbnail_url || (typeof img === "string" ? img : "");
+          let url = img?.secure_url || img?.url || img?.thumbnail_url || (typeof img === "string" ? img : "");
+          if (url && !url.startsWith("http")) {
+            url = "/" + url.replace(/^\/+/, "");
+          }
           if (url && url !== coverUrl) {
             allGalleryImages.push({ url, caption: img?.caption || img?.alt_text || `${project.name || "Project"} Photo ${idx + 1}` });
           }
@@ -895,10 +941,12 @@
       }
 
       // Document Title & Dynamic SEO Metadata
-      const catUpper = (project.category || "Fabrication").toUpperCase();
+      const catUpper = (project.category || category || "Fabrication").toUpperCase();
+      const validCat = (project.category || category || "aluminium").toLowerCase();
+      const validSlug = (project.slug || slug || "").toLowerCase();
       const projectTitle = `${project.name || "Project"} (${catUpper}) — Riddhi Siddhi Fabricator`;
       const projectDesc = project.shortDescription || `Explore ${project.name || "custom architectural fabrication"}, a project by Riddhi Siddhi Fabricator in Muzaffarpur, Bihar.`;
-      const canonicalHref = `https://riddhisiddhifabricator.vercel.app/project?category=${encodeURIComponent(project.category || "aluminium")}&slug=${encodeURIComponent(project.slug || "")}`;
+      const canonicalHref = `https://riddhisiddhifabricator.vercel.app/projects/${encodeURIComponent(validCat)}/${encodeURIComponent(validSlug)}`;
 
       try {
         document.title = projectTitle;
@@ -937,8 +985,8 @@
                   {
                     "@type": "ListItem",
                     "position": 2,
-                    "name": `${catUpper} Projects`,
-                    "item": `https://riddhisiddhifabricator.vercel.app/projects?category=${encodeURIComponent(project.category || "aluminium")}`
+                    "name": "Projects Portfolio",
+                    "item": "https://riddhisiddhifabricator.vercel.app/projects"
                   },
                   {
                     "@type": "ListItem",
@@ -955,7 +1003,7 @@
                 "headline": project.name || "Project",
                 "description": projectDesc,
                 "url": canonicalHref,
-                "image": coverUrl ? (coverUrl.startsWith("http") ? coverUrl : `https://riddhisiddhifabricator.vercel.app/${coverUrl}`) : undefined,
+                "image": coverUrl ? (coverUrl.startsWith("http") ? coverUrl : `https://riddhisiddhifabricator.vercel.app/${coverUrl.replace(/^\/+/, "")}`) : undefined,
                 "creator": {
                   "@type": ["LocalBusiness", "HomeAndConstructionBusiness"],
                   "@id": "https://riddhisiddhifabricator.vercel.app/#organization",
@@ -987,9 +1035,9 @@
       container.innerHTML = `
         <!-- Breadcrumb -->
         <div class="breadcrumb">
-          <a href="index.html">Home</a>
+          <a href="/">Home</a>
           <span class="sep">&rsaquo;</span>
-          <a href="projects.html?category=${encodeURIComponent(project.category || 'aluminium')}">${escapeHtml(project.category || 'Fabrication')}</a>
+          <a href="/projects">Projects Portfolio</a>
           <span class="sep">&rsaquo;</span>
           <span style="color: var(--text);">${escapeHtml(project.name || 'Project')}</span>
         </div>
@@ -1040,7 +1088,7 @@
             ` : ""}
 
             <div class="project-actions">
-              <a class="btn-inquire" href="quote.html?material=${encodeURIComponent(project.category || 'aluminium')}&project=${encodeURIComponent(project.name || '')}">
+              <a class="btn-inquire" href="/quote?material=${encodeURIComponent(project.category || 'aluminium')}&project=${encodeURIComponent(project.name || '')}">
                 Request a Similar Project
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
               </a>
@@ -1095,7 +1143,7 @@
           <button class="btn-inquire" onclick="location.reload()" style="cursor: pointer;">
             Retry Loading
           </button>
-          <a class="btn-inquire" href="projects.html" style="background: rgba(185,168,172,0.12); color: var(--text);">
+          <a class="btn-inquire" href="/projects" style="background: rgba(185,168,172,0.12); color: var(--text);">
             &larr; Browse All Projects
           </a>
         </div>
