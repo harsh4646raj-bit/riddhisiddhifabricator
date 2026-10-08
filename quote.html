@@ -8,6 +8,16 @@
 <link rel="icon" type="image/jpeg" href="Logo.jpeg">
 <link rel="canonical" href="https://riddhisiddhifabricator.vercel.app/quote">
 
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-N706THM4Z8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-N706THM4Z8');
+</script>
+
 <!-- Geo / Location Metadata -->
 <meta name="geo.region" content="IN-BR">
 <meta name="geo.placename" content="Muzaffarpur">
@@ -1164,6 +1174,14 @@
       await RS_DB.createLead(leadData);
       lastQuoteSubmitTime = Date.now();
       isSubmitting = false;
+
+      // GA4 Conversion Event: generate_lead (Zero PII)
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'generate_lead', {
+          form_name: 'quote_request',
+          submission_method: 'website_form'
+        });
+      }
 
       // Generate dynamic WhatsApp link
       const workStr = selectedWorkTypes.length > 0 ? selectedWorkTypes.join(", ") : category;

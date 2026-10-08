@@ -368,4 +368,63 @@
   } else {
     buildNav();
   }
+
+  /* ── GA4 Conversion Event Tracking (phone_click & whatsapp_click) ── */
+  function initGaEventTracking() {
+    if (window.__RS_GA_LISTENERS_INITIALIZED) return;
+    window.__RS_GA_LISTENERS_INITIALIZED = true;
+
+    document.addEventListener("click", function (event) {
+      var target = event.target;
+      if (!target || typeof target.closest !== "function") return;
+
+      var anchor = target.closest("a");
+      if (!anchor) return;
+
+      var href = (anchor.getAttribute("href") || "").trim().toLowerCase();
+      if (!href) return;
+
+      /* Helper to categorize link location without PII */
+      function getLinkLocation(el) {
+        if (el.closest("#mainnav, header, nav, .site-header")) return "header";
+        if (el.closest("#rs-drawer, .rs-drawer")) return "mobile_drawer";
+        if (el.closest("#rs-quick-contact, .rs-quick-contact, .bottom-quick-bar")) return "mobile_bottom_bar";
+        if (el.closest(".hero, .hero-section, header.hero, #hero")) return "hero";
+        if (el.closest(".site-footer, footer, #footer")) return "footer";
+        if (el.closest(".contact-section, .contact-card, #contact")) return "contact_section";
+        if (el.closest("#success-view, .success-view, .quote-success")) return "quote_success";
+        if (el.closest(".project-inquire, .project-inquiry, .project-cta, .project-details")) return "project_detail";
+        return "general_link";
+      }
+
+      /* Phone Click Tracking */
+      if (href.startsWith("tel:")) {
+        if (typeof window.gtag === "function") {
+          window.gtag("event", "phone_click", {
+            link_location: getLinkLocation(anchor)
+          });
+        }
+        return;
+      }
+
+      /* WhatsApp Click Tracking */
+      if (
+        href.includes("wa.me") ||
+        href.includes("api.whatsapp.com") ||
+        href.includes("whatsapp.com")
+      ) {
+        if (typeof window.gtag === "function") {
+          window.gtag("event", "whatsapp_click", {
+            link_location: getLinkLocation(anchor)
+          });
+        }
+      }
+    }, true);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initGaEventTracking);
+  } else {
+    initGaEventTracking();
+  }
 })();
